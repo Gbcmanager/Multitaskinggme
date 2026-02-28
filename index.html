@@ -6,7 +6,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
     />
-    <title>Gimbocha KDS - Pro Server</title>
+    <title>Gimbocha Multi Tasking Training</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap"
       rel="stylesheet"
@@ -409,7 +409,7 @@
         display: none !important;
       }
 
-      /* Overlays (ปรับใหม่สำหรับจอมือถือแนวนอน) */
+      /* Overlays (หน้าจอทับซ้อนแนวนอน) */
       .overlay {
         position: fixed;
         top: 0;
@@ -460,7 +460,6 @@
         background: #d32f2f;
       }
 
-      /* แยกฝั่งซ้ายขวา สำหรับหน้า Leaderboard (แก้อาการล้นจอ) */
       .split-layout {
         display: flex;
         flex-direction: row;
@@ -525,7 +524,6 @@
         outline: none;
       }
 
-      /* Leaderboard UI ปรับขนาดฟอนต์ให้เล็กลง */
       .leaderboard-container {
         background: #fff;
         color: #333;
@@ -581,8 +579,10 @@
   </head>
   <body>
     <div id="landscape-warning">
-      <h1 style="color: var(--brand); margin-bottom: 10px">หมุนจอเป็นแนวนอน</h1>
-      <p>ระบบ Kitchen Display System (KDS)</p>
+      <h1 style="color: var(--brand); margin-bottom: 10px">
+        📱 หมุนจอเป็นแนวนอนจ้ะหลาน
+      </h1>
+      <p>เกมฝึกทักษะ Multi Tasking</p>
     </div>
 
     <div id="app">
@@ -776,8 +776,8 @@
     </div>
 
     <div id="overlay-start" class="overlay">
-      <h1 style="color: #fff">หลานเองก็เป็นได้นะ..นักชงชามืออาชีพน่ะ</h1>
-      <p>มาฝึกฝนเป็นสุดยอดนักชงชากันเถอะ (มี 10 ด่าน)</p>
+      <h1 style="color: #fff">หลานเองก็เป็นได้นะ... นักชงชามืออาชีพน่ะ</h1>
+      <p>เกมฝึกจัดการออเดอร์ สำหรับมือใหม่</p>
       <input
         type="text"
         id="player-name-input"
@@ -785,7 +785,7 @@
         placeholder="ใส่ชื่อของหลานที่นี่..."
         autocomplete="off"
       />
-      <button class="btn-primary" onclick="initGame()">เริ่ม</button>
+      <button class="btn-primary" onclick="initGame()">เอ้า เริ่ม !</button>
     </div>
 
     <div id="overlay-level-clear" class="overlay hidden">
@@ -803,7 +803,7 @@
 
           <div class="button-group" id="action-buttons">
             <button class="btn-primary btn-danger" onclick="quitGame()">
-              ส่งกะ
+              พอและ ไว้วันหลังนะยาย
             </button>
             <button
               class="btn-primary"
@@ -821,7 +821,7 @@
 
         <div class="split-right">
           <div class="leaderboard-container">
-            <div class="leaderboard-title">🏆 Leaderboard</div>
+            <div class="leaderboard-title">🏆 Leaderboard สถิติของร้าน</div>
             <div id="leaderboard-list"></div>
           </div>
         </div>
@@ -963,6 +963,9 @@
         document.getElementById("level-display").innerText =
           levels[currentLevel].title;
 
+        // *แก้ไขบัคข้อความไม่หายเวลาเริ่มด่าน*
+        document.getElementById("no-order-msg").classList.add("hidden");
+
         spawnQueue = JSON.parse(JSON.stringify(levels[currentLevel].orders));
         activeOrders = [];
         timeToNextSpawn = 0;
@@ -999,8 +1002,9 @@
             }
           }
 
+          // *อัปเดตระบบเวลาติดลบ (กดดันพนักงาน)*
           activeOrders.forEach((order) => {
-            if (order.timeLeft > 0) order.timeLeft--;
+            order.timeLeft--; // ลบเวลาลงเรื่อยๆ แม้จะทะลุ 0 ก็ตาม
           });
           updateTimersUI();
           checkLevelCompletion();
@@ -1053,10 +1057,10 @@
 
           if (timeSpan && fillBar) {
             const percent = (order.timeLeft / order.timeLimit) * 100;
-            timeSpan.innerText = `⏱ ${order.timeLeft}s`;
+            timeSpan.innerText = `⏱ ${order.timeLeft}s`; // แสดงเวลาติดลบได้เลย
 
             let barColor = "var(--success)";
-            if (percent <= 0) {
+            if (order.timeLeft <= 0) {
               barColor = "var(--danger)";
               timeSpan.style.color = "var(--danger)";
               if (order.status !== "ready")
@@ -1066,7 +1070,7 @@
               timeSpan.style.color = "#666";
             }
 
-            fillBar.style.width = `${Math.max(0, percent)}%`;
+            fillBar.style.width = `${Math.max(0, percent)}%`; // ไม่ให้หลอดวิ่งถอยหลังเกิน 0
             fillBar.style.backgroundColor = barColor;
           }
         });
@@ -1126,6 +1130,7 @@
         let toServe = readyOrders.slice(0, 4);
 
         toServe.forEach((order) => {
+          // ไม่ให้โบนัสติดลบ (ถ้ายืดเยื้อจะแค่ไม่ได้โบนัสส่วนนี้)
           let speedBonus = order.timeLeft > 0 ? order.timeLeft * 10 : 0;
           score += 50 + speedBonus;
           showFloatingScore(`+${50 + speedBonus}`, `ticket-${order.id}`);
@@ -1167,7 +1172,7 @@
 
             if (currentLevel < levels.length) {
               document.getElementById("clear-title").innerText =
-                "✅ เคลียร์คิวสำเร็จ!";
+                "✅ เคลียร์คิวหมดแล้วหลาน!";
               document.getElementById("level-msg").innerText =
                 `ออเดอร์รออยู่ ${levels[currentLevel].orders.length} บิล!`;
               document
@@ -1175,9 +1180,9 @@
                 .classList.remove("hidden");
             } else {
               document.getElementById("clear-title").innerText =
-                "🎉 THE ULTIMATE BARISTA!";
+                "🎉 นี่แหละ นักชงชามืออาชีพ";
               document.getElementById("level-msg").innerText =
-                "คุณเคลียร์ครบ 10 ด่านได้สำเร็จ!";
+                "หลานเคลียร์ครบ 10 ด่านได้แล้วเย้!";
               document.getElementById("btn-continue").classList.add("hidden");
             }
 
@@ -1188,15 +1193,14 @@
 
       function updateLocalLeaderboard() {
         let lb =
-          JSON.parse(localStorage.getItem("gimbocha_kds_leaderboard")) || [];
+          JSON.parse(localStorage.getItem("gimbocha_kds_leaderboard_v2")) || [];
         let existingIndex = lb.findIndex((entry) => entry.id === sessionID);
+
         if (existingIndex > -1) {
           lb[existingIndex].score = score;
           lb[existingIndex].level = currentLevel + 1;
         } else {
-          if (lb.length === 0) {
-            lb = [{ id: 1, name: "ยาย (Manager)", score: 10000, level: 10 }];
-          }
+          // *นำรายชื่อ High Score ปลอมออกแล้ว จะมีแค่คนที่เข้าเล่นจริงเท่านั้น*
           lb.push({
             id: sessionID,
             name: playerName,
@@ -1204,16 +1208,22 @@
             level: currentLevel + 1,
           });
         }
-        localStorage.setItem("gimbocha_kds_leaderboard", JSON.stringify(lb));
+        localStorage.setItem("gimbocha_kds_leaderboard_v2", JSON.stringify(lb));
       }
 
       function renderLeaderboard() {
         let lb =
-          JSON.parse(localStorage.getItem("gimbocha_kds_leaderboard")) || [];
+          JSON.parse(localStorage.getItem("gimbocha_kds_leaderboard_v2")) || [];
         lb.sort((a, b) => b.score - a.score);
 
         const listDiv = document.getElementById("leaderboard-list");
         listDiv.innerHTML = "";
+
+        if (lb.length === 0) {
+          listDiv.innerHTML =
+            "<div style='text-align:center; padding: 10px; color:#888;'>ยังไม่มีสถิติ เริ่มสร้างตำนานของคุณเลย!</div>";
+          return;
+        }
 
         lb.slice(0, 5).forEach((entry, index) => {
           let isMe = entry.id === sessionID;
@@ -1232,10 +1242,7 @@
         document.getElementById("action-buttons").classList.add("hidden");
         const statusText = document.getElementById("save-status-msg");
 
-        if (
-          GOOGLE_APP_SCRIPT_URL ===
-          "https://script.google.com/macros/s/AKfycbwZ2kY7ydRo16ZjUJrA8Ws4d1J3pA9ofRxQ8CeuG-AIJE-at9x1s34tGjobk2o1pq3X/exec"
-        ) {
+        if (GOOGLE_APP_SCRIPT_URL === "ใส่_URL_ของ_GOOGLE_APPS_SCRIPT_ตรงนี้") {
           statusText.innerHTML =
             "<em>เซฟคะแนนลงเครื่องเรียบร้อยแล้ว!</em><br><br><button class='btn-primary' onclick='location.reload()'>หน้าแรก</button>";
           return;
