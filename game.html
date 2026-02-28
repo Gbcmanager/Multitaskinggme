@@ -1,0 +1,1345 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>Gimbocha KDS - 10 Levels Pro</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --brand: #8c5b3e;
+        --bg: #2b2b2b;
+        --hot: #e65100;
+        --single: #c62828;
+        --blended: #2e7d32;
+        --dessert: #fbc02d;
+        --success: #4caf50;
+        --danger: #f44336;
+      }
+
+      body {
+        font-family: "Kanit", sans-serif;
+        background: var(--bg);
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        height: 100vh;
+        width: 100vw;
+        overflow: hidden;
+        box-sizing: border-box;
+        touch-action: none;
+      }
+      #app {
+        background: #f4f4f4;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 5px 15px;
+        background: #111;
+        color: #fff;
+        font-size: 14px;
+        font-weight: bold;
+        flex-shrink: 0;
+        border-bottom: 2px solid var(--brand);
+      }
+      .game-container {
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+        overflow: hidden;
+      }
+
+      .order-panel-wrapper {
+        display: flex;
+        flex: 1;
+        overflow: hidden;
+        border-bottom: 3px solid #ccc;
+      }
+      .order-panel {
+        flex: 1;
+        padding: 10px;
+        background: #eceff1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        position: relative;
+      }
+      .order-header {
+        font-size: 14px;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 5px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      @keyframes popInOrder {
+        0% {
+          transform: scale(0.8) translateY(-20px);
+          opacity: 0;
+        }
+        100% {
+          transform: scale(1) translateY(0);
+          opacity: 1;
+        }
+      }
+
+      #tickets-container {
+        display: flex;
+        gap: 10px;
+        overflow-x: auto;
+        overflow-y: hidden;
+        padding-bottom: 5px;
+        flex-grow: 1;
+        align-items: flex-start;
+        scroll-behavior: smooth;
+      }
+      #tickets-container::-webkit-scrollbar {
+        height: 6px;
+      }
+      #tickets-container::-webkit-scrollbar-thumb {
+        background: #bbb;
+        border-radius: 3px;
+      }
+
+      .ticket {
+        background: white;
+        border: 2px solid #ddd;
+        padding: 8px;
+        border-radius: 6px;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+        min-width: 190px;
+        max-width: 190px;
+        flex-shrink: 0;
+        display: flex;
+        flex-direction: column;
+        max-height: 100%;
+        overflow-y: auto;
+        position: relative;
+        transition:
+          border-color 0.3s,
+          transform 0.2s,
+          opacity 0.2s;
+        animation: popInOrder 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)
+          forwards;
+      }
+      .ticket.ready {
+        background: #e8f5e9;
+        border-color: var(--success) !important;
+      }
+      .ticket.ready h3 {
+        color: var(--success) !important;
+        border-bottom-color: var(--success);
+      }
+      .ready-stamp {
+        background: var(--success);
+        color: white;
+        text-align: center;
+        font-size: 12px;
+        font-weight: bold;
+        padding: 4px;
+        border-radius: 4px;
+        margin-bottom: 5px;
+        animation: pulse 1s infinite;
+      }
+      @keyframes pulse {
+        0% {
+          transform: scale(0.98);
+        }
+        50% {
+          transform: scale(1.02);
+        }
+        100% {
+          transform: scale(0.98);
+        }
+      }
+
+      .ticket h3 {
+        margin: 0 0 5px 0;
+        color: #111;
+        display: flex;
+        justify-content: space-between;
+        font-size: 13px;
+        border-bottom: 1px dashed #ccc;
+        padding-bottom: 3px;
+      }
+      .ticket-timer-bg {
+        width: 100%;
+        height: 5px;
+        background: #eee;
+        border-radius: 3px;
+        margin-bottom: 5px;
+        overflow: hidden;
+      }
+      .ticket-timer-fill {
+        height: 100%;
+        background: var(--success);
+        width: 100%;
+        transition:
+          width 1s linear,
+          background-color 0.5s;
+      }
+
+      .order-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 4px;
+        font-size: 11px;
+        font-weight: 500;
+        line-height: 1.2;
+        transition: opacity 0.3s;
+      }
+      .order-item.done {
+        text-decoration: line-through;
+        color: #aaa;
+        opacity: 0.5;
+      }
+
+      .badge {
+        display: inline-block;
+        padding: 2px 4px;
+        border-radius: 3px;
+        font-size: 10px;
+        color: white;
+        margin-right: 5px;
+        font-weight: bold;
+        min-width: 30px;
+        text-align: center;
+        flex-shrink: 0;
+      }
+      .bg-single {
+        background: var(--single);
+      }
+      .bg-blended {
+        background: var(--blended);
+      }
+      .bg-hot {
+        background: transparent;
+        font-size: 14px;
+        padding: 0;
+        min-width: 25px;
+      }
+      .bg-dessert {
+        background: var(--dessert);
+        color: #333;
+      }
+
+      .serve-panel {
+        width: 90px;
+        background: #d7ccc8;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 10px;
+        border-left: 3px solid var(--brand);
+        box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+        z-index: 10;
+      }
+      .serve-btn {
+        width: 100%;
+        height: 80%;
+        background: var(--success);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-weight: bold;
+        font-size: 14px;
+        cursor: pointer;
+        box-shadow: 0 6px 0 #2e7d32;
+        transition: 0.1s;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+      .serve-btn:active {
+        transform: translateY(6px);
+        box-shadow: 0 0 0 #2e7d32;
+      }
+      .serve-btn.disabled {
+        background: #9e9e9e;
+        box-shadow: 0 6px 0 #616161;
+        cursor: not-allowed;
+        opacity: 0.7;
+      }
+      .serve-btn:active.disabled {
+        transform: none;
+        box-shadow: 0 6px 0 #616161;
+      }
+
+      .station-panel {
+        flex: 0 0 45%;
+        padding: 8px;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+        background: #fff;
+      }
+      .station {
+        background: #f9f9f9;
+        border: 1px solid #ddd;
+        padding: 8px;
+        border-radius: 6px;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+      .station h4 {
+        margin: 0 0 2px 0;
+        font-size: 12px;
+      }
+      .station p {
+        font-size: 9px;
+        margin: 0;
+        color: #666;
+      }
+
+      .btn-action {
+        width: 100%;
+        padding: 8px;
+        border: none;
+        border-radius: 6px;
+        font-family: inherit;
+        font-size: 12px;
+        font-weight: bold;
+        cursor: pointer;
+        color: white;
+        transition: 0.1s;
+        margin-top: 4px;
+      }
+      .btn-action:disabled {
+        background: #ccc !important;
+        cursor: not-allowed;
+      }
+      .btn-action:active {
+        transform: scale(0.92);
+      }
+
+      .machine-slots {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        margin-top: 4px;
+      }
+      .slot-bar {
+        width: 100%;
+        height: 10px;
+        background: #eee;
+        border-radius: 5px;
+        overflow: hidden;
+        position: relative;
+      }
+      .slot-fill {
+        height: 100%;
+        width: 0%;
+        background: var(--single);
+        transition: width linear;
+      }
+      .slot-text {
+        position: absolute;
+        width: 100%;
+        text-align: center;
+        font-size: 8px;
+        color: white;
+        line-height: 10px;
+        font-weight: bold;
+        top: 0;
+      }
+
+      .progress-bar {
+        width: 100%;
+        height: 8px;
+        background: #eee;
+        border-radius: 4px;
+        margin-top: 4px;
+        overflow: hidden;
+        display: none;
+      }
+      .progress-fill {
+        width: 0%;
+        height: 100%;
+        transition: width linear;
+      }
+      .stock-indicator {
+        font-size: 11px;
+        font-weight: bold;
+        color: var(--blended);
+        margin: 2px 0;
+      }
+
+      .score-popup {
+        position: absolute;
+        color: var(--success);
+        font-weight: bold;
+        font-size: 16px;
+        animation: floatUp 1s forwards;
+        pointer-events: none;
+        z-index: 50;
+        text-shadow: 1px 1px white;
+      }
+      @keyframes floatUp {
+        0% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+        100% {
+          opacity: 0;
+          transform: translateY(-30px);
+        }
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      /* Overlays (หน้าจอทับซ้อน) */
+      .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.88);
+        color: white;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 100;
+        text-align: center;
+        padding: 20px;
+        box-sizing: border-box;
+      }
+      .btn-primary {
+        background: var(--brand);
+        color: white;
+        padding: 10px 25px;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-family: inherit;
+        cursor: pointer;
+        margin: 5px;
+        font-weight: bold;
+        transition: 0.2s;
+      }
+      .btn-primary:hover {
+        background: #7a4e34;
+      }
+      .btn-danger {
+        background: var(--danger);
+      }
+      .btn-danger:hover {
+        background: #d32f2f;
+      }
+
+      #landscape-warning {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #2b2b2b;
+        color: white;
+        z-index: 999;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 20px;
+        box-sizing: border-box;
+      }
+      @media screen and (orientation: portrait) {
+        #landscape-warning {
+          display: flex;
+        }
+        #app {
+          display: none;
+        }
+      }
+
+      .input-name {
+        padding: 12px;
+        width: 80%;
+        max-width: 300px;
+        margin: 15px 0;
+        border-radius: 8px;
+        border: 2px solid var(--brand);
+        text-align: center;
+        font-family: inherit;
+        font-size: 18px;
+        outline: none;
+      }
+
+      /* Leaderboard UI */
+      .leaderboard-container {
+        background: #fff;
+        color: #333;
+        width: 90%;
+        max-width: 400px;
+        border-radius: 8px;
+        padding: 15px;
+        margin: 15px 0;
+        text-align: left;
+        max-height: 180px;
+        overflow-y: auto;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+      }
+      .leaderboard-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 5px 0;
+        border-bottom: 1px solid #eee;
+        font-size: 14px;
+      }
+      .leaderboard-row:last-child {
+        border-bottom: none;
+      }
+      .lb-highlight {
+        background: #fff8e1;
+        font-weight: bold;
+        color: var(--brand);
+        padding: 5px;
+        border-radius: 4px;
+      }
+
+      .button-group {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="landscape-warning">
+      <h1 style="color: var(--brand); margin-bottom: 10px">
+        📱 หมุนจอเป็นแนวนอนด้วยครับ
+      </h1>
+      <p>ระบบ Kitchen Display System (KDS)</p>
+    </div>
+
+    <div id="app">
+      <div class="header">
+        <span id="level-display" style="color: #ffd54f">Level 1</span>
+        <span
+          >พนักงาน:
+          <span id="display-player-name" style="color: #fff">-</span></span
+        >
+        <span>คะแนน: <span id="score" style="color: #4caf50">0</span></span>
+      </div>
+
+      <div class="game-container">
+        <div class="order-panel-wrapper">
+          <div class="order-panel">
+            <div class="order-header">
+              <span
+                >🧾 คิวออเดอร์
+                <span
+                  id="order-count-badge"
+                  style="
+                    background: #333;
+                    color: white;
+                    padding: 2px 6px;
+                    border-radius: 6px;
+                    font-size: 10px;
+                    margin-left: 5px;
+                  "
+                  >กำลังรอเข้าคิว: 0</span
+                ></span
+              >
+              <span
+                id="active-count-badge"
+                style="
+                  background: var(--danger);
+                  color: white;
+                  padding: 2px 8px;
+                  border-radius: 10px;
+                  font-size: 12px;
+                "
+                >บนจอ: 0 บิล</span
+              >
+            </div>
+            <div id="tickets-container"></div>
+            <p
+              id="no-order-msg"
+              class="hidden"
+              style="
+                color: var(--success);
+                font-weight: bold;
+                text-align: center;
+                font-size: 14px;
+                width: 100%;
+                margin-top: 20px;
+              "
+            >
+              ✅ เคลียร์บาร์สะอาดเอี่ยม!
+            </p>
+          </div>
+
+          <div class="serve-panel">
+            <p
+              style="
+                margin: 0 0 5px 0;
+                font-size: 11px;
+                font-weight: bold;
+                color: #555;
+              "
+            >
+              จุดเสิร์ฟ (4)
+            </p>
+            <button
+              class="serve-btn disabled"
+              id="btn-serve-tray"
+              onclick="serveOrders()"
+            >
+              <span style="font-size: 24px; margin-bottom: 5px">🛎️</span>
+              กดเสิร์ฟ
+              <span
+                style="
+                  background: rgba(0, 0, 0, 0.2);
+                  border-radius: 10px;
+                  padding: 2px 8px;
+                  margin-top: 5px;
+                "
+                ><span id="ready-count">0</span> / 4</span
+              >
+            </button>
+          </div>
+        </div>
+
+        <div class="station-panel">
+          <div class="station" style="border-color: var(--hot)">
+            <div>
+              <h4 style="color: var(--hot)">🫖 1. Hot Tea</h4>
+              <p>ชง+สอน (5 วิ)</p>
+            </div>
+            <div>
+              <button
+                class="btn-action bg-hot"
+                style="background: #e65100"
+                id="btn-hot"
+                onclick="doTask('hot', 5000, 'btn-hot')"
+              >
+                ชงชาร้อน
+              </button>
+              <div class="progress-bar" id="prog-hot">
+                <div
+                  class="progress-fill"
+                  style="background: #e65100"
+                  id="fill-hot"
+                ></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="station" style="border-color: var(--single)">
+            <div>
+              <h4 style="color: var(--single)">🍵 2. Single Iced</h4>
+              <p>ชงสด 4 หัว (8 วิ)</p>
+            </div>
+            <div class="machine-slots" id="single-slots"></div>
+            <button
+              class="btn-action bg-single"
+              id="btn-single"
+              onclick="brewSingleTea()"
+            >
+              กดชง 1 แก้ว
+            </button>
+          </div>
+
+          <div class="station" style="border-color: var(--blended)">
+            <div>
+              <h4 style="color: var(--blended)">🧋 3. Blended</h4>
+              <p>ต้มแกลลอน (10 วิ)</p>
+            </div>
+            <div class="stock-indicator">
+              สต็อค: <span id="blended-stock" style="font-size: 14px">4</span>/4
+            </div>
+            <div>
+              <button
+                class="btn-action bg-blended"
+                id="btn-blend-pour"
+                onclick="pourBlended()"
+              >
+                เทเสิร์ฟ
+              </button>
+              <button
+                class="btn-action"
+                style="
+                  background: #ff9800;
+                  font-size: 10px;
+                  padding: 5px;
+                  opacity: 0.5;
+                "
+                id="btn-blend-refill"
+                onclick="refillGallon()"
+              >
+                ต้มแกลลอนใหม่
+              </button>
+              <div class="progress-bar" id="prog-refill">
+                <div
+                  class="progress-fill"
+                  style="background: #ff9800"
+                  id="fill-refill"
+                ></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="station" style="border-color: var(--dessert)">
+            <div>
+              <h4 style="color: var(--dessert)">🍰 4. Dessert</h4>
+              <p>จัดจาน (2 วิ)</p>
+            </div>
+            <div>
+              <button
+                class="btn-action bg-dessert"
+                id="btn-dessert"
+                onclick="doTask('dessert', 2000, 'btn-dessert')"
+              >
+                เตรียมขนม
+              </button>
+              <div class="progress-bar" id="prog-dessert">
+                <div class="progress-fill bg-dessert" id="fill-dessert"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="overlay-start" class="overlay">
+      <h1
+        style="
+          color: #fff;
+          text-shadow: 2px 2px var(--brand);
+          font-size: 36px;
+          margin-bottom: 5px;
+        "
+      >
+        Gimbocha KDS
+      </h1>
+      <p style="font-size: 16px; color: #ddd">
+        เข้าสู่ระบบตอกบัตรพนักงาน (ตะลุย 10 ด่าน)
+      </p>
+      <input
+        type="text"
+        id="player-name-input"
+        class="input-name"
+        placeholder="ใส่ชื่อของคุณที่นี่..."
+        autocomplete="off"
+      />
+      <button class="btn-primary" onclick="initGame()">เริ่มกะทำงาน</button>
+    </div>
+
+    <div id="overlay-level-clear" class="overlay hidden">
+      <h1 id="clear-title" style="color: var(--success); margin-bottom: 0">
+        ด่านเคลียร์!
+      </h1>
+      <h3 style="margin-top: 5px">
+        คะแนนรวมของคุณ:
+        <span id="clear-score" style="color: #ffd54f; font-size: 24px">0</span>
+      </h3>
+
+      <div class="leaderboard-container">
+        <div
+          style="
+            font-weight: bold;
+            border-bottom: 2px solid var(--brand);
+            margin-bottom: 5px;
+            padding-bottom: 5px;
+          "
+        >
+          🏆 Leaderboard สถิติของร้าน
+        </div>
+        <div id="leaderboard-list"></div>
+      </div>
+
+      <p id="level-msg" style="font-size: 14px; margin: 5px 0"></p>
+
+      <div class="button-group" id="action-buttons">
+        <button class="btn-primary btn-danger" onclick="quitGame()">
+          พอแค่นี้ (ส่งกะ)
+        </button>
+        <button class="btn-primary" onclick="startLevel()" id="btn-continue">
+          ลุยด่านต่อไป!
+        </button>
+      </div>
+      <div id="save-status-msg" style="font-size: 12px; margin-top: 10px"></div>
+    </div>
+
+    <script>
+      // 🔴🔴🔴 นำ URL ของ Google Apps Script มาใส่ตรงนี้ (ถ้ามี) 🔴🔴🔴
+      const GOOGLE_APP_SCRIPT_URL =
+        "https://script.google.com/macros/s/AKfycbwZ2kY7ydRo16ZjUJrA8Ws4d1J3pA9ofRxQ8CeuG-AIJE-at9x1s34tGjobk2o1pq3X/exec";
+
+      // อัปเดตฐานข้อมูลเมนูแบบจัดเต็ม (นำมาจากไฟล์ export_items.csv ของร้าน)
+      const menuDB = {
+        hot: [
+          "อัสสัมวาวี",
+          "ชามะลิหิมะโปรย",
+          "ชาเขียวหวงชาน",
+          "หลงจิ่ง 2025",
+          "เถี่ยกวนอิน",
+          "จางผิงสุ่ยเซียน",
+          "ต้าหงเผา",
+          "สุ่ยเซียนอบถ่าน",
+        ],
+        single: [
+          "ชาขาวเก็บ 8 ปี",
+          "ชามะลิหิมะโปรย",
+          "ชาแดงวาวี",
+          "ตานฉงเกล็ดหิมะ",
+          "มี่หลันเซียง",
+          "สุ่ยเซียน",
+          "เจิ้งซานควันสน",
+        ],
+        blended: [
+          "Cinnamon Mint",
+          "Dark Pomegranate",
+          "8 Flowers",
+          "Kandy!",
+          "Lavender Lemon",
+          "Rock Oolong",
+          "Elder Flower",
+        ],
+        dessert: [
+          "Blueberry Tart",
+          "Burnt Cheese Cake",
+          "Japanese Cheese Cake",
+          "Lemon Custard",
+          "Orange & Choc Cake",
+          "Dark Choc Tart",
+          "Smoked Salmon Choux",
+          "Strawberry Panna cotta",
+        ],
+      };
+
+      // อัปเดต 10 ด่าน ไต่ระดับแบบทวีคูณ (ด่าน 10 มีออเดอร์เข้ามา 25 บิลรวด!)
+      const levelsConfig = [
+        { orders: 5, itemsMin: 1, itemsMax: 2, baseTime: 40 }, // Level 1: วอร์มเครื่อง
+        { orders: 7, itemsMin: 1, itemsMax: 3, baseTime: 45 }, // Level 2: เริ่มมีคิว
+        { orders: 9, itemsMin: 2, itemsMax: 3, baseTime: 50 }, // Level 3: สั่งผสม
+        { orders: 11, itemsMin: 2, itemsMax: 4, baseTime: 55 }, // Level 4: ลูกค้าหิว
+        { orders: 13, itemsMin: 2, itemsMax: 4, baseTime: 60 }, // Level 5: Rush Hour เริ่มต้น
+        { orders: 15, itemsMin: 3, itemsMax: 4, baseTime: 65 }, // Level 6: บิลยาวๆ มาแล้ว
+        { orders: 17, itemsMin: 3, itemsMax: 5, baseTime: 70 }, // Level 7: พายุออเดอร์
+        { orders: 20, itemsMin: 3, itemsMax: 5, baseTime: 75 }, // Level 8: มือเป็นระวิง
+        { orders: 22, itemsMin: 4, itemsMax: 6, baseTime: 80 }, // Level 9: นรกแตก
+        { orders: 25, itemsMin: 4, itemsMax: 6, baseTime: 85 }, // Level 10: The Ultimate Barista (25 บิล บิลละ 4-6 แก้ว!)
+      ];
+
+      let levels = [];
+
+      function generateLevels() {
+        levelsConfig.forEach((config, idx) => {
+          let levelOrders = [];
+          for (let i = 0; i < config.orders; i++) {
+            let numItems =
+              Math.floor(
+                Math.random() * (config.itemsMax - config.itemsMin + 1),
+              ) + config.itemsMin;
+            let items = [];
+            for (let j = 0; j < numItems; j++) {
+              const categories = Object.keys(menuDB);
+              const type =
+                categories[Math.floor(Math.random() * categories.length)];
+              const name =
+                menuDB[type][Math.floor(Math.random() * menuDB[type].length)];
+              items.push({ type, name, done: false });
+            }
+            levelOrders.push({
+              id: `${idx + 1}0${i + 1}`,
+              timeLimit: config.baseTime,
+              timeLeft: config.baseTime,
+              items: items,
+              status: "pending",
+            });
+          }
+          // เพิ่มความถี่การเด้งของบิล (Level หลังๆ บิลเด้งเร็วปานสายฟ้า)
+          levels.push({
+            title: `Level ${idx + 1}`,
+            orders: levelOrders,
+            spawnBaseRate: Math.max(1, 4 - Math.floor(idx / 2)),
+          });
+        });
+      }
+      generateLevels();
+
+      let currentLevel = 0;
+      let score = 0;
+      let spawnQueue = [];
+      let activeOrders = [];
+      let timeToNextSpawn = 0;
+      let blendedStock = 4;
+      let singleBrewSlots = 0;
+      let globalTimer;
+
+      let playerName = "";
+      let sessionID = Date.now();
+
+      function initSingleSlots() {
+        const container = document.getElementById("single-slots");
+        container.innerHTML = "";
+        for (let i = 1; i <= 4; i++) {
+          container.innerHTML += `<div class="slot-bar"><div class="slot-fill" id="slot-fill-${i}"></div><div class="slot-text" id="slot-text-${i}">ว่าง</div></div>`;
+        }
+      }
+      initSingleSlots();
+
+      function initGame() {
+        const inputName = document
+          .getElementById("player-name-input")
+          .value.trim();
+        if (!inputName) {
+          alert("กรุณาใส่ชื่อตอกบัตรก่อนเข้างานครับ!");
+          return;
+        }
+        playerName = inputName;
+        document.getElementById("display-player-name").innerText = playerName;
+        document.getElementById("overlay-start").classList.add("hidden");
+        startLevel();
+      }
+
+      function startLevel() {
+        document.getElementById("overlay-level-clear").classList.add("hidden");
+        document.getElementById("level-display").innerText =
+          levels[currentLevel].title;
+
+        spawnQueue = JSON.parse(JSON.stringify(levels[currentLevel].orders));
+        activeOrders = [];
+        timeToNextSpawn = 0;
+        blendedStock = 4;
+        singleBrewSlots = 0;
+
+        updateUI();
+        document.getElementById("tickets-container").innerHTML = "";
+
+        clearInterval(globalTimer);
+        globalTimer = setInterval(() => {
+          if (spawnQueue.length > 0) {
+            timeToNextSpawn--;
+            if (timeToNextSpawn <= 0) {
+              // ด่านสูงๆ ปล่อยบิลทีละ 2-3 ใบพร้อมกันเลย
+              let maxSpawn = currentLevel >= 8 ? 3 : currentLevel >= 4 ? 2 : 1;
+              let numToSpawn = Math.floor(Math.random() * maxSpawn) + 1;
+
+              for (let i = 0; i < numToSpawn; i++) {
+                if (spawnQueue.length > 0) {
+                  let newOrder = spawnQueue.shift();
+                  activeOrders.push(newOrder);
+                  appendTicketToDOM(newOrder);
+
+                  setTimeout(() => {
+                    const container =
+                      document.getElementById("tickets-container");
+                    container.scrollLeft = container.scrollWidth;
+                  }, 100);
+                }
+              }
+              timeToNextSpawn =
+                levels[currentLevel].spawnBaseRate +
+                Math.floor(Math.random() * 2);
+            }
+          }
+
+          activeOrders.forEach((order) => {
+            if (order.timeLeft > 0) order.timeLeft--;
+          });
+          updateTimersUI();
+          checkLevelCompletion();
+        }, 1000);
+      }
+
+      function appendTicketToDOM(order) {
+        const container = document.getElementById("tickets-container");
+        const div = document.createElement("div");
+        div.className = "ticket";
+        div.id = `ticket-${order.id}`;
+
+        let html = `
+            <h3>คิว #${order.id} <span class="timer-text" style="color:#666">⏱ ${order.timeLeft}s</span></h3>
+            <div class="ticket-timer-bg"><div class="ticket-timer-fill" style="width: 100%; background-color: var(--success);"></div></div>
+            <div id="stamp-${order.id}"></div>
+        `;
+
+        order.items.forEach((item, index) => {
+          let badgeText = "";
+          let badgeClass = `bg-${item.type}`;
+          if (item.type === "hot") {
+            badgeText = "🫖";
+          } else if (item.type === "single") {
+            badgeText = "SIN";
+          } else if (item.type === "blended") {
+            badgeText = "BLE";
+          } else if (item.type === "dessert") {
+            badgeText = "DES";
+          }
+
+          html += `<div class="order-item" id="item-${order.id}-${index}"><span class="badge ${badgeClass}">${badgeText}</span>${item.name}</div>`;
+        });
+        div.innerHTML = html;
+        container.appendChild(div);
+
+        document.getElementById("order-count-badge").innerText =
+          `รอพ่นอีก: ${spawnQueue.length}`;
+        document.getElementById("active-count-badge").innerText =
+          `บนจอ: ${activeOrders.length} บิล`;
+      }
+
+      function updateTimersUI() {
+        activeOrders.forEach((order) => {
+          const ticketEl = document.getElementById(`ticket-${order.id}`);
+          if (!ticketEl) return;
+
+          const timeSpan = ticketEl.querySelector(".timer-text");
+          const fillBar = ticketEl.querySelector(".ticket-timer-fill");
+
+          if (timeSpan && fillBar) {
+            const percent = (order.timeLeft / order.timeLimit) * 100;
+            timeSpan.innerText = `⏱ ${order.timeLeft}s`;
+
+            let barColor = "var(--success)";
+            if (percent <= 0) {
+              barColor = "var(--danger)";
+              timeSpan.style.color = "var(--danger)";
+              if (order.status !== "ready")
+                ticketEl.style.borderColor = "var(--danger)";
+            } else if (percent <= 30) {
+              barColor = "#ff9800";
+              timeSpan.style.color = "#666";
+            }
+
+            fillBar.style.width = `${Math.max(0, percent)}%`;
+            fillBar.style.backgroundColor = barColor;
+          }
+        });
+
+        let readyCount = activeOrders.filter(
+          (o) => o.status === "ready",
+        ).length;
+        document.getElementById("ready-count").innerText = readyCount;
+        const serveBtn = document.getElementById("btn-serve-tray");
+        if (readyCount > 0) serveBtn.classList.remove("disabled");
+        else serveBtn.classList.add("disabled");
+      }
+
+      function checkOffItem(typeCompleted) {
+        if (activeOrders.length === 0) return;
+        let foundMatch = false;
+
+        for (let order of activeOrders) {
+          if (order.status === "ready") continue;
+          for (let i = 0; i < order.items.length; i++) {
+            let item = order.items[i];
+            if (item.type === typeCompleted && !item.done) {
+              item.done = true;
+              foundMatch = true;
+              score += 20;
+
+              let itemEl = document.getElementById(`item-${order.id}-${i}`);
+              if (itemEl) itemEl.classList.add("done");
+              break;
+            }
+          }
+          if (foundMatch) break;
+        }
+
+        if (foundMatch) {
+          for (let order of activeOrders) {
+            if (
+              order.status !== "ready" &&
+              order.items.every((item) => item.done)
+            ) {
+              order.status = "ready";
+              let ticketEl = document.getElementById(`ticket-${order.id}`);
+              if (ticketEl) ticketEl.classList.add("ready");
+              let stampEl = document.getElementById(`stamp-${order.id}`);
+              if (stampEl)
+                stampEl.innerHTML = `<div class="ready-stamp">✅ รอเสิร์ฟ!</div>`;
+            }
+          }
+          updateUI();
+          updateTimersUI();
+        }
+      }
+
+      function serveOrders() {
+        let readyOrders = activeOrders.filter((o) => o.status === "ready");
+        if (readyOrders.length === 0) return;
+
+        let toServe = readyOrders.slice(0, 4);
+
+        toServe.forEach((order) => {
+          let speedBonus = order.timeLeft > 0 ? order.timeLeft * 10 : 0;
+          score += 50 + speedBonus;
+          showFloatingScore(`+${50 + speedBonus}`, `ticket-${order.id}`);
+
+          let ticketEl = document.getElementById(`ticket-${order.id}`);
+          if (ticketEl) {
+            ticketEl.style.transform = "scale(0)";
+            ticketEl.style.opacity = "0";
+            setTimeout(() => ticketEl.remove(), 200);
+          }
+
+          let idx = activeOrders.findIndex((o) => o.id === order.id);
+          if (idx > -1) activeOrders.splice(idx, 1);
+        });
+
+        document.getElementById("active-count-badge").innerText =
+          `บนจอ: ${activeOrders.length} บิล`;
+        updateUI();
+        updateTimersUI();
+        checkLevelCompletion();
+      }
+
+      function checkLevelCompletion() {
+        const serveBtn = document.getElementById("btn-serve-tray");
+        if (activeOrders.length === 0 && spawnQueue.length === 0) {
+          document.getElementById("no-order-msg").classList.remove("hidden");
+          serveBtn.classList.add("disabled");
+          clearInterval(globalTimer);
+
+          updateLocalLeaderboard();
+
+          setTimeout(() => {
+            currentLevel++;
+            renderLeaderboard();
+
+            const clearOverlay = document.getElementById("overlay-level-clear");
+            document.getElementById("clear-score").innerText = score;
+            document.getElementById("save-status-msg").innerText = "";
+
+            if (currentLevel < levels.length) {
+              document.getElementById("clear-title").innerText =
+                "✅ เคลียร์คิวสำเร็จ!";
+              document.getElementById("level-msg").innerText =
+                `คุณกำลังจะเข้าสู่ ${levels[currentLevel].title} (ออเดอร์รออยู่ ${levels[currentLevel].orders.length} บิล!)`;
+              document
+                .getElementById("btn-continue")
+                .classList.remove("hidden");
+            } else {
+              document.getElementById("clear-title").innerText =
+                "🎉 THE ULTIMATE BARISTA!";
+              document.getElementById("level-msg").innerText =
+                "คุณเคลียร์ครบ 10 ด่านได้สำเร็จ! เป็นตำนานของร้าน Gimbocha!";
+              document.getElementById("btn-continue").classList.add("hidden");
+            }
+
+            clearOverlay.classList.remove("hidden");
+          }, 1000);
+        }
+      }
+
+      function updateLocalLeaderboard() {
+        let lb =
+          JSON.parse(localStorage.getItem("gimbocha_kds_leaderboard")) || [];
+
+        let existingIndex = lb.findIndex((entry) => entry.id === sessionID);
+        if (existingIndex > -1) {
+          lb[existingIndex].score = score;
+          lb[existingIndex].level = currentLevel + 1;
+        } else {
+          if (lb.length === 0) {
+            lb = [
+              { id: 1, name: "Bam (Manager)", score: 18500, level: 10 },
+              { id: 2, name: "Tonnam", score: 14200, level: 8 },
+              { id: 3, name: "Mark", score: 9100, level: 6 },
+            ];
+          }
+          lb.push({
+            id: sessionID,
+            name: playerName,
+            score: score,
+            level: currentLevel + 1,
+          });
+        }
+        localStorage.setItem("gimbocha_kds_leaderboard", JSON.stringify(lb));
+      }
+
+      function renderLeaderboard() {
+        let lb =
+          JSON.parse(localStorage.getItem("gimbocha_kds_leaderboard")) || [];
+        lb.sort((a, b) => b.score - a.score);
+
+        const listDiv = document.getElementById("leaderboard-list");
+        listDiv.innerHTML = "";
+
+        lb.slice(0, 5).forEach((entry, index) => {
+          let isMe = entry.id === sessionID;
+          let displayLevel = entry.level > 10 ? "Clear!" : `Lv.${entry.level}`;
+          let rowHtml = `
+                <div class="leaderboard-row ${isMe ? "lb-highlight" : ""}">
+                    <span>${index + 1}. ${entry.name} <span style="font-size:10px; color:#888;">(${displayLevel})</span></span>
+                    <span style="font-weight:bold;">${entry.score} pts</span>
+                </div>
+            `;
+          listDiv.innerHTML += rowHtml;
+        });
+      }
+
+      function quitGame() {
+        document.getElementById("action-buttons").classList.add("hidden");
+        const statusText = document.getElementById("save-status-msg");
+
+        if (GOOGLE_APP_SCRIPT_URL === "ใส่_URL_ของ_GOOGLE_APPS_SCRIPT_ตรงนี้") {
+          statusText.innerHTML =
+            "<em>เซฟคะแนนลงเครื่องเรียบร้อยแล้ว!</em><br><br><button class='btn-primary' onclick='location.reload()'>กลับหน้าแรก</button>";
+          return;
+        }
+
+        statusText.innerText = "⏳ กำลังส่งคะแนนเข้าเซิร์ฟเวอร์...";
+        const payload = {
+          name: playerName,
+          score: score,
+          levelReached: currentLevel,
+        };
+
+        fetch(GOOGLE_APP_SCRIPT_URL, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        })
+          .then(() => {
+            statusText.innerHTML =
+              "<span style='color:var(--success); font-weight:bold;'>✅ ส่งคะแนนเรียบร้อย!</span><br><br><button class='btn-primary' onclick='location.reload()'>กลับหน้าตอกบัตร</button>";
+          })
+          .catch((err) => {
+            statusText.innerHTML =
+              "<span style='color:var(--danger);'>❌ ส่งออนไลน์ไม่สำเร็จ แต่คะแนนเซฟลงเครื่องแล้ว</span><br><br><button class='btn-primary' onclick='location.reload()'>ตกลง</button>";
+          });
+      }
+
+      function brewSingleTea() {
+        if (singleBrewSlots >= 4) {
+          alert("❌ หัวชงเต็ม 4 หัวแล้ว!");
+          return;
+        }
+        singleBrewSlots++;
+        const currentSlot = singleBrewSlots;
+        const fill = document.getElementById(`slot-fill-${currentSlot}`),
+          text = document.getElementById(`slot-text-${currentSlot}`),
+          btn = document.getElementById("btn-single");
+        text.innerText = "สกัด...";
+        fill.style.transition = "none";
+        fill.style.width = "0%";
+        if (singleBrewSlots >= 4) btn.disabled = true;
+        setTimeout(() => {
+          fill.style.transition = `width 8000ms linear`;
+          fill.style.width = "100%";
+        }, 50);
+        setTimeout(() => {
+          singleBrewSlots--;
+          btn.disabled = false;
+          text.innerText = "ว่าง";
+          fill.style.transition = "none";
+          fill.style.width = "0%";
+          checkOffItem("single");
+        }, 8000);
+      }
+
+      function doTask(type, duration, btnId) {
+        const btn = document.getElementById(btnId),
+          progBar = document.getElementById(`prog-${type}`),
+          fill = document.getElementById(`fill-${type}`);
+        btn.disabled = true;
+        progBar.style.display = "block";
+        fill.style.transition = "none";
+        fill.style.width = "0%";
+        setTimeout(() => {
+          fill.style.transition = `width ${duration}ms linear`;
+          fill.style.width = "100%";
+        }, 50);
+        setTimeout(() => {
+          btn.disabled = false;
+          progBar.style.display = "none";
+          checkOffItem(type);
+        }, duration);
+      }
+
+      function pourBlended() {
+        if (blendedStock > 0) {
+          blendedStock--;
+          updateUI();
+          checkOffItem("blended");
+        } else {
+          alert("❌ แกลลอนหมด! กดต้มใหม่");
+        }
+      }
+
+      function refillGallon() {
+        if (blendedStock > 0) {
+          alert("❌ แกลลอนยังไม่หมด! ห้ามต้มทับ");
+          return;
+        }
+        const btn1 = document.getElementById("btn-blend-pour"),
+          btn2 = document.getElementById("btn-blend-refill"),
+          progBar = document.getElementById("prog-refill"),
+          fill = document.getElementById("fill-refill");
+        btn1.disabled = true;
+        btn2.disabled = true;
+        progBar.style.display = "block";
+        fill.style.transition = "none";
+        fill.style.width = "0%";
+        setTimeout(() => {
+          fill.style.transition = `width 10000ms linear`;
+          fill.style.width = "100%";
+        }, 50);
+        setTimeout(() => {
+          btn1.disabled = false;
+          progBar.style.display = "none";
+          blendedStock = 4;
+          updateUI();
+        }, 10000);
+      }
+
+      function showFloatingScore(text, elementId) {
+        const target = document.getElementById(elementId);
+        if (!target) return;
+        const floatEl = document.createElement("div");
+        floatEl.className = "score-popup";
+        floatEl.innerText = text;
+        floatEl.style.left = "30%";
+        floatEl.style.top = "10%";
+        target.appendChild(floatEl);
+        setTimeout(() => floatEl.remove(), 1000);
+      }
+
+      function updateUI() {
+        document.getElementById("score").innerText = score;
+        document.getElementById("blended-stock").innerText = blendedStock;
+        document.getElementById("blended-stock").style.color =
+          blendedStock === 0 ? "var(--danger)" : "var(--blended)";
+
+        const btnRefill = document.getElementById("btn-blend-refill");
+        if (blendedStock > 0) {
+          btnRefill.style.opacity = "0.5";
+          btnRefill.style.cursor = "not-allowed";
+        } else {
+          btnRefill.style.opacity = "1";
+          btnRefill.style.cursor = "pointer";
+          btnRefill.disabled = false;
+        }
+      }
+    </script>
+  </body>
+</html>
