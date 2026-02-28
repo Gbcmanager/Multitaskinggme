@@ -6,7 +6,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
     />
-    <title>Gimbocha KDS - 10 Levels Pro</title>
+    <title>Gimbocha KDS - Pro Server</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap"
       rel="stylesheet"
@@ -409,7 +409,7 @@
         display: none !important;
       }
 
-      /* Overlays (หน้าจอทับซ้อน) */
+      /* Overlays (ปรับใหม่สำหรับจอมือถือแนวนอน) */
       .overlay {
         position: fixed;
         top: 0;
@@ -424,16 +424,26 @@
         align-items: center;
         z-index: 100;
         text-align: center;
-        padding: 20px;
+        padding: 10px;
         box-sizing: border-box;
+      }
+      .overlay h1 {
+        font-size: 22px !important;
+        margin: 0 0 5px 0;
+        text-shadow: 1px 1px var(--brand);
+      }
+      .overlay p {
+        font-size: 12px !important;
+        margin: 5px 0;
+        color: #ddd;
       }
       .btn-primary {
         background: var(--brand);
         color: white;
-        padding: 10px 25px;
+        padding: 8px 15px;
         border: none;
-        border-radius: 8px;
-        font-size: 16px;
+        border-radius: 6px;
+        font-size: 14px;
         font-family: inherit;
         cursor: pointer;
         margin: 5px;
@@ -448,6 +458,32 @@
       }
       .btn-danger:hover {
         background: #d32f2f;
+      }
+
+      /* แยกฝั่งซ้ายขวา สำหรับหน้า Leaderboard (แก้อาการล้นจอ) */
+      .split-layout {
+        display: flex;
+        flex-direction: row;
+        align-items: stretch;
+        justify-content: center;
+        width: 100%;
+        max-width: 650px;
+        gap: 15px;
+        height: 100%;
+        max-height: 250px;
+      }
+      .split-left {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+      .split-right {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
       }
 
       #landscape-warning {
@@ -477,38 +513,51 @@
       }
 
       .input-name {
-        padding: 12px;
+        padding: 8px;
         width: 80%;
-        max-width: 300px;
-        margin: 15px 0;
-        border-radius: 8px;
+        max-width: 250px;
+        margin: 10px 0;
+        border-radius: 6px;
         border: 2px solid var(--brand);
         text-align: center;
         font-family: inherit;
-        font-size: 18px;
+        font-size: 14px;
         outline: none;
       }
 
-      /* Leaderboard UI */
+      /* Leaderboard UI ปรับขนาดฟอนต์ให้เล็กลง */
       .leaderboard-container {
         background: #fff;
         color: #333;
-        width: 90%;
-        max-width: 400px;
+        width: 100%;
         border-radius: 8px;
-        padding: 15px;
-        margin: 15px 0;
+        padding: 10px;
+        margin: 0;
         text-align: left;
-        max-height: 180px;
         overflow-y: auto;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+      }
+      .leaderboard-title {
+        font-size: 12px;
+        font-weight: bold;
+        border-bottom: 2px solid var(--brand);
+        margin-bottom: 5px;
+        padding-bottom: 3px;
+        flex-shrink: 0;
+      }
+      #leaderboard-list {
+        overflow-y: auto;
+        flex-grow: 1;
       }
       .leaderboard-row {
         display: flex;
         justify-content: space-between;
-        padding: 5px 0;
+        padding: 3px 0;
         border-bottom: 1px solid #eee;
-        font-size: 14px;
+        font-size: 11px;
       }
       .leaderboard-row:last-child {
         border-bottom: none;
@@ -517,22 +566,22 @@
         background: #fff8e1;
         font-weight: bold;
         color: var(--brand);
-        padding: 5px;
+        padding: 3px;
         border-radius: 4px;
       }
 
       .button-group {
         display: flex;
         gap: 10px;
-        margin-top: 10px;
+        margin-top: 5px;
+        flex-wrap: wrap;
+        justify-content: center;
       }
     </style>
   </head>
   <body>
     <div id="landscape-warning">
-      <h1 style="color: var(--brand); margin-bottom: 10px">
-        📱 หมุนจอเป็นแนวนอนด้วยครับ
-      </h1>
+      <h1 style="color: var(--brand); margin-bottom: 10px">หมุนจอเป็นแนวนอน</h1>
       <p>ระบบ Kitchen Display System (KDS)</p>
     </div>
 
@@ -692,7 +741,7 @@
                 id="btn-blend-refill"
                 onclick="refillGallon()"
               >
-                ต้มแกลลอนใหม่
+                ต้มใหม่
               </button>
               <div class="progress-bar" id="prog-refill">
                 <div
@@ -727,63 +776,56 @@
     </div>
 
     <div id="overlay-start" class="overlay">
-      <h1
-        style="
-          color: #fff;
-          text-shadow: 2px 2px var(--brand);
-          font-size: 36px;
-          margin-bottom: 5px;
-        "
-      >
-        Gimbocha KDS
-      </h1>
-      <p style="font-size: 16px; color: #ddd">
-        เข้าสู่ระบบตอกบัตรพนักงาน (ตะลุย 10 ด่าน)
-      </p>
+      <h1 style="color: #fff">หลานเองก็เป็นได้นะ..นักชงชามืออาชีพน่ะ</h1>
+      <p>มาฝึกฝนเป็นสุดยอดนักชงชากันเถอะ (มี 10 ด่าน)</p>
       <input
         type="text"
         id="player-name-input"
         class="input-name"
-        placeholder="ใส่ชื่อของคุณที่นี่..."
+        placeholder="ใส่ชื่อของหลานที่นี่..."
         autocomplete="off"
       />
-      <button class="btn-primary" onclick="initGame()">เริ่มกะทำงาน</button>
+      <button class="btn-primary" onclick="initGame()">เริ่ม</button>
     </div>
 
     <div id="overlay-level-clear" class="overlay hidden">
-      <h1 id="clear-title" style="color: var(--success); margin-bottom: 0">
-        ด่านเคลียร์!
-      </h1>
-      <h3 style="margin-top: 5px">
-        คะแนนรวมของคุณ:
-        <span id="clear-score" style="color: #ffd54f; font-size: 24px">0</span>
-      </h3>
+      <div class="split-layout">
+        <div class="split-left">
+          <h1 id="clear-title" style="color: var(--success)">ด่านเคลียร์!</h1>
+          <p style="margin: 0">คะแนนรวมของหลาน:</p>
+          <h3
+            id="clear-score"
+            style="margin: 5px 0; color: #ffd54f; font-size: 24px"
+          >
+            0
+          </h3>
+          <p id="level-msg"></p>
 
-      <div class="leaderboard-container">
-        <div
-          style="
-            font-weight: bold;
-            border-bottom: 2px solid var(--brand);
-            margin-bottom: 5px;
-            padding-bottom: 5px;
-          "
-        >
-          🏆 Leaderboard สถิติของร้าน
+          <div class="button-group" id="action-buttons">
+            <button class="btn-primary btn-danger" onclick="quitGame()">
+              ส่งกะ
+            </button>
+            <button
+              class="btn-primary"
+              onclick="startLevel()"
+              id="btn-continue"
+            >
+              ลุยต่อ!
+            </button>
+          </div>
+          <div
+            id="save-status-msg"
+            style="font-size: 10px; margin-top: 5px"
+          ></div>
         </div>
-        <div id="leaderboard-list"></div>
-      </div>
 
-      <p id="level-msg" style="font-size: 14px; margin: 5px 0"></p>
-
-      <div class="button-group" id="action-buttons">
-        <button class="btn-primary btn-danger" onclick="quitGame()">
-          พอแค่นี้ (ส่งกะ)
-        </button>
-        <button class="btn-primary" onclick="startLevel()" id="btn-continue">
-          ลุยด่านต่อไป!
-        </button>
+        <div class="split-right">
+          <div class="leaderboard-container">
+            <div class="leaderboard-title">🏆 Leaderboard</div>
+            <div id="leaderboard-list"></div>
+          </div>
+        </div>
       </div>
-      <div id="save-status-msg" style="font-size: 12px; margin-top: 10px"></div>
     </div>
 
     <script>
@@ -791,7 +833,6 @@
       const GOOGLE_APP_SCRIPT_URL =
         "https://script.google.com/macros/s/AKfycbwZ2kY7ydRo16ZjUJrA8Ws4d1J3pA9ofRxQ8CeuG-AIJE-at9x1s34tGjobk2o1pq3X/exec";
 
-      // อัปเดตฐานข้อมูลเมนูแบบจัดเต็ม (นำมาจากไฟล์ export_items.csv ของร้าน)
       const menuDB = {
         hot: [
           "อัสสัมวาวี",
@@ -833,18 +874,17 @@
         ],
       };
 
-      // อัปเดต 10 ด่าน ไต่ระดับแบบทวีคูณ (ด่าน 10 มีออเดอร์เข้ามา 25 บิลรวด!)
       const levelsConfig = [
-        { orders: 5, itemsMin: 1, itemsMax: 2, baseTime: 40 }, // Level 1: วอร์มเครื่อง
-        { orders: 7, itemsMin: 1, itemsMax: 3, baseTime: 45 }, // Level 2: เริ่มมีคิว
-        { orders: 9, itemsMin: 2, itemsMax: 3, baseTime: 50 }, // Level 3: สั่งผสม
-        { orders: 11, itemsMin: 2, itemsMax: 4, baseTime: 55 }, // Level 4: ลูกค้าหิว
-        { orders: 13, itemsMin: 2, itemsMax: 4, baseTime: 60 }, // Level 5: Rush Hour เริ่มต้น
-        { orders: 15, itemsMin: 3, itemsMax: 4, baseTime: 65 }, // Level 6: บิลยาวๆ มาแล้ว
-        { orders: 17, itemsMin: 3, itemsMax: 5, baseTime: 70 }, // Level 7: พายุออเดอร์
-        { orders: 20, itemsMin: 3, itemsMax: 5, baseTime: 75 }, // Level 8: มือเป็นระวิง
-        { orders: 22, itemsMin: 4, itemsMax: 6, baseTime: 80 }, // Level 9: นรกแตก
-        { orders: 25, itemsMin: 4, itemsMax: 6, baseTime: 85 }, // Level 10: The Ultimate Barista (25 บิล บิลละ 4-6 แก้ว!)
+        { orders: 5, itemsMin: 1, itemsMax: 2, baseTime: 40 },
+        { orders: 7, itemsMin: 1, itemsMax: 3, baseTime: 45 },
+        { orders: 9, itemsMin: 2, itemsMax: 3, baseTime: 50 },
+        { orders: 11, itemsMin: 2, itemsMax: 4, baseTime: 55 },
+        { orders: 13, itemsMin: 2, itemsMax: 4, baseTime: 60 },
+        { orders: 15, itemsMin: 3, itemsMax: 4, baseTime: 65 },
+        { orders: 17, itemsMin: 3, itemsMax: 5, baseTime: 70 },
+        { orders: 20, itemsMin: 3, itemsMax: 5, baseTime: 75 },
+        { orders: 22, itemsMin: 4, itemsMax: 6, baseTime: 80 },
+        { orders: 25, itemsMin: 4, itemsMax: 6, baseTime: 85 },
       ];
 
       let levels = [];
@@ -874,7 +914,6 @@
               status: "pending",
             });
           }
-          // เพิ่มความถี่การเด้งของบิล (Level หลังๆ บิลเด้งเร็วปานสายฟ้า)
           levels.push({
             title: `Level ${idx + 1}`,
             orders: levelOrders,
@@ -938,7 +977,6 @@
           if (spawnQueue.length > 0) {
             timeToNextSpawn--;
             if (timeToNextSpawn <= 0) {
-              // ด่านสูงๆ ปล่อยบิลทีละ 2-3 ใบพร้อมกันเลย
               let maxSpawn = currentLevel >= 8 ? 3 : currentLevel >= 4 ? 2 : 1;
               let numToSpawn = Math.floor(Math.random() * maxSpawn) + 1;
 
@@ -1000,9 +1038,9 @@
         container.appendChild(div);
 
         document.getElementById("order-count-badge").innerText =
-          `รอพ่นอีก: ${spawnQueue.length}`;
+          `รอพ่น: ${spawnQueue.length}`;
         document.getElementById("active-count-badge").innerText =
-          `บนจอ: ${activeOrders.length} บิล`;
+          `บนจอ: ${activeOrders.length}`;
       }
 
       function updateTimersUI() {
@@ -1054,7 +1092,6 @@
               item.done = true;
               foundMatch = true;
               score += 20;
-
               let itemEl = document.getElementById(`item-${order.id}-${i}`);
               if (itemEl) itemEl.classList.add("done");
               break;
@@ -1105,7 +1142,7 @@
         });
 
         document.getElementById("active-count-badge").innerText =
-          `บนจอ: ${activeOrders.length} บิล`;
+          `บนจอ: ${activeOrders.length}`;
         updateUI();
         updateTimersUI();
         checkLevelCompletion();
@@ -1132,7 +1169,7 @@
               document.getElementById("clear-title").innerText =
                 "✅ เคลียร์คิวสำเร็จ!";
               document.getElementById("level-msg").innerText =
-                `คุณกำลังจะเข้าสู่ ${levels[currentLevel].title} (ออเดอร์รออยู่ ${levels[currentLevel].orders.length} บิล!)`;
+                `ออเดอร์รออยู่ ${levels[currentLevel].orders.length} บิล!`;
               document
                 .getElementById("btn-continue")
                 .classList.remove("hidden");
@@ -1140,7 +1177,7 @@
               document.getElementById("clear-title").innerText =
                 "🎉 THE ULTIMATE BARISTA!";
               document.getElementById("level-msg").innerText =
-                "คุณเคลียร์ครบ 10 ด่านได้สำเร็จ! เป็นตำนานของร้าน Gimbocha!";
+                "คุณเคลียร์ครบ 10 ด่านได้สำเร็จ!";
               document.getElementById("btn-continue").classList.add("hidden");
             }
 
@@ -1152,7 +1189,6 @@
       function updateLocalLeaderboard() {
         let lb =
           JSON.parse(localStorage.getItem("gimbocha_kds_leaderboard")) || [];
-
         let existingIndex = lb.findIndex((entry) => entry.id === sessionID);
         if (existingIndex > -1) {
           lb[existingIndex].score = score;
@@ -1188,7 +1224,7 @@
           let displayLevel = entry.level > 10 ? "Clear!" : `Lv.${entry.level}`;
           let rowHtml = `
                 <div class="leaderboard-row ${isMe ? "lb-highlight" : ""}">
-                    <span>${index + 1}. ${entry.name} <span style="font-size:10px; color:#888;">(${displayLevel})</span></span>
+                    <span>${index + 1}. ${entry.name} <span style="font-size:9px; color:#888;">(${displayLevel})</span></span>
                     <span style="font-weight:bold;">${entry.score} pts</span>
                 </div>
             `;
@@ -1200,13 +1236,16 @@
         document.getElementById("action-buttons").classList.add("hidden");
         const statusText = document.getElementById("save-status-msg");
 
-        if (GOOGLE_APP_SCRIPT_URL === "ใส่_URL_ของ_GOOGLE_APPS_SCRIPT_ตรงนี้") {
+        if (
+          GOOGLE_APP_SCRIPT_URL ===
+          "https://script.google.com/macros/s/AKfycbwZ2kY7ydRo16ZjUJrA8Ws4d1J3pA9ofRxQ8CeuG-AIJE-at9x1s34tGjobk2o1pq3X/exec"
+        ) {
           statusText.innerHTML =
-            "<em>เซฟคะแนนลงเครื่องเรียบร้อยแล้ว!</em><br><br><button class='btn-primary' onclick='location.reload()'>กลับหน้าแรก</button>";
+            "<em>เซฟคะแนนลงเครื่องเรียบร้อยแล้ว!</em><br><br><button class='btn-primary' onclick='location.reload()'>หน้าแรก</button>";
           return;
         }
 
-        statusText.innerText = "⏳ กำลังส่งคะแนนเข้าเซิร์ฟเวอร์...";
+        statusText.innerText = "⏳ กำลังส่งคะแนน...";
         const payload = {
           name: playerName,
           score: score,
@@ -1221,11 +1260,11 @@
         })
           .then(() => {
             statusText.innerHTML =
-              "<span style='color:var(--success); font-weight:bold;'>✅ ส่งคะแนนเรียบร้อย!</span><br><br><button class='btn-primary' onclick='location.reload()'>กลับหน้าตอกบัตร</button>";
+              "<span style='color:var(--success); font-weight:bold;'>✅ ส่งคะแนนเรียบร้อย!</span><br><button class='btn-primary' onclick='location.reload()'>หน้าแรก</button>";
           })
           .catch((err) => {
             statusText.innerHTML =
-              "<span style='color:var(--danger);'>❌ ส่งออนไลน์ไม่สำเร็จ แต่คะแนนเซฟลงเครื่องแล้ว</span><br><br><button class='btn-primary' onclick='location.reload()'>ตกลง</button>";
+              "<span style='color:var(--danger);'>❌ ส่งออนไลน์ไม่สำเร็จ แต่เซฟลงเครื่องแล้ว</span><br><button class='btn-primary' onclick='location.reload()'>ตกลง</button>";
           });
       }
 
