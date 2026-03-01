@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Gimbocha KDS - Fresh Start</title>
+    <title>Gimbocha KDS - Ultimate Cloud</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         :root { --brand: #8c5b3e; --bg: #1a1a1a; --hot: #e65100; --single: #c62828; --blended: #2e7d32; --dessert: #fbc02d; --success: #4caf50; --danger: #f44336; }
@@ -192,7 +192,7 @@
                 <button class="btn-primary btn-danger" onclick="quitGame()">ส่งกะ (เซฟคะแนน)</button>
                 <button class="btn-primary" onclick="startLevel()" id="btn-continue">ลุยต่อ!</button>
             </div>
-            <div id="save-status-msg" style="font-size: 9px; margin-top: 5px;"></div>
+            <div id="save-status-msg" style="font-size: 10px; margin-top: 5px;"></div>
         </div>
 
         <div class="split-right">
@@ -205,8 +205,8 @@
 </div>
 
 <script>
-    // 🔴🔴🔴 URL เชื่อมต่อ Google Apps Script ที่บอสส่งมาครับ 🔴🔴🔴
-    const GOOGLE_APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzvW-nQUFQVi5WPIl4xNb7sqeGsSgyM_lcrAL3zBmSem2YiQiqYNsKbfFBqREAfS20/exec"; 
+    // 🔴🔴🔴 URL ของ Google Apps Script ที่บอสให้มา 🔴🔴🔴
+    const GOOGLE_APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwgN0Wyr4gPcs4u_KrSVACObFQOgctzSXKL69m5XKTBc78UvepSD6qbnhnMOvedPxs/exec";
 
     const menuDB = {
         hot: ["อัสสัมวาวี", "ชามะลิหิมะโปรย", "ชาเขียวหวงชาน", "หลงจิ่ง 2025", "เถี่ยกวนอิน", "จางผิงสุ่ยเซียน", "ต้าหงเผา", "สุ่ยเซียนอบถ่าน"],
@@ -283,7 +283,9 @@
         const ctx = canvas.getContext('2d');
         ctx.save(); ctx.scale(-1, 1); ctx.drawImage(video, -150, 0, 150, 150); ctx.restore();
         
+        // บีบรูปให้เล็กที่สุด ป้องกัน Google ชีตพัง (Quality 0.4)
         selfieDataURL = canvas.toDataURL('image/jpeg', 0.4); 
+
         wrapper.style.display = 'none'; video.srcObject = null;
         streamReference.getTracks().forEach(track => track.stop()); 
 
@@ -447,7 +449,10 @@
             }
             globalLb.slice(0, 5).forEach((entry, index) => {
                 let displayLevel = entry.level > 10 ? "Clear!" : `Lv.${entry.level}`;
-                let imgSrc = (entry.selfie && entry.selfie !== "") ? entry.selfie : "IMG_4511.jpeg";
+                
+                // ถ้าระบบมีรูป Base64 จะดึงมาโชว์ ถ้าไม่มีจะโชว์โลโก้ร้าน
+                let imgSrc = (entry.selfie && entry.selfie.length > 100) ? entry.selfie : "IMG_4511.jpeg";
+                
                 let rowHtml = `
                     <div class="leaderboard-row">
                         <span class="lb-rank">${index + 1}.</span>
@@ -462,7 +467,6 @@
         } catch (error) { listDiv.innerHTML = "<div style='text-align:center; padding: 15px; color: var(--danger); font-size:10px;'>❌ เชื่อมต่อไม่ได้ (ออฟไลน์)</div>"; }
     }
 
-    // 🟢 ระบบส่งข้อมูลแบบกัน CORS Block 100% 🟢
     function quitGame() {
         document.getElementById('action-buttons').classList.add('hidden');
         const statusText = document.getElementById('save-status-msg');
@@ -470,13 +474,13 @@
         
         const payload = { name: playerName, score: score, levelReached: currentLevel, selfie: selfieDataURL };
 
+        // ส่งข้อมูลเป็น text/plain ทะลุ CORS ได้ 100%
         fetch(GOOGLE_APP_SCRIPT_URL, {
             method: 'POST',
-            mode: 'no-cors', // บังคับให้ข้ามการเช็คความปลอดภัยของ Browser
+            mode: 'no-cors', 
             headers: { 'Content-Type': 'text/plain' },
             body: JSON.stringify(payload)
         }).then(() => {
-            // สำเร็จแน่นอนเพราะ mode no-cors ไม่สน response
             statusText.innerHTML = "<span style='color:var(--success); font-weight:bold;'>✅ ส่งข้อมูลเรียบร้อย!</span><br><button class='btn-primary' onclick='location.reload()' style='margin-top:5px;'>กลับหน้าแรก</button>";
         }).catch(err => {
             statusText.innerHTML = "<span style='color:var(--danger);'>❌ ส่งข้อมูลไม่สำเร็จ</span><br><button class='btn-primary' onclick='location.reload()'>ตกลง</button>";
