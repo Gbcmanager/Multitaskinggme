@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Gimbocha KDS - Ultimate KPI</title>
+    <title>Gimbocha KDS - Standardized Training</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         :root { --brand: #8c5b3e; --bg: #1a1a1a; --hot: #e65100; --single: #c62828; --blended: #2e7d32; --dessert: #fbc02d; --success: #4caf50; --danger: #f44336; }
@@ -58,7 +58,6 @@
         @keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-25px); } }
         .hidden { display: none !important; }
         
-        /* Overlays */
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 100; text-align: center; padding: 5px 10px; box-sizing: border-box;}
         .overlay h1 { font-size: 16px !important; margin: 0 0 2px 0; text-shadow: 1px 1px var(--brand); }
         .overlay p { font-size: 10px !important; margin: 2px 0; color: #ddd; }
@@ -89,7 +88,6 @@
         #landscape-warning { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #2b2b2b; color: white; z-index: 999; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; box-sizing: border-box; }
         @media screen and (orientation: portrait) { #landscape-warning { display: flex; } #app { display: none; } }
         
-        /* สไตล์กล่อง KPI เพื่อการเทียบเวลา */
         .kpi-box { background: rgba(255,255,255,0.1); padding: 5px; border-radius: 8px; margin: 4px 0; width: 100%; border: 1px solid rgba(255,255,255,0.2); }
         .kpi-box p { margin: 1px 0 !important; }
     </style>
@@ -107,7 +105,7 @@
             <img id="header-player-img" src="" alt="Player" class="hidden player-img-header">
             พนักงาน: <span id="display-player-name" style="color: #fff; margin-left: 3px;">-</span>
         </span>
-        <span>คะแนน: <span id="score" style="color: #4caf50;">0</span></span>
+        <span>คะแนนรวม: <span id="total-score" style="color: #4caf50;">0</span></span>
     </div>
 
     <div class="game-container">
@@ -186,30 +184,29 @@
 <div id="overlay-level-clear" class="overlay hidden">
     <div class="split-layout">
         <div class="split-left">
-            <h1 id="clear-title" style="color: var(--success); font-size: 18px !important; margin: 0 0 2px 0;">ด่านเคลียร์!</h1>
-            <p style="margin: 0; color: #fff;">คะแนนสะสม: <span id="clear-score" style="color: #ffd54f; font-size: 14px; font-weight: bold;">0</span></p>
+            <h1 id="clear-title" style="color: var(--success); font-size: 16px !important; margin: 0 0 2px 0;">ด่านเคลียร์!</h1>
+            <p style="margin: 0; color: #fff; font-size: 10px;">คะแนนด่านนี้: <span id="level-score-display" style="color: #ffd54f; font-size: 14px; font-weight: bold;">0</span></p>
             
             <div class="kpi-box">
-                <p style="font-size: 9px; color: #ddd;">⏱️ เวลาในเกม: <span id="avg-time-game" style="color: #fff; font-weight: bold;">0</span> วิ/บิล</p>
+                <p style="font-size: 9px; color: #ddd;">⏱️ เวลาในด่านนี้: <span id="avg-time-game" style="color: #fff; font-weight: bold;">0</span> วิ/บิล</p>
                 <p style="font-size: 11px; color: #ffd54f; margin-top: 2px !important;">⏳ เวลาจริงของคุณ: <span id="avg-time-real" style="font-weight: bold; font-size: 13px;">0</span> นาที/บิล</p>
-                <p style="font-size: 8px; color: #aaa;">(เกณฑ์ผ่านโปร: ห้ามเกิน 15 นาที)</p>
+                <p style="font-size: 8px; color: #aaa;">(เกณฑ์ด่านนี้: ห้ามเกิน 15 นาที)</p>
                 
                 <hr style="border: 0; border-top: 1px dashed rgba(255,255,255,0.2); margin: 4px 0;">
                 
-                <p style="font-size: 9px; color: #4caf50;">🌍 ค่าเฉลี่ยผู้เล่นอื่น: <span id="global-avg-time" style="font-weight: bold; color: #fff;">...</span> นาที</p>
+                <p style="font-size: 9px; color: #4caf50;">🌍 ค่าเฉลี่ยผู้เล่นอื่น <span id="lbl-level-avg" style="color:#fff;">(ในด่านนี้)</span>: <span id="global-avg-time" style="font-weight: bold; color: #fff;">...</span> นาที</p>
                 <p id="kpi-compare-status" style="font-size: 9px; font-weight: bold; margin-top: 2px !important;"></p>
             </div>
 
-            <div class="button-group" id="action-buttons">
-                <button class="btn-primary btn-danger" onclick="quitGame()">ส่งกะ</button>
-                <button class="btn-primary" onclick="startLevel()" id="btn-continue">ลุยต่อ!</button>
+            <div class="button-group hidden" id="action-buttons">
+                <button class="btn-primary btn-danger" onclick="location.reload()">จบการฝึก (ออก)</button>
+                <button class="btn-primary" onclick="startNextLevel()" id="btn-continue">ลุยด่านต่อไป!</button>
             </div>
-            <div id="save-status-msg" style="font-size: 8px; margin-top: 4px;"></div>
         </div>
 
         <div class="split-right">
             <div class="leaderboard-container">
-                <div class="leaderboard-title">🏆 KDS Leaderboard (ออนไลน์)</div>
+                <div class="leaderboard-title" id="lb-title">🏆 สถิติคนชงไว (เฉพาะด่านนี้)</div>
                 <div id="leaderboard-list"></div>
             </div>
         </div>
@@ -217,7 +214,7 @@
 </div>
 
 <script>
-    // 🔴🔴🔴 URL ใหม่ที่บอสส่งมา 🔴🔴🔴
+    // 🔴 URL ใหม่ล่าสุดของบอส 🔴
     const GOOGLE_APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwmjGRY-8-BVfAOZJ1ivA_lEY3e6mPu37ZW_ifvdvVtNShVHhdFAEJ4yoIvgjvmPKR9/exec";
 
     const menuDB = {
@@ -241,16 +238,21 @@
     ];
 
     let levels = [];
-    function generateLevels() {
+    
+    // 🟢 ระบบสร้างด่านแบบ "ล็อกออเดอร์" (ทุกคนเจอเหมือนกันเป๊ะๆ ในแต่ละด่าน) 🟢
+    function generateStandardLevels() {
         levelsConfig.forEach((config, idx) => {
             let levelOrders = [];
             for(let i = 0; i < config.orders; i++) {
-                let numItems = Math.floor(Math.random() * (config.itemsMax - config.itemsMin + 1)) + config.itemsMin;
+                // ใช้สูตรคำนวณคณิตศาสตร์แทนการสุ่ม เพื่อล็อกออเดอร์ให้เหมือนกัน 100% สำหรับทุกคน
+                let numItems = config.itemsMin + ((idx * 3 + i * 7) % (config.itemsMax - config.itemsMin + 1));
                 let items = [];
                 for(let j=0; j < numItems; j++) {
                     const categories = Object.keys(menuDB);
-                    const type = categories[Math.floor(Math.random() * categories.length)];
-                    const name = menuDB[type][Math.floor(Math.random() * menuDB[type].length)];
+                    const typeIdx = (idx * 2 + i * 5 + j * 11) % categories.length;
+                    const type = categories[typeIdx];
+                    const nameIdx = (idx * 7 + i * 13 + j * 17) % menuDB[type].length;
+                    const name = menuDB[type][nameIdx];
                     items.push({ type, name, done: false });
                 }
                 levelOrders.push({ id: `${idx+1}0${i+1}`, timeLimit: config.baseTime, timeLeft: config.baseTime, items: items, status: 'pending' });
@@ -258,14 +260,17 @@
             levels.push({ title: `Level ${idx+1}`, orders: levelOrders, spawnBaseRate: Math.max(1, 4 - Math.floor(idx/2)) });
         });
     }
-    generateLevels();
+    generateStandardLevels();
 
-    let currentLevel = 0; let score = 0; let spawnQueue = []; let activeOrders = []; 
+    let currentLevel = 0; 
+    let totalScore = 0; // คะแนนรวมตลอดการเล่น
+    let levelScore = 0; // คะแนนเฉพาะด่าน (เอาไว้แข่งแยกด่าน)
+    let spawnQueue = []; let activeOrders = []; 
     let timeToNextSpawn = 0; let blendedStock = 4; let singleBrewSlots = 0; let globalTimer;
     let playerName = ""; let selfieDataURL = ""; let streamReference = null; 
     
-    // 🔴 ตัวแปรเก็บเวลา KPI รวมตลอดกะการทำงาน 🔴
-    let sessionWaitTimes = [];
+    // 🔴 ตัวแปรเก็บเวลา KPI แยกเฉพาะด่าน 🔴
+    let levelWaitTimes = [];
 
     function initSingleSlots() {
         const container = document.getElementById('single-slots');
@@ -328,6 +333,9 @@
         spawnQueue = JSON.parse(JSON.stringify(levels[currentLevel].orders));
         activeOrders = []; timeToNextSpawn = 0; blendedStock = 4; singleBrewSlots = 0;
         
+        levelScore = 0; // รีเซ็ตคะแนนด่านใหม่
+        levelWaitTimes = []; // รีเซ็ตเวลาสำหรับด่านใหม่
+        
         updateUI(); document.getElementById('tickets-container').innerHTML = ""; 
 
         clearInterval(globalTimer);
@@ -340,7 +348,7 @@
                     for(let i=0; i<numToSpawn; i++) {
                         if(spawnQueue.length > 0) {
                             let newOrder = spawnQueue.shift(); 
-                            newOrder.spawnTime = Date.now(); // บันทึกเวลาเกิดของบิล
+                            newOrder.spawnTime = Date.now(); // บันทึกเวลาที่เริ่มรอ
                             activeOrders.push(newOrder); 
                             appendTicketToDOM(newOrder); 
                             setTimeout(() => { const c = document.getElementById('tickets-container'); c.scrollLeft = c.scrollWidth; }, 100);
@@ -396,7 +404,8 @@
             if (order.status === 'ready') continue; 
             for (let i = 0; i < order.items.length; i++) {
                 if (order.items[i].type === typeCompleted && !order.items[i].done) {
-                    order.items[i].done = true; foundMatch = true; score += 20;
+                    order.items[i].done = true; foundMatch = true; 
+                    levelScore += 20; totalScore += 20; // บวกคะแนนทั้งคู่
                     let itemEl = document.getElementById(`item-${order.id}-${i}`); if(itemEl) itemEl.classList.add('done');
                     break;
                 }
@@ -420,11 +429,13 @@
         if (readyOrders.length === 0) return; 
         let toServe = readyOrders.slice(0, 4); 
         toServe.forEach(order => {
-            // เก็บข้อมูลเวลาที่ใช้ทำแต่ละบิลเข้า Array รวม
+            // จับเวลา KPI ของด่านนี้
             let waitTimeSec = (Date.now() - order.spawnTime) / 1000;
-            sessionWaitTimes.push(waitTimeSec);
+            levelWaitTimes.push(waitTimeSec);
 
-            let speedBonus = order.timeLeft > 0 ? order.timeLeft * 10 : 0; score += (50 + speedBonus);
+            let speedBonus = order.timeLeft > 0 ? order.timeLeft * 10 : 0; 
+            levelScore += (50 + speedBonus); totalScore += (50 + speedBonus);
+            
             showFloatingScore(`+${50 + speedBonus}`, `ticket-${order.id}`);
             let ticketEl = document.getElementById(`ticket-${order.id}`);
             if(ticketEl) { ticketEl.style.transform = "scale(0)"; ticketEl.style.opacity = "0"; setTimeout(() => ticketEl.remove(), 200); }
@@ -441,106 +452,41 @@
             serveBtn.classList.add('disabled'); clearInterval(globalTimer);
             
             setTimeout(() => {
-                // 🔴 ประมวลผล KPI การทำงาน 🔴
-                let sumWait = sessionWaitTimes.reduce((a, b) => a + b, 0);
-                let avgWaitGameSec = sessionWaitTimes.length > 0 ? (sumWait / sessionWaitTimes.length) : 0;
-                let avgWaitRealMin = parseFloat((avgWaitGameSec * 0.25).toFixed(1)); // 60วิ = 15นาที
+                // 🔴 ประมวลผล KPI เฉพาะด่านนี้ 🔴
+                let sumWait = levelWaitTimes.reduce((a, b) => a + b, 0);
+                let avgWaitGameSec = levelWaitTimes.length > 0 ? (sumWait / levelWaitTimes.length) : 0;
+                let avgWaitRealMin = parseFloat((avgWaitGameSec * 0.25).toFixed(1)); 
                 
                 document.getElementById('avg-time-game').innerText = avgWaitGameSec.toFixed(1);
                 document.getElementById('avg-time-real').innerText = avgWaitRealMin;
+                document.getElementById('level-score-display').innerText = levelScore;
 
-                // อัปเดต UI หน้าจบด่าน
-                currentLevel++; 
-                renderLeaderboard(avgWaitRealMin); // ส่งเวลาเราไปเทียบในฟังก์ชัน Leaderboard
+                let kpiStatus = document.getElementById('kpi-status');
                 
+                // โชว์หน้าจอเคลียร์ด่าน
                 const clearOverlay = document.getElementById('overlay-level-clear');
-                document.getElementById('clear-score').innerText = score;
-                document.getElementById('save-status-msg').innerText = "";
-                
-                if(currentLevel < levels.length) {
-                    document.getElementById('clear-title').innerText = "✅ เคลียร์คิวสำเร็จ!";
-                    document.getElementById('btn-continue').classList.remove('hidden');
-                } else {
-                    document.getElementById('clear-title').innerText = "🎉 THE ULTIMATE BARISTA!";
-                    document.getElementById('btn-continue').classList.add('hidden'); 
-                }
-                
+                document.getElementById('action-buttons').classList.add('hidden'); // ซ่อนปุ่มก่อน
                 clearOverlay.classList.remove('hidden');
+                
+                // 🟢 ส่งข้อมูล Auto-Save ทันทีที่จบด่าน 🟢
+                autoSaveAndFetchLeaderboard(avgWaitRealMin, currentLevel + 1);
+
             }, 1000);
         }
     }
 
-    async function renderLeaderboard(myAvgWaitMin) {
-        const listDiv = document.getElementById('leaderboard-list');
-        listDiv.innerHTML = "<div style='text-align:center; padding: 15px; color:#888; font-size:10px;'>⏳ โหลดสถิติร้าน...</div>";
-        
-        try {
-            const response = await fetch(GOOGLE_APP_SCRIPT_URL);
-            const globalLb = await response.json();
-            listDiv.innerHTML = "";
-            
-            if(globalLb.length === 0) {
-                listDiv.innerHTML = "<div style='text-align:center; padding: 15px; color:#888; font-size:10px;'>ตารางยังว่างเปล่า ลุยเลย!</div>"; 
-                document.getElementById('global-avg-time').innerText = "-";
-                return;
-            }
-
-            // 🔴 คำนวณเวลาเฉลี่ยของ "ผู้เล่นทั้งหมดในร้าน" 🔴
-            let globalValidWaits = globalLb.filter(entry => entry.avgWait > 0);
-            if(globalValidWaits.length > 0) {
-                let totalGlobalWait = globalValidWaits.reduce((sum, entry) => sum + entry.avgWait, 0);
-                let globalAvgWait = (totalGlobalWait / globalValidWaits.length).toFixed(1);
-                document.getElementById('global-avg-time').innerText = globalAvgWait;
-                
-                let compareStatus = document.getElementById('kpi-compare-status');
-                if(myAvgWaitMin < globalAvgWait) {
-                    compareStatus.innerText = `🔥 เร็วกว่าค่าเฉลี่ยร้าน ${(globalAvgWait - myAvgWaitMin).toFixed(1)} นาที!`;
-                    compareStatus.style.color = "var(--success)";
-                } else {
-                    compareStatus.innerText = `🐢 ช้ากว่าค่าเฉลี่ยร้านอยู่ ${(myAvgWaitMin - globalAvgWait).toFixed(1)} นาที`;
-                    compareStatus.style.color = "var(--danger)";
-                }
-            } else {
-                document.getElementById('global-avg-time').innerText = "-";
-            }
-
-            // วาด Leaderboard
-            globalLb.slice(0, 5).forEach((entry, index) => {
-                let displayLevel = entry.level > 10 ? "Clear!" : `Lv.${entry.level}`;
-                let imgSrc = (entry.selfie && entry.selfie.length > 100) ? entry.selfie : "IMG_4511.jpeg";
-                
-                let rowHtml = `
-                    <div class="leaderboard-row">
-                        <span class="lb-rank">${index + 1}.</span>
-                        <span style="flex:1; display:flex; align-items:center;">
-                            <img src="${imgSrc}" alt="User" class="player-img-lb" onerror="this.src='IMG_4511.jpeg'">
-                            ${entry.name} <span style="font-size:7px; color:#888; margin-left:3px;">(${displayLevel}) | ⏱️ ${entry.avgWait}m</span>
-                        </span>
-                        <span style="font-weight:bold;">${entry.score} pts</span>
-                    </div>`;
-                listDiv.innerHTML += rowHtml;
-            });
-        } catch (error) { 
-            listDiv.innerHTML = "<div style='text-align:center; padding: 15px; color: var(--danger); font-size:10px;'>❌ เชื่อมต่อไม่ได้ (ออฟไลน์)</div>"; 
-        }
-    }
-
-    // ส่งคะแนนและ KPI ไป Google Sheets
-    function quitGame() {
-        document.getElementById('action-buttons').classList.add('hidden');
-        const statusText = document.getElementById('save-status-msg');
-        statusText.innerText = "⏳ กำลังส่งข้อมูล...";
-        
-        let sumWait = sessionWaitTimes.reduce((a, b) => a + b, 0);
-        let avgWaitGameSec = sessionWaitTimes.length > 0 ? (sumWait / sessionWaitTimes.length) : 0;
-        let finalAvgWaitRealMin = parseFloat((avgWaitGameSec * 0.25).toFixed(1));
+    function autoSaveAndFetchLeaderboard(myAvgWaitRealMin, lvl) {
+        document.getElementById('kpi-compare-status').innerText = "⏳ กำลังบันทึกผลและดึงข้อมูลร้าน...";
+        document.getElementById('global-avg-time').innerText = "...";
+        document.getElementById('leaderboard-list').innerHTML = "<div style='text-align:center; padding: 15px; color:#888; font-size:10px;'>⏳ กำลังเชื่อมต่อเซิร์ฟเวอร์...</div>";
+        document.getElementById('lb-title').innerText = `🏆 สถิติคนชงไว (เฉพาะด่าน ${lvl})`;
 
         const payload = { 
             name: playerName, 
-            score: score, 
-            levelReached: currentLevel, 
+            score: levelScore,  // ส่งคะแนนเฉพาะด่านไปแข่ง
+            levelReached: lvl,  // บ่งบอกว่าเป็นข้อมูลของด่านไหน
             selfie: selfieDataURL,
-            avgWaitTime: finalAvgWaitRealMin // 🔴 แนบเวลาเฉลี่ยส่งขึ้นเซิร์ฟเวอร์
+            avgWaitTime: myAvgWaitRealMin 
         };
 
         const formData = new URLSearchParams();
@@ -551,13 +497,86 @@
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: formData.toString()
         })
-        .then(response => response.text())
-        .then(text => {
-            statusText.innerHTML = "<span style='color:var(--success); font-weight:bold;'>✅ ส่งข้อมูลตอกบัตรเรียบร้อย!</span><br><button class='btn-primary' onclick='location.reload()' style='margin-top:5px;'>กลับหน้าแรก</button>";
+        .then(() => {
+            fetchAndRenderLevelLeaderboard(lvl, myAvgWaitRealMin);
         })
         .catch(err => {
-            statusText.innerHTML = "<span style='color:var(--danger);'>❌ ส่งข้อมูลไม่สำเร็จ</span><br><button class='btn-primary' onclick='location.reload()'>ตกลง</button>";
+            fetchAndRenderLevelLeaderboard(lvl, myAvgWaitRealMin); // ถ้าส่งพลาด ก็ลองดึงข้อมูลมาโชว์อยู่ดี
         });
+    }
+
+    async function fetchAndRenderLevelLeaderboard(lvl, myAvgWaitMin) {
+        const listDiv = document.getElementById('leaderboard-list');
+        try {
+            const response = await fetch(GOOGLE_APP_SCRIPT_URL);
+            const globalLb = await response.json();
+            listDiv.innerHTML = "";
+            
+            // 🔴 กรองข้อมูลเอามา "เฉพาะคนที่เล่นด่านนี้" เท่านั้น 🔴
+            let levelData = globalLb.filter(entry => entry.level === lvl);
+            
+            if(levelData.length === 0) {
+                listDiv.innerHTML = "<div style='text-align:center; padding: 15px; color:#888; font-size:10px;'>คุณคือคนแรกที่จบด่านนี้!</div>"; 
+                document.getElementById('global-avg-time').innerText = "-";
+            } else {
+                // คำนวณค่าเฉลี่ยของทุกคนในด่านนี้
+                let globalValidWaits = levelData.filter(entry => entry.avgWait > 0);
+                if(globalValidWaits.length > 0) {
+                    let totalGlobalWait = globalValidWaits.reduce((sum, entry) => sum + entry.avgWait, 0);
+                    let globalAvgWait = (totalGlobalWait / globalValidWaits.length).toFixed(1);
+                    document.getElementById('global-avg-time').innerText = globalAvgWait;
+                    
+                    let compareStatus = document.getElementById('kpi-compare-status');
+                    if(myAvgWaitMin <= globalAvgWait) {
+                        compareStatus.innerText = `🔥 เร็วกว่าค่าเฉลี่ยด่านนี้ ${(globalAvgWait - myAvgWaitMin).toFixed(1)} นาที!`;
+                        compareStatus.style.color = "var(--success)";
+                    } else {
+                        compareStatus.innerText = `🐢 ช้ากว่าค่าเฉลี่ยด่านนี้ ${(myAvgWaitMin - globalAvgWait).toFixed(1)} นาที`;
+                        compareStatus.style.color = "var(--danger)";
+                    }
+                }
+
+                // เรียงลำดับคนเก่งด่านนี้ (เรียงตามคะแนนเยอะสุด ถ้าคะแนนเท่ากันเอาคนเวลาเฉลี่ยน้อยสุด)
+                levelData.sort((a, b) => {
+                    if (b.score !== a.score) return b.score - a.score;
+                    return a.avgWait - b.avgWait; 
+                });
+
+                // วาด Leaderboard ด่านนี้
+                levelData.slice(0, 5).forEach((entry, index) => {
+                    let imgSrc = (entry.selfie && entry.selfie.length > 100) ? entry.selfie : "IMG_4511.jpeg";
+                    let rowHtml = `
+                        <div class="leaderboard-row">
+                            <span class="lb-rank">${index + 1}.</span>
+                            <span style="flex:1; display:flex; align-items:center;">
+                                <img src="${imgSrc}" alt="User" class="player-img-lb" onerror="this.src='IMG_4511.jpeg'">
+                                ${entry.name} <span style="font-size:7px; color:#888; margin-left:3px;">| ⏱️ ${entry.avgWait}m</span>
+                            </span>
+                            <span style="font-weight:bold;">${entry.score} pts</span>
+                        </div>`;
+                    listDiv.innerHTML += rowHtml;
+                });
+            }
+
+            // แสดงปุ่มให้ไปต่อ
+            document.getElementById('action-buttons').classList.remove('hidden');
+            if(lvl < levels.length) {
+                document.getElementById('clear-title').innerText = `✅ เคลียร์ด่าน ${lvl} สำเร็จ!`;
+                document.getElementById('btn-continue').classList.remove('hidden');
+            } else {
+                document.getElementById('clear-title').innerText = "🎉 THE ULTIMATE BARISTA!";
+                document.getElementById('btn-continue').classList.add('hidden'); 
+            }
+            
+        } catch (error) { 
+            listDiv.innerHTML = "<div style='text-align:center; padding: 15px; color: var(--danger); font-size:10px;'>❌ เชื่อมต่อไม่ได้ (ออฟไลน์)</div>"; 
+            document.getElementById('action-buttons').classList.remove('hidden');
+        }
+    }
+
+    function startNextLevel() {
+        currentLevel++;
+        startLevel();
     }
 
     function brewSingleTea() {
@@ -589,7 +608,7 @@
     }
 
     function updateUI() {
-        document.getElementById('score').innerText = score; document.getElementById('blended-stock').innerText = blendedStock; document.getElementById('blended-stock').style.color = blendedStock === 0 ? 'var(--danger)' : 'var(--blended)';
+        document.getElementById('total-score').innerText = totalScore; document.getElementById('blended-stock').innerText = blendedStock; document.getElementById('blended-stock').style.color = blendedStock === 0 ? 'var(--danger)' : 'var(--blended)';
         const btnRefill = document.getElementById('btn-blend-refill'); if (blendedStock > 0) { btnRefill.style.opacity = '0.5'; btnRefill.style.cursor = 'not-allowed'; } else { btnRefill.style.opacity = '1'; btnRefill.style.cursor = 'pointer'; btnRefill.disabled = false; }
     }
 </script>
