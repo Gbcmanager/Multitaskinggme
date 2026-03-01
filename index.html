@@ -551,7 +551,7 @@
         listDiv.innerHTML = "<div style='text-align:center; padding: 15px; color:#888; font-size:10px;'>⏳ กำลังดึงสถิติจากเซิร์ฟเวอร์...</div>";
         
         try {
-            if(GOOGLE_APP_SCRIPT_URL === "ใส่_URL_ของ_GOOGLE_APPS_SCRIPT_ตรงนี้") {
+            if(GOOGLE_APP_SCRIPT_URL === "https://script.google.com/macros/s/AKfycbyAhOd3y4gKWCQrohFFQa1tYq-8QljtXxX-t5d_5CtHfWsjA9vW_a95TwVckbNmNFWk/exec") {
                 listDiv.innerHTML = "<div style='text-align:center; padding: 15px; color: var(--danger); font-weight: bold; font-size:10px;'>❌ ยังไม่ได้ใส่ลิงก์ Google Sheets</div>";
                 return;
             }
@@ -593,7 +593,7 @@
         document.getElementById('action-buttons').classList.add('hidden');
         const statusText = document.getElementById('save-status-msg');
         
-        if(GOOGLE_APP_SCRIPT_URL === "ใส่_URL_ของ_GOOGLE_APPS_SCRIPT_ตรงนี้") {
+        if(GOOGLE_APP_SCRIPT_URL === "https://script.google.com/macros/s/AKfycbyAhOd3y4gKWCQrohFFQa1tYq-8QljtXxX-t5d_5CtHfWsjA9vW_a95TwVckbNmNFWk/exec") {
             statusText.innerHTML = "<em>จบกะ! (ไม่ได้เซฟออนไลน์เพราะไม่มี URL)</em><br><br><button class='btn-primary' onclick='location.reload()'>หน้าแรก</button>";
             return;
         }
