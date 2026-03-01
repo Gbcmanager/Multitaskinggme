@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Gimbocha KDS - Ultimate Cloud</title>
+    <title>Gimbocha KDS - Ultimate KPI</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         :root { --brand: #8c5b3e; --bg: #1a1a1a; --hot: #e65100; --single: #c62828; --blended: #2e7d32; --dessert: #fbc02d; --success: #4caf50; --danger: #f44336; }
@@ -59,35 +59,39 @@
         .hidden { display: none !important; }
         
         /* Overlays */
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 100; text-align: center; padding: 10px; box-sizing: border-box;}
-        .overlay h1 { font-size: 18px !important; margin: 0 0 2px 0; text-shadow: 1px 1px var(--brand); }
-        .overlay p { font-size: 11px !important; margin: 2px 0; color: #ddd; }
-        .btn-primary { background: var(--brand); color: white; padding: 6px 12px; border: none; border-radius: 6px; font-size: 12px; font-family: inherit; cursor: pointer; margin: 3px; font-weight: bold; transition: 0.2s; }
-        .btn-primary.btn-capture { background: var(--single); font-size: 11px; padding: 5px 10px; margin-top: 5px;}
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 100; text-align: center; padding: 5px 10px; box-sizing: border-box;}
+        .overlay h1 { font-size: 16px !important; margin: 0 0 2px 0; text-shadow: 1px 1px var(--brand); }
+        .overlay p { font-size: 10px !important; margin: 2px 0; color: #ddd; }
+        .btn-primary { background: var(--brand); color: white; padding: 6px 10px; border: none; border-radius: 6px; font-size: 11px; font-family: inherit; cursor: pointer; margin: 2px; font-weight: bold; transition: 0.2s; }
+        .btn-primary.btn-capture { background: var(--single); font-size: 11px; padding: 4px 8px; margin-top: 3px;}
         .btn-danger { background: var(--danger); }
-        .split-layout { display: flex; flex-direction: row; align-items: stretch; justify-content: center; width: 100%; max-width: 600px; gap: 10px; height: 100%; max-height: 220px; }
+        .split-layout { display: flex; flex-direction: row; align-items: stretch; justify-content: center; width: 100%; max-width: 600px; gap: 10px; height: 100%; max-height: 250px; }
         .split-left { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative;}
         .split-right { flex: 1; display: flex; flex-direction: column; justify-content: center; overflow: hidden;}
         
-        .input-name { padding: 6px; width: 80%; max-width: 180px; margin: 5px 0; border-radius: 6px; border: 2px solid var(--brand); text-align: center; font-family: inherit; font-size: 12px; outline: none; }
-        .leaderboard-container { background: #fff; color: #333; width: 100%; border-radius: 8px; padding: 8px; margin: 0; text-align: left; overflow-y: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.5); flex-grow: 1; display: flex; flex-direction: column;}
-        .leaderboard-title { font-size: 11px; font-weight: bold; border-bottom: 2px solid var(--brand); margin-bottom: 3px; padding-bottom: 2px; flex-shrink: 0;}
+        .input-name { padding: 4px; width: 80%; max-width: 180px; margin: 4px 0; border-radius: 6px; border: 2px solid var(--brand); text-align: center; font-family: inherit; font-size: 11px; outline: none; }
+        .leaderboard-container { background: #fff; color: #333; width: 100%; border-radius: 8px; padding: 6px; margin: 0; text-align: left; overflow-y: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.5); flex-grow: 1; display: flex; flex-direction: column;}
+        .leaderboard-title { font-size: 10px; font-weight: bold; border-bottom: 2px solid var(--brand); margin-bottom: 3px; padding-bottom: 2px; flex-shrink: 0;}
         #leaderboard-list { overflow-y: auto; flex-grow: 1; }
-        .leaderboard-row { display: flex; justify-content: space-between; align-items: center; padding: 3px 0; border-bottom: 1px solid #eee; font-size: 10px; gap: 5px;}
+        .leaderboard-row { display: flex; justify-content: space-between; align-items: center; padding: 3px 0; border-bottom: 1px solid #eee; font-size: 9px; gap: 5px;}
         .leaderboard-row:last-child { border-bottom: none; }
         .lb-rank { font-weight: bold; width: 15px; text-align: center;}
         
-        .selfie-wrapper { position: relative; width: 70px; height: 70px; margin-bottom: 5px; border-radius: 12px; border: 2px solid var(--brand); box-shadow: 0 4px 10px rgba(0,0,0,0.5); overflow: hidden; background: #000;}
+        .selfie-wrapper { position: relative; width: 60px; height: 60px; margin-bottom: 4px; border-radius: 12px; border: 2px solid var(--brand); box-shadow: 0 4px 10px rgba(0,0,0,0.5); overflow: hidden; background: #000;}
         #selfie-video { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); } 
-        #selfie-preview { display: none; width: 70px; height: 70px; border-radius: 12px; border: 2px solid var(--brand); margin-bottom: 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); object-fit: cover;} 
-        .selfie-icon { position: absolute; font-size: 14px; color: rgba(255,255,255,0.7); top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none;}
+        #selfie-preview { display: none; width: 60px; height: 60px; border-radius: 12px; border: 2px solid var(--brand); margin-bottom: 4px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); object-fit: cover;} 
+        .selfie-icon { position: absolute; font-size: 12px; color: rgba(255,255,255,0.7); top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none;}
         
         .player-img-header { width: 22px; height: 22px; border-radius: 50%; border: 1px solid #fff; object-fit: cover; margin-right: 5px;}
-        .player-img-lb { width: 20px; height: 20px; border-radius: 4px; border: 1px solid var(--brand); object-fit: cover; margin-right: 4px;}
-        .shop-logo-top { width: 70px; height: 70px; object-fit: cover; border-radius: 12px; border: 2px solid var(--brand); margin-bottom: 5px; }
+        .player-img-lb { width: 18px; height: 18px; border-radius: 4px; border: 1px solid var(--brand); object-fit: cover; margin-right: 4px;}
+        .shop-logo-top { width: 60px; height: 60px; object-fit: cover; border-radius: 12px; border: 2px solid var(--brand); margin-bottom: 4px; }
         
         #landscape-warning { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #2b2b2b; color: white; z-index: 999; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; box-sizing: border-box; }
         @media screen and (orientation: portrait) { #landscape-warning { display: flex; } #app { display: none; } }
+        
+        /* สไตล์กล่อง KPI เพื่อการเทียบเวลา */
+        .kpi-box { background: rgba(255,255,255,0.1); padding: 5px; border-radius: 8px; margin: 4px 0; width: 100%; border: 1px solid rgba(255,255,255,0.2); }
+        .kpi-box p { margin: 1px 0 !important; }
     </style>
 </head>
 <body>
@@ -161,8 +165,8 @@
 
 <div id="overlay-start" class="overlay">
     <img src="IMG_4511.jpeg" alt="Gimbocha Logo" class="shop-logo-top" onerror="this.style.display='none'">
-    <h1 style="color: #fff;">เส้นทางสู่นักชงชามืออาชีพ</h1>
-    <p>หากจะเป็นศิษย์ร้านยายล่ะก็ ผ่านเกมนี้ให้ได้สิ โฮ่ ๆ ๆ</p>
+    <h1 style="color: #fff;">Gimbocha KDS</h1>
+    <p>ระบบฝึกอบรมและประเมินพนักงาน</p>
     
     <div class="selfie-wrapper" id="selfie-wrapper">
         <span class="selfie-icon">📷</span>
@@ -170,11 +174,11 @@
     </div>
     <img id="selfie-preview" src="" alt="Selfie Preview">
     
-    <button class="btn-primary btn-capture" id="btn-capture" onclick="takeSelfie()">กดถ่ายรูป</button>
-    <input type="text" id="player-name-input" class="input-name" placeholder="ใส่ชื่อของหลาน..." autocomplete="off">
+    <button class="btn-primary btn-capture" id="btn-capture" onclick="takeSelfie()">กดถ่ายรูปเซลฟี่</button>
+    <input type="text" id="player-name-input" class="input-name" placeholder="ใส่ชื่อของคุณที่นี่..." autocomplete="off">
     
     <div class="button-group">
-        <button class="btn-primary" id="btn-start" onclick="initGame()" disabled style="opacity: 0.5;">เริ่ม</button>
+        <button class="btn-primary" id="btn-start" onclick="initGame()" disabled style="opacity: 0.5;">เริ่มกะทำงาน</button>
     </div>
     <canvas id="selfie-canvas" style="display: none;"></canvas>
 </div>
@@ -182,22 +186,30 @@
 <div id="overlay-level-clear" class="overlay hidden">
     <div class="split-layout">
         <div class="split-left">
-            <img id="selfie-preview-final" src="" alt="Your Selfie" style="width: 50px; height: 50px; border-radius: 12px; border: 2px solid #ffd54f; object-fit: cover; margin-bottom: 5px;">
-            <h1 id="clear-title" style="color: var(--success);">ด่านเคลียร์!</h1>
-            <p style="margin: 0;">คะแนนรวมของหลาน:</p>
-            <h3 id="clear-score" style="margin: 0 0 5px 0; color: #ffd54f; font-size: 18px;">0</h3>
-            <p id="level-msg"></p>
+            <h1 id="clear-title" style="color: var(--success); font-size: 18px !important; margin: 0 0 2px 0;">ด่านเคลียร์!</h1>
+            <p style="margin: 0; color: #fff;">คะแนนสะสม: <span id="clear-score" style="color: #ffd54f; font-size: 14px; font-weight: bold;">0</span></p>
+            
+            <div class="kpi-box">
+                <p style="font-size: 9px; color: #ddd;">⏱️ เวลาในเกม: <span id="avg-time-game" style="color: #fff; font-weight: bold;">0</span> วิ/บิล</p>
+                <p style="font-size: 11px; color: #ffd54f; margin-top: 2px !important;">⏳ เวลาจริงของคุณ: <span id="avg-time-real" style="font-weight: bold; font-size: 13px;">0</span> นาที/บิล</p>
+                <p style="font-size: 8px; color: #aaa;">(เกณฑ์ผ่านโปร: ห้ามเกิน 15 นาที)</p>
+                
+                <hr style="border: 0; border-top: 1px dashed rgba(255,255,255,0.2); margin: 4px 0;">
+                
+                <p style="font-size: 9px; color: #4caf50;">🌍 ค่าเฉลี่ยผู้เล่นอื่น: <span id="global-avg-time" style="font-weight: bold; color: #fff;">...</span> นาที</p>
+                <p id="kpi-compare-status" style="font-size: 9px; font-weight: bold; margin-top: 2px !important;"></p>
+            </div>
 
             <div class="button-group" id="action-buttons">
-                <button class="btn-primary btn-danger" onclick="quitGame()">พอและยาย เหนื่อย</button>
-                <button class="btn-primary" onclick="startLevel()" id="btn-continue">ลุยต่อ ขอยาก ๆ!</button>
+                <button class="btn-primary btn-danger" onclick="quitGame()">ส่งกะ</button>
+                <button class="btn-primary" onclick="startLevel()" id="btn-continue">ลุยต่อ!</button>
             </div>
-            <div id="save-status-msg" style="font-size: 10px; margin-top: 5px;"></div>
+            <div id="save-status-msg" style="font-size: 8px; margin-top: 4px;"></div>
         </div>
 
         <div class="split-right">
             <div class="leaderboard-container">
-                <div class="leaderboard-title">🏆 คนที่เร็วที่สุดในร้านยายก็คื๊อ...</div>
+                <div class="leaderboard-title">🏆 KDS Leaderboard (ออนไลน์)</div>
                 <div id="leaderboard-list"></div>
             </div>
         </div>
@@ -205,8 +217,8 @@
 </div>
 
 <script>
-    // 🔴🔴🔴 URL ของ Google Apps Script ที่บอสให้มา 🔴🔴🔴
-    const GOOGLE_APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwgN0Wyr4gPcs4u_KrSVACObFQOgctzSXKL69m5XKTBc78UvepSD6qbnhnMOvedPxs/exec";
+    // 🔴🔴🔴 URL ใหม่ที่บอสส่งมา 🔴🔴🔴
+    const GOOGLE_APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwmjGRY-8-BVfAOZJ1ivA_lEY3e6mPu37ZW_ifvdvVtNShVHhdFAEJ4yoIvgjvmPKR9/exec";
 
     const menuDB = {
         hot: ["อัสสัมวาวี", "ชามะลิหิมะโปรย", "ชาเขียวหวงชาน", "หลงจิ่ง 2025", "เถี่ยกวนอิน", "จางผิงสุ่ยเซียน", "ต้าหงเผา", "สุ่ยเซียนอบถ่าน"],
@@ -251,6 +263,9 @@
     let currentLevel = 0; let score = 0; let spawnQueue = []; let activeOrders = []; 
     let timeToNextSpawn = 0; let blendedStock = 4; let singleBrewSlots = 0; let globalTimer;
     let playerName = ""; let selfieDataURL = ""; let streamReference = null; 
+    
+    // 🔴 ตัวแปรเก็บเวลา KPI รวมตลอดกะการทำงาน 🔴
+    let sessionWaitTimes = [];
 
     function initSingleSlots() {
         const container = document.getElementById('single-slots');
@@ -263,13 +278,13 @@
     
     async function startCamera() {
         try {
-            const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user", width: 150, height: 150 }, audio: false });
+            const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user", width: 100, height: 100 }, audio: false });
             const videoEl = document.getElementById('selfie-video');
             videoEl.srcObject = stream;
             streamReference = stream; 
         } catch (err) {
             console.error(err);
-            document.getElementById('selfie-wrapper').innerHTML = "<div style='color:#ff9800; font-size:8px; padding:10px;'>โปรดอนุญาตกล้อง</div>";
+            document.getElementById('selfie-wrapper').innerHTML = "<div style='color:#ff9800; font-size:8px; padding:5px;'>โปรดอนุญาตกล้อง</div>";
         }
     }
     
@@ -279,11 +294,10 @@
         const btnStart = document.getElementById('btn-start'); const btnCapture = document.getElementById('btn-capture');
 
         if(!streamReference || video.readyState !== 4) return;
-        canvas.width = 150; canvas.height = 150;
+        canvas.width = 100; canvas.height = 100;
         const ctx = canvas.getContext('2d');
-        ctx.save(); ctx.scale(-1, 1); ctx.drawImage(video, -150, 0, 150, 150); ctx.restore();
+        ctx.save(); ctx.scale(-1, 1); ctx.drawImage(video, -100, 0, 100, 100); ctx.restore();
         
-        // บีบรูปให้เล็กที่สุด ป้องกัน Google ชีตพัง (Quality 0.4)
         selfieDataURL = canvas.toDataURL('image/jpeg', 0.4); 
 
         wrapper.style.display = 'none'; video.srcObject = null;
@@ -295,12 +309,11 @@
 
     function initGame() {
         playerName = document.getElementById('player-name-input').value.trim();
-        if(!playerName || !selfieDataURL) { alert("❌ถ่ายรูปและใส่ชื่อให้ครบจ้ะหลาน"); return; }
+        if(!playerName || !selfieDataURL) { alert("❌ โปรดถ่ายรูปและใส่ชื่อให้ครบครับ!"); return; }
 
         document.getElementById('header-player-img').src = selfieDataURL;
         document.getElementById('header-player-img').classList.remove('hidden');
         document.getElementById('display-player-name').innerText = playerName;
-        document.getElementById('selfie-preview-final').src = selfieDataURL;
         document.getElementById('overlay-start').classList.add('hidden');
         startLevel();
     }
@@ -314,6 +327,7 @@
         
         spawnQueue = JSON.parse(JSON.stringify(levels[currentLevel].orders));
         activeOrders = []; timeToNextSpawn = 0; blendedStock = 4; singleBrewSlots = 0;
+        
         updateUI(); document.getElementById('tickets-container').innerHTML = ""; 
 
         clearInterval(globalTimer);
@@ -325,7 +339,10 @@
                     let numToSpawn = Math.floor(Math.random() * maxSpawn) + 1; 
                     for(let i=0; i<numToSpawn; i++) {
                         if(spawnQueue.length > 0) {
-                            let newOrder = spawnQueue.shift(); activeOrders.push(newOrder); appendTicketToDOM(newOrder); 
+                            let newOrder = spawnQueue.shift(); 
+                            newOrder.spawnTime = Date.now(); // บันทึกเวลาเกิดของบิล
+                            activeOrders.push(newOrder); 
+                            appendTicketToDOM(newOrder); 
                             setTimeout(() => { const c = document.getElementById('tickets-container'); c.scrollLeft = c.scrollWidth; }, 100);
                         }
                     }
@@ -349,7 +366,7 @@
             html += `<div class="order-item" id="item-${order.id}-${index}"><span class="badge ${badgeClass}">${badgeText}</span>${item.name}</div>`;
         });
         div.innerHTML = html; container.appendChild(div);
-        document.getElementById('order-count-badge').innerText = `รอ: ${spawnQueue.length}`;
+        document.getElementById('order-count-badge').innerText = `รอพ่น: ${spawnQueue.length}`;
         document.getElementById('active-count-badge').innerText = `บนจอ: ${activeOrders.length}`;
     }
 
@@ -403,6 +420,10 @@
         if (readyOrders.length === 0) return; 
         let toServe = readyOrders.slice(0, 4); 
         toServe.forEach(order => {
+            // เก็บข้อมูลเวลาที่ใช้ทำแต่ละบิลเข้า Array รวม
+            let waitTimeSec = (Date.now() - order.spawnTime) / 1000;
+            sessionWaitTimes.push(waitTimeSec);
+
             let speedBonus = order.timeLeft > 0 ? order.timeLeft * 10 : 0; score += (50 + speedBonus);
             showFloatingScore(`+${50 + speedBonus}`, `ticket-${order.id}`);
             let ticketEl = document.getElementById(`ticket-${order.id}`);
@@ -418,39 +439,74 @@
         if (activeOrders.length === 0 && spawnQueue.length === 0) {
             document.getElementById('no-order-msg').classList.remove('hidden');
             serveBtn.classList.add('disabled'); clearInterval(globalTimer);
+            
             setTimeout(() => {
-                currentLevel++; renderLeaderboard(); 
+                // 🔴 ประมวลผล KPI การทำงาน 🔴
+                let sumWait = sessionWaitTimes.reduce((a, b) => a + b, 0);
+                let avgWaitGameSec = sessionWaitTimes.length > 0 ? (sumWait / sessionWaitTimes.length) : 0;
+                let avgWaitRealMin = parseFloat((avgWaitGameSec * 0.25).toFixed(1)); // 60วิ = 15นาที
+                
+                document.getElementById('avg-time-game').innerText = avgWaitGameSec.toFixed(1);
+                document.getElementById('avg-time-real').innerText = avgWaitRealMin;
+
+                // อัปเดต UI หน้าจบด่าน
+                currentLevel++; 
+                renderLeaderboard(avgWaitRealMin); // ส่งเวลาเราไปเทียบในฟังก์ชัน Leaderboard
+                
                 const clearOverlay = document.getElementById('overlay-level-clear');
                 document.getElementById('clear-score').innerText = score;
                 document.getElementById('save-status-msg').innerText = "";
+                
                 if(currentLevel < levels.length) {
                     document.getElementById('clear-title').innerText = "✅ เคลียร์คิวสำเร็จ!";
-                    document.getElementById('level-msg').innerText = `ออเดอร์รออยู่ ${levels[currentLevel].orders.length} บิล!`;
                     document.getElementById('btn-continue').classList.remove('hidden');
                 } else {
-                    document.getElementById('clear-title').innerText = "🎉 สุดยอดที่มาถึงตรงนี้ได้ ต่อไปนี้หลานคือศิษย์พี่!";
-                    document.getElementById('level-msg').innerText = "ยายซาบซึ่งในความตั้งใจของหลานจริง ๆ ";
+                    document.getElementById('clear-title').innerText = "🎉 THE ULTIMATE BARISTA!";
                     document.getElementById('btn-continue').classList.add('hidden'); 
                 }
+                
                 clearOverlay.classList.remove('hidden');
             }, 1000);
         }
     }
 
-    async function renderLeaderboard() {
+    async function renderLeaderboard(myAvgWaitMin) {
         const listDiv = document.getElementById('leaderboard-list');
         listDiv.innerHTML = "<div style='text-align:center; padding: 15px; color:#888; font-size:10px;'>⏳ โหลดสถิติร้าน...</div>";
+        
         try {
             const response = await fetch(GOOGLE_APP_SCRIPT_URL);
             const globalLb = await response.json();
             listDiv.innerHTML = "";
+            
             if(globalLb.length === 0) {
-                listDiv.innerHTML = "<div style='text-align:center; padding: 15px; color:#888; font-size:10px;'>ตารางยังว่างเปล่า ลุยเลย!</div>"; return;
+                listDiv.innerHTML = "<div style='text-align:center; padding: 15px; color:#888; font-size:10px;'>ตารางยังว่างเปล่า ลุยเลย!</div>"; 
+                document.getElementById('global-avg-time').innerText = "-";
+                return;
             }
+
+            // 🔴 คำนวณเวลาเฉลี่ยของ "ผู้เล่นทั้งหมดในร้าน" 🔴
+            let globalValidWaits = globalLb.filter(entry => entry.avgWait > 0);
+            if(globalValidWaits.length > 0) {
+                let totalGlobalWait = globalValidWaits.reduce((sum, entry) => sum + entry.avgWait, 0);
+                let globalAvgWait = (totalGlobalWait / globalValidWaits.length).toFixed(1);
+                document.getElementById('global-avg-time').innerText = globalAvgWait;
+                
+                let compareStatus = document.getElementById('kpi-compare-status');
+                if(myAvgWaitMin < globalAvgWait) {
+                    compareStatus.innerText = `🔥 เร็วกว่าค่าเฉลี่ยร้าน ${(globalAvgWait - myAvgWaitMin).toFixed(1)} นาที!`;
+                    compareStatus.style.color = "var(--success)";
+                } else {
+                    compareStatus.innerText = `🐢 ช้ากว่าค่าเฉลี่ยร้านอยู่ ${(myAvgWaitMin - globalAvgWait).toFixed(1)} นาที`;
+                    compareStatus.style.color = "var(--danger)";
+                }
+            } else {
+                document.getElementById('global-avg-time').innerText = "-";
+            }
+
+            // วาด Leaderboard
             globalLb.slice(0, 5).forEach((entry, index) => {
                 let displayLevel = entry.level > 10 ? "Clear!" : `Lv.${entry.level}`;
-                
-                // ถ้าระบบมีรูป Base64 จะดึงมาโชว์ ถ้าไม่มีจะโชว์โลโก้ร้าน
                 let imgSrc = (entry.selfie && entry.selfie.length > 100) ? entry.selfie : "IMG_4511.jpeg";
                 
                 let rowHtml = `
@@ -458,31 +514,48 @@
                         <span class="lb-rank">${index + 1}.</span>
                         <span style="flex:1; display:flex; align-items:center;">
                             <img src="${imgSrc}" alt="User" class="player-img-lb" onerror="this.src='IMG_4511.jpeg'">
-                            ${entry.name} <span style="font-size:8px; color:#888; margin-left:3px;">(${displayLevel})</span>
+                            ${entry.name} <span style="font-size:7px; color:#888; margin-left:3px;">(${displayLevel}) | ⏱️ ${entry.avgWait}m</span>
                         </span>
                         <span style="font-weight:bold;">${entry.score} pts</span>
                     </div>`;
                 listDiv.innerHTML += rowHtml;
             });
-        } catch (error) { listDiv.innerHTML = "<div style='text-align:center; padding: 15px; color: var(--danger); font-size:10px;'>❌ เชื่อมต่อไม่ได้ (ออฟไลน์)</div>"; }
+        } catch (error) { 
+            listDiv.innerHTML = "<div style='text-align:center; padding: 15px; color: var(--danger); font-size:10px;'>❌ เชื่อมต่อไม่ได้ (ออฟไลน์)</div>"; 
+        }
     }
 
+    // ส่งคะแนนและ KPI ไป Google Sheets
     function quitGame() {
         document.getElementById('action-buttons').classList.add('hidden');
         const statusText = document.getElementById('save-status-msg');
-        statusText.innerText = "⏳ กำลังส่งข้อมูล (อาจใช้เวลาสักครู่)...";
+        statusText.innerText = "⏳ กำลังส่งข้อมูล...";
         
-        const payload = { name: playerName, score: score, levelReached: currentLevel, selfie: selfieDataURL };
+        let sumWait = sessionWaitTimes.reduce((a, b) => a + b, 0);
+        let avgWaitGameSec = sessionWaitTimes.length > 0 ? (sumWait / sessionWaitTimes.length) : 0;
+        let finalAvgWaitRealMin = parseFloat((avgWaitGameSec * 0.25).toFixed(1));
 
-        // ส่งข้อมูลเป็น text/plain ทะลุ CORS ได้ 100%
+        const payload = { 
+            name: playerName, 
+            score: score, 
+            levelReached: currentLevel, 
+            selfie: selfieDataURL,
+            avgWaitTime: finalAvgWaitRealMin // 🔴 แนบเวลาเฉลี่ยส่งขึ้นเซิร์ฟเวอร์
+        };
+
+        const formData = new URLSearchParams();
+        formData.append('data', JSON.stringify(payload));
+
         fetch(GOOGLE_APP_SCRIPT_URL, {
             method: 'POST',
-            mode: 'no-cors', 
-            headers: { 'Content-Type': 'text/plain' },
-            body: JSON.stringify(payload)
-        }).then(() => {
-            statusText.innerHTML = "<span style='color:var(--success); font-weight:bold;'>✅ ส่งข้อมูลเรียบร้อย!</span><br><button class='btn-primary' onclick='location.reload()' style='margin-top:5px;'>กลับหน้าแรก</button>";
-        }).catch(err => {
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: formData.toString()
+        })
+        .then(response => response.text())
+        .then(text => {
+            statusText.innerHTML = "<span style='color:var(--success); font-weight:bold;'>✅ ส่งข้อมูลตอกบัตรเรียบร้อย!</span><br><button class='btn-primary' onclick='location.reload()' style='margin-top:5px;'>กลับหน้าแรก</button>";
+        })
+        .catch(err => {
             statusText.innerHTML = "<span style='color:var(--danger);'>❌ ส่งข้อมูลไม่สำเร็จ</span><br><button class='btn-primary' onclick='location.reload()'>ตกลง</button>";
         });
     }
