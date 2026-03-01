@@ -258,7 +258,7 @@
 
 <script>
     // 🔴🔴🔴 นำ URL ของ Google Apps Script มาใส่ตรงนี้ 🔴🔴🔴
-    const GOOGLE_APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwOUHpn2IJzRn7papohaDRCWrbgSK7uE8Q7FFTgfhlo0qNxQL-7-MA_doCziPPnZjNb/exec";
+    const GOOGLE_APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzv0LOpTfP1UPJOuGDk-TGI9rNwucsZNEJBquldhagUVF8oTYiIyTU6GFYVqxjKXDGn/exec";
 
     const menuDB = {
         hot: ["อัสสัมวาวี", "ชามะลิหิมะโปรย", "ชาเขียวหวงชาน", "หลงจิ่ง 2025", "เถี่ยกวนอิน", "จางผิงสุ่ยเซียน", "ต้าหงเผา", "สุ่ยเซียนอบถ่าน"],
@@ -592,11 +592,15 @@
 
             globalLb.slice(0, 5).forEach((entry, index) => {
                 let displayLevel = entry.level > 10 ? "Clear!" : `Lv.${entry.level}`;
+                
+                // ใช้รูปเซลฟี่ที่เซฟไว้ในไดร์ฟ ถ้าไม่มีให้ใช้โลโก้ร้านแทน
+                let imgSrc = (entry.selfie && entry.selfie !== "") ? entry.selfie : "IMG_4511.jpeg";
+
                 let rowHtml = `
                     <div class="leaderboard-row">
                         <span class="lb-rank">${index + 1}.</span>
                         <span style="flex:1; display:flex; align-items:center;">
-                            <img src="IMG_4511.jpeg" alt="Shop" class="player-img-lb">
+                            <img src="${imgSrc}" alt="User" class="player-img-lb">
                             ${entry.name} <span style="font-size:8px; color:#888; margin-left:3px;">(${displayLevel})</span>
                         </span>
                         <span style="font-weight:bold;">${entry.score} pts</span>
@@ -620,14 +624,21 @@
             return;
         }
 
-        statusText.innerText = "⏳ กำลังส่งคะแนนเข้าเซิร์ฟเวอร์...";
-        const payload = { name: playerName, score: score, levelReached: currentLevel };
+        statusText.innerText = "⏳ กำลังส่งคะแนนและรูปภาพเข้าเซิร์ฟเวอร์ (อาจใช้เวลา 2-3 วินาที)...";
+        
+        // 🔴 เพิ่ม selfie: selfieDataURL เข้าไปในชุดข้อมูลที่จะส่ง 🔴
+        const payload = { 
+            name: playerName, 
+            score: score, 
+            levelReached: currentLevel,
+            selfie: selfieDataURL 
+        };
 
         fetch(GOOGLE_APP_SCRIPT_URL, {
             method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         }).then(() => {
-            statusText.innerHTML = "<span style='color:var(--success); font-weight:bold;'>✅ ส่งคะแนนเรียบร้อย!</span><br><button class='btn-primary' onclick='location.reload()'>กลับหน้าตอกบัตร</button>";
+            statusText.innerHTML = "<span style='color:var(--success); font-weight:bold;'>✅ ส่งคะแนนและรูปเซลฟี่เรียบร้อย!</span><br><button class='btn-primary' onclick='location.reload()'>กลับหน้าตอกบัตร</button>";
         }).catch(err => {
             statusText.innerHTML = "<span style='color:var(--danger);'>❌ ส่งออนไลน์ไม่สำเร็จ</span><br><button class='btn-primary' onclick='location.reload()'>ตกลง</button>";
         });
