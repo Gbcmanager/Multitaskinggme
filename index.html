@@ -160,7 +160,7 @@
 </div>
 
 <div id="overlay-start" class="overlay">
-    <img src="IMG_4511.jpeg" alt="Gimbocha Logo" class="shop-logo-top">
+    <img src="IMG_4511.jpeg" alt="Gimbocha Logo" class="shop-logo-top" onerror="this.style.display='none'">
     <h1 style="color: #fff;">Gimbocha KDS</h1>
     <p>ระบบตอกบัตรพนักงานแบบ Self Check-in</p>
     
@@ -192,7 +192,7 @@
                 <button class="btn-primary btn-danger" onclick="quitGame()">ส่งกะ (เซฟคะแนน)</button>
                 <button class="btn-primary" onclick="startLevel()" id="btn-continue">ลุยต่อ!</button>
             </div>
-            <div id="save-status-msg" style="font-size: 10px; margin-top: 5px;"></div>
+            <div id="save-status-msg" style="font-size: 9px; margin-top: 5px;"></div>
         </div>
 
         <div class="split-right">
@@ -205,7 +205,7 @@
 </div>
 
 <script>
-    // 🔴🔴🔴 URL ใหม่ที่ได้จาก Google Apps Script (ตรวจสอบให้แน่ใจว่าลงท้ายด้วย /exec)
+    // 🔴🔴🔴 URL เชื่อมต่อ Google Apps Script ที่บอสส่งมาครับ 🔴🔴🔴
     const GOOGLE_APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzvW-nQUFQVi5WPIl4xNb7sqeGsSgyM_lcrAL3zBmSem2YiQiqYNsKbfFBqREAfS20/exec"; 
 
     const menuDB = {
@@ -439,9 +439,6 @@
         const listDiv = document.getElementById('leaderboard-list');
         listDiv.innerHTML = "<div style='text-align:center; padding: 15px; color:#888; font-size:10px;'>⏳ โหลดสถิติร้าน...</div>";
         try {
-            if(GOOGLE_APP_SCRIPT_URL === "ใส่_URL_ของ_GOOGLE_APPS_SCRIPT_ตรงนี้") {
-                listDiv.innerHTML = "<div style='text-align:center; padding: 15px; color: var(--danger); font-size:10px;'>❌ ยังไม่ได้ใส่ลิงก์ Google Sheets</div>"; return;
-            }
             const response = await fetch(GOOGLE_APP_SCRIPT_URL);
             const globalLb = await response.json();
             listDiv.innerHTML = "";
@@ -469,13 +466,8 @@
     function quitGame() {
         document.getElementById('action-buttons').classList.add('hidden');
         const statusText = document.getElementById('save-status-msg');
-        
-        if(GOOGLE_APP_SCRIPT_URL === "ใส่_URL_ของ_GOOGLE_APPS_SCRIPT_ตรงนี้") {
-            statusText.innerHTML = "<em>จบกะ (ไม่ได้เซฟออนไลน์เพราะไม่มี URL)</em><br><br><button class='btn-primary' onclick='location.reload()'>หน้าแรก</button>";
-            return;
-        }
-
         statusText.innerText = "⏳ กำลังส่งข้อมูล (อาจใช้เวลาสักครู่)...";
+        
         const payload = { name: playerName, score: score, levelReached: currentLevel, selfie: selfieDataURL };
 
         fetch(GOOGLE_APP_SCRIPT_URL, {
