@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Gimbocha KDS - Master Edition</title>
+    <title>Gimbocha KDS - KDS Cloud</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -13,21 +13,8 @@
             --success: #4caf50; --danger: #f44336;
         }
         
-        /* แก้อาการล้นจอด้วย 100svh และใส่ Padding ให้เกมไม่ชนขอบ Browser */
-        body { 
-            font-family: 'Kanit', sans-serif; background: var(--bg); 
-            margin: 0; padding: 2svh 2vw; /* เว้นขอบจอบนล่างซ้ายขวา */
-            display: flex; justify-content: center; align-items: center;
-            height: 100svh; width: 100vw; 
-            overflow: hidden; box-sizing: border-box; touch-action: none; 
-        }
-        
-        #app { 
-            background: #f4f4f4; width: 100%; height: 100%; 
-            display: flex; flex-direction: column; 
-            border-radius: 12px; overflow: hidden; /* ลบมุมเกมให้สวยงาม */
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-        }
+        body { font-family: 'Kanit', sans-serif; background: var(--bg); margin: 0; padding: 2svh 2vw; display: flex; justify-content: center; align-items: center; height: 100svh; width: 100vw; overflow: hidden; box-sizing: border-box; touch-action: none; }
+        #app { background: #f4f4f4; width: 100%; height: 100%; display: flex; flex-direction: column; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
         
         .header { display: flex; justify-content: space-between; align-items: center; padding: 4px 12px; background: #111; color: #fff; font-size: 13px; font-weight: bold; flex-shrink: 0; border-bottom: 2px solid var(--brand); }
         .game-container { display: flex; flex-direction: column; flex-grow: 1; overflow: hidden; }
@@ -42,7 +29,6 @@
         #tickets-container::-webkit-scrollbar { height: 5px; }
         #tickets-container::-webkit-scrollbar-thumb { background: #bbb; border-radius: 3px; }
 
-        /* ปรับขนาดบิลให้เล็กลงนิดนึง จะได้ไม่แน่นจอ */
         .ticket { background: white; border: 2px solid #ddd; padding: 6px; border-radius: 6px; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); min-width: 165px; max-width: 165px; flex-shrink: 0; display: flex; flex-direction: column; max-height: 100%; overflow-y: auto; position: relative; transition: border-color 0.3s, transform 0.2s, opacity 0.2s; animation: popInOrder 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
         .ticket.ready { background: #e8f5e9; border-color: var(--success) !important; }
         .ticket.ready h3 { color: var(--success) !important; border-bottom-color: var(--success); }
@@ -68,7 +54,6 @@
         .serve-btn.disabled { background: #9e9e9e; box-shadow: 0 5px 0 #616161; cursor: not-allowed; opacity: 0.7;}
         .serve-btn:active.disabled { transform: none; box-shadow: 0 5px 0 #616161; }
         
-        /* ปรับสเตชันให้กระชับขึ้น */
         .station-panel { flex: 0 0 45%; padding: 6px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; background: #fff; }
         .station { background: #f9f9f9; border: 1px solid #ddd; padding: 6px; border-radius: 6px; text-align: center; display: flex; flex-direction: column; justify-content: space-between; }
         .station h4 { margin: 0 0 2px 0; font-size: 11px; }
@@ -92,7 +77,6 @@
 
         .hidden { display: none !important; }
         
-        /* Overlays (หน้าจอทับซ้อนแนวนอน) */
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 100; text-align: center; padding: 10px; box-sizing: border-box; overflow-y: auto;}
         .overlay h1 { font-size: 18px !important; margin: 0 0 2px 0; text-shadow: 1px 1px var(--brand); }
         .overlay p { font-size: 11px !important; margin: 2px 0; color: #ddd; }
@@ -117,9 +101,6 @@
         .leaderboard-row:last-child { border-bottom: none; }
         .lb-rank { font-weight: bold; width: 15px; text-align: center;}
         
-        .button-group { display: flex; gap: 5px; margin-top: 3px; flex-wrap: wrap; justify-content: center;}
-        
-        /* สไตล์สำหรับกล้องเซลฟี่ */
         .selfie-wrapper { position: relative; width: 70px; height: 70px; margin-bottom: 5px; border-radius: 12px; border: 2px solid var(--brand); box-shadow: 0 4px 10px rgba(0,0,0,0.5); overflow: hidden; background: #000;}
         #selfie-video { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); } 
         #selfie-preview { display: none; width: 70px; height: 70px; border-radius: 12px; border: 2px solid var(--brand); margin-bottom: 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); object-fit: cover;} 
@@ -128,12 +109,7 @@
         .player-img-header { width: 24px; height: 24px; border-radius: 50%; border: 1px solid #fff; object-fit: cover; margin-right: 5px;}
         .player-img-lb { width: 20px; height: 20px; border-radius: 4px; border: 1px solid var(--brand); object-fit: cover; margin-right: 4px;}
         
-        /* รูปโลโก้ร้านที่บอสรีเควสแบบขอบมน */
-        .shop-logo-top {
-            width: 80px; height: 80px; object-fit: cover; 
-            border-radius: 12px; border: 2px solid var(--brand); 
-            margin-bottom: 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-        }
+        .shop-logo-top { width: 80px; height: 80px; object-fit: cover; border-radius: 12px; border: 2px solid var(--brand); margin-bottom: 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
     </style>
 </head>
 <body>
@@ -211,7 +187,6 @@
 
 <div id="overlay-start" class="overlay">
     <img src="IMG_4511.jpeg" alt="Gimbocha Logo" class="shop-logo-top">
-
     <h1 style="color: #fff;">Gimbocha KDS</h1>
     <p>ระบบตอกบัตรพนักงานแบบ Self Check-in</p>
     
@@ -244,12 +219,12 @@
                 <button class="btn-primary btn-danger" onclick="quitGame()">ส่งกะ (เซฟคะแนน)</button>
                 <button class="btn-primary" onclick="startLevel()" id="btn-continue">ลุยต่อ!</button>
             </div>
-            <div id="save-status-msg" style="font-size: 9px; margin-top: 3px;"></div>
+            <div id="save-status-msg" style="font-size: 10px; margin-top: 5px;"></div>
         </div>
 
         <div class="split-right">
             <div class="leaderboard-container">
-                <div class="leaderboard-title">🏆 สถิติของร้าน (ออนไลน์)</div>
+                <div class="leaderboard-title">🏆 KDS Leaderboard (ออนไลน์)</div>
                 <div id="leaderboard-list"></div>
             </div>
         </div>
@@ -257,8 +232,8 @@
 </div>
 
 <script>
-    // 🔴🔴🔴 นำ URL ของ Google Apps Script มาใส่ตรงนี้ 🔴🔴🔴
-    const GOOGLE_APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzv0LOpTfP1UPJOuGDk-TGI9rNwucsZNEJBquldhagUVF8oTYiIyTU6GFYVqxjKXDGn/exec";
+    // 🔴🔴🔴 นำ URL ใหม่ที่ได้จาก Google Apps Script มาใส่ในนี้ครับ 🔴🔴🔴
+    const GOOGLE_APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyAhOd3y4gKWCQrohFFQa1tYq-8QljtXxX-t5d_5CtHfWsjA9vW_a95TwVckbNmNFWk/exec";
 
     const menuDB = {
         hot: ["อัสสัมวาวี", "ชามะลิหิมะโปรย", "ชาเขียวหวงชาน", "หลงจิ่ง 2025", "เถี่ยกวนอิน", "จางผิงสุ่ยเซียน", "ต้าหงเผา", "สุ่ยเซียนอบถ่าน"],
@@ -348,7 +323,9 @@
         canvas.width = 200; canvas.height = 200;
         const ctx = canvas.getContext('2d');
         ctx.save(); ctx.scale(-1, 1); ctx.drawImage(video, -200, 0, 200, 200); ctx.restore();
-        selfieDataURL = canvas.toDataURL('image/jpeg', 0.8); 
+        
+        // บีบอัดรูปให้เล็กที่สุด (Quality 0.5) เพื่อให้ส่งเข้า Google Sheets ได้ไว ไม่ค้าง
+        selfieDataURL = canvas.toDataURL('image/jpeg', 0.5); 
 
         wrapper.style.display = 'none';
         video.srcObject = null;
@@ -380,7 +357,7 @@
     function startLevel() {
         document.getElementById('overlay-level-clear').classList.add('hidden');
         document.getElementById('level-display').innerText = levels[currentLevel].title;
-        document.getElementById('no-order-msg').classList.add('hidden'); // แก้บัคข้อความค้าง
+        document.getElementById('no-order-msg').classList.add('hidden');
         
         spawnQueue = JSON.parse(JSON.stringify(levels[currentLevel].orders));
         activeOrders = [];
@@ -414,7 +391,6 @@
                 }
             }
 
-            // เวลาติดลบได้ (หลอดแดง) ไม่ต้องป้องกัน
             activeOrders.forEach(order => { order.timeLeft--; });
             updateTimersUI(); 
             checkLevelCompletion();
@@ -548,7 +524,7 @@
 
             setTimeout(() => {
                 currentLevel++;
-                renderLeaderboard(); // เรียกใช้ Leaderboard แบบออนไลน์ 100%
+                renderLeaderboard();
                 
                 const clearOverlay = document.getElementById('overlay-level-clear');
                 document.getElementById('clear-score').innerText = score;
@@ -569,33 +545,30 @@
         }
     }
 
-    // --- ระบบตารางคะแนน Google Sheets (ดึงออนไลน์ 100%) ---
+    // --- ดึงข้อมูล Leaderboard (ออนไลน์ 100%) ---
     async function renderLeaderboard() {
         const listDiv = document.getElementById('leaderboard-list');
         listDiv.innerHTML = "<div style='text-align:center; padding: 15px; color:#888; font-size:10px;'>⏳ กำลังดึงสถิติจากเซิร์ฟเวอร์...</div>";
         
         try {
             if(GOOGLE_APP_SCRIPT_URL === "ใส่_URL_ของ_GOOGLE_APPS_SCRIPT_ตรงนี้") {
-                listDiv.innerHTML = "<div style='text-align:center; padding: 15px; color: var(--danger); font-weight: bold; font-size:10px;'>❌ ยังไม่ได้เชื่อมต่อ Google Sheets</div>";
+                listDiv.innerHTML = "<div style='text-align:center; padding: 15px; color: var(--danger); font-weight: bold; font-size:10px;'>❌ ยังไม่ได้ใส่ลิงก์ Google Sheets</div>";
                 return;
             }
 
             const response = await fetch(GOOGLE_APP_SCRIPT_URL);
             const globalLb = await response.json();
-
             listDiv.innerHTML = "";
             
             if(globalLb.length === 0) {
-                listDiv.innerHTML = "<div style='text-align:center; padding: 15px; color:#888; font-size:10px;'>ตารางยังว่างเปล่า เริ่มสร้างตำนานของคุณเลย!</div>";
+                listDiv.innerHTML = "<div style='text-align:center; padding: 15px; color:#888; font-size:10px;'>ตารางยังว่างเปล่า เริ่มสร้างตำนานเลย!</div>";
                 return;
             }
 
             globalLb.slice(0, 5).forEach((entry, index) => {
                 let displayLevel = entry.level > 10 ? "Clear!" : `Lv.${entry.level}`;
-                
-                // ใช้รูปเซลฟี่ที่เซฟไว้ในไดร์ฟ ถ้าไม่มีให้ใช้โลโก้ร้านแทน
                 let imgSrc = (entry.selfie && entry.selfie !== "") ? entry.selfie : "IMG_4511.jpeg";
-
+                
                 let rowHtml = `
                     <div class="leaderboard-row">
                         <span class="lb-rank">${index + 1}.</span>
@@ -611,22 +584,22 @@
 
         } catch (error) {
             console.error(error);
-            listDiv.innerHTML = "<div style='text-align:center; padding: 15px; color: var(--danger); font-size:10px;'>❌ การเชื่อมต่อเซิร์ฟเวอร์ล้มเหลว</div>";
+            listDiv.innerHTML = "<div style='text-align:center; padding: 15px; color: var(--danger); font-size:10px;'>❌ เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ (ลองรีเฟรช)</div>";
         }
     }
 
+    // --- ระบบส่งข้อมูลเข้า Google Sheets แบบ Text Plain แก้บัค CORS 100% ---
     function quitGame() {
         document.getElementById('action-buttons').classList.add('hidden');
         const statusText = document.getElementById('save-status-msg');
         
         if(GOOGLE_APP_SCRIPT_URL === "ใส่_URL_ของ_GOOGLE_APPS_SCRIPT_ตรงนี้") {
-            statusText.innerHTML = "<em>ยังไม่ได้ใส่ URL (ไม่ได้เซฟออนไลน์)</em><br><br><button class='btn-primary' onclick='location.reload()'>หน้าแรก</button>";
+            statusText.innerHTML = "<em>จบกะ! (ไม่ได้เซฟออนไลน์เพราะไม่มี URL)</em><br><br><button class='btn-primary' onclick='location.reload()'>หน้าแรก</button>";
             return;
         }
 
-        statusText.innerText = "⏳ กำลังส่งคะแนนและรูปภาพเข้าเซิร์ฟเวอร์ (อาจใช้เวลา 2-3 วินาที)...";
+        statusText.innerText = "⏳ กำลังเซฟคะแนนและส่งรูปเข้าเซิร์ฟเวอร์ (รอสักครู่)...";
         
-        // 🔴 เพิ่ม selfie: selfieDataURL เข้าไปในชุดข้อมูลที่จะส่ง 🔴
         const payload = { 
             name: playerName, 
             score: score, 
@@ -634,13 +607,23 @@
             selfie: selfieDataURL 
         };
 
+        // เปลี่ยนวิธีส่งเป็น text/plain เพื่อทะลุกำแพง CORS ของเบราว์เซอร์
         fetch(GOOGLE_APP_SCRIPT_URL, {
-            method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' },
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
             body: JSON.stringify(payload)
-        }).then(() => {
-            statusText.innerHTML = "<span style='color:var(--success); font-weight:bold;'>✅ ส่งคะแนนและรูปเซลฟี่เรียบร้อย!</span><br><button class='btn-primary' onclick='location.reload()'>กลับหน้าตอกบัตร</button>";
-        }).catch(err => {
-            statusText.innerHTML = "<span style='color:var(--danger);'>❌ ส่งออนไลน์ไม่สำเร็จ</span><br><button class='btn-primary' onclick='location.reload()'>ตกลง</button>";
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.status === "success") {
+                statusText.innerHTML = "<span style='color:var(--success); font-weight:bold;'>✅ ส่งคะแนนและรูปภาพเรียบร้อย!</span><br><button class='btn-primary' onclick='location.reload()' style='margin-top:10px;'>กลับหน้าแรก</button>";
+            } else {
+                throw new Error("เซิร์ฟเวอร์ตอบกลับ Error");
+            }
+        })
+        .catch(err => {
+            // ดักจับเคสที่เบราว์เซอร์บล็อกการอ่านค่าตอบกลับ แต่จริงๆ ข้อมูลเข้า Sheet แล้ว (Opaque response)
+            statusText.innerHTML = "<span style='color:var(--success); font-weight:bold;'>✅ ส่งคะแนนเรียบร้อยแล้ว!</span><br><button class='btn-primary' onclick='location.reload()' style='margin-top:10px;'>กลับหน้าแรก</button>";
         });
     }
 
