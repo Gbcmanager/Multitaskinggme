@@ -3,25 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Gimbocha KDS - KDS Cloud</title>
+    <title>Gimbocha KDS - Cloud Server</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --brand: #8c5b3e; --bg: #2b2b2b; 
+            --brand: #8c5b3e; --bg: #1a1a1a; 
             --hot: #e65100; --single: #c62828; 
             --blended: #2e7d32; --dessert: #fbc02d; 
             --success: #4caf50; --danger: #f44336;
         }
         
-        body { font-family: 'Kanit', sans-serif; background: var(--bg); margin: 0; padding: 2svh 2vw; display: flex; justify-content: center; align-items: center; height: 100svh; width: 100vw; overflow: hidden; box-sizing: border-box; touch-action: none; }
-        #app { background: #f4f4f4; width: 100%; height: 100%; display: flex; flex-direction: column; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        body { 
+            font-family: 'Kanit', sans-serif; background: var(--bg); 
+            margin: 0; padding: 2svh 2vw; /* ป้องกันการชนขอบ Browser */
+            display: flex; justify-content: center; align-items: center; 
+            height: 100svh; width: 100vw; 
+            overflow: hidden; box-sizing: border-box; touch-action: none; 
+        }
+        
+        #app { 
+            background: #f4f4f4; width: 100%; height: 100%; 
+            display: flex; flex-direction: column; 
+            border-radius: 10px; overflow: hidden; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5); 
+        }
         
         .header { display: flex; justify-content: space-between; align-items: center; padding: 4px 12px; background: #111; color: #fff; font-size: 13px; font-weight: bold; flex-shrink: 0; border-bottom: 2px solid var(--brand); }
         .game-container { display: flex; flex-direction: column; flex-grow: 1; overflow: hidden; }
         
         .order-panel-wrapper { display: flex; flex: 1; overflow: hidden; border-bottom: 3px solid #ccc; }
         .order-panel { flex: 1; padding: 8px; background: #eceff1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
-        .order-header { font-size: 13px; font-weight: bold; color: #333; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center;}
+        .order-header { font-size: 12px; font-weight: bold; color: #333; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center;}
         
         @keyframes popInOrder { 0% { transform: scale(0.8) translateY(-20px); opacity: 0; } 100% { transform: scale(1) translateY(0); opacity: 1; } }
 
@@ -29,55 +41,56 @@
         #tickets-container::-webkit-scrollbar { height: 5px; }
         #tickets-container::-webkit-scrollbar-thumb { background: #bbb; border-radius: 3px; }
 
-        .ticket { background: white; border: 2px solid #ddd; padding: 6px; border-radius: 6px; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); min-width: 165px; max-width: 165px; flex-shrink: 0; display: flex; flex-direction: column; max-height: 100%; overflow-y: auto; position: relative; transition: border-color 0.3s, transform 0.2s, opacity 0.2s; animation: popInOrder 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        .ticket { background: white; border: 2px solid #ddd; padding: 6px; border-radius: 6px; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); min-width: 155px; max-width: 155px; flex-shrink: 0; display: flex; flex-direction: column; max-height: 100%; overflow-y: auto; position: relative; transition: border-color 0.3s, transform 0.2s, opacity 0.2s; animation: popInOrder 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
         .ticket.ready { background: #e8f5e9; border-color: var(--success) !important; }
         .ticket.ready h3 { color: var(--success) !important; border-bottom-color: var(--success); }
         .ready-stamp { background: var(--success); color: white; text-align: center; font-size: 11px; font-weight: bold; padding: 3px; border-radius: 4px; margin-bottom: 5px; animation: pulse 1s infinite; }
         @keyframes pulse { 0% { transform: scale(0.98); } 50% { transform: scale(1.02); } 100% { transform: scale(0.98); } }
 
-        .ticket h3 { margin: 0 0 4px 0; color: #111; display: flex; justify-content: space-between; font-size: 12px; border-bottom: 1px dashed #ccc; padding-bottom: 3px;}
+        .ticket h3 { margin: 0 0 4px 0; color: #111; display: flex; justify-content: space-between; font-size: 11px; border-bottom: 1px dashed #ccc; padding-bottom: 3px;}
         .ticket-timer-bg { width: 100%; height: 4px; background: #eee; border-radius: 2px; margin-bottom: 5px; overflow: hidden; }
         .ticket-timer-fill { height: 100%; background: var(--success); width: 100%; transition: width 1s linear, background-color 0.5s; }
         
-        .order-item { display: flex; align-items: center; margin-bottom: 3px; font-size: 10px; font-weight: 500; line-height: 1.2; transition: opacity 0.3s; }
+        .order-item { display: flex; align-items: center; margin-bottom: 3px; font-size: 9px; font-weight: 500; line-height: 1.2; transition: opacity 0.3s; }
         .order-item.done { text-decoration: line-through; color: #aaa; opacity: 0.5; }
         
-        .badge { display: inline-block; padding: 2px 3px; border-radius: 3px; font-size: 9px; color: white; margin-right: 4px; font-weight: bold; min-width: 25px; text-align: center; flex-shrink: 0; }
+        .badge { display: inline-block; padding: 2px 3px; border-radius: 3px; font-size: 8px; color: white; margin-right: 4px; font-weight: bold; min-width: 25px; text-align: center; flex-shrink: 0; }
         .bg-single { background: var(--single); } 
         .bg-blended { background: var(--blended); } 
-        .bg-hot { background: transparent; font-size: 12px; padding: 0; min-width: 20px; } 
+        .bg-hot { background: transparent; font-size: 11px; padding: 0; min-width: 20px; } 
         .bg-dessert { background: var(--dessert); color: #333; }
 
-        .serve-panel { width: 80px; background: #d7ccc8; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 8px; border-left: 3px solid var(--brand); box-shadow: -2px 0 10px rgba(0,0,0,0.1); z-index: 10; }
-        .serve-btn { width: 100%; height: 80%; background: var(--success); color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 13px; cursor: pointer; box-shadow: 0 5px 0 #2e7d32; transition: 0.1s; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        .serve-btn:active { transform: translateY(5px); box-shadow: 0 0 0 #2e7d32; }
-        .serve-btn.disabled { background: #9e9e9e; box-shadow: 0 5px 0 #616161; cursor: not-allowed; opacity: 0.7;}
-        .serve-btn:active.disabled { transform: none; box-shadow: 0 5px 0 #616161; }
+        .serve-panel { width: 75px; background: #d7ccc8; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 5px; border-left: 3px solid var(--brand); box-shadow: -2px 0 10px rgba(0,0,0,0.1); z-index: 10; }
+        .serve-btn { width: 100%; height: 80%; background: var(--success); color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 12px; cursor: pointer; box-shadow: 0 4px 0 #2e7d32; transition: 0.1s; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .serve-btn:active { transform: translateY(4px); box-shadow: 0 0 0 #2e7d32; }
+        .serve-btn.disabled { background: #9e9e9e; box-shadow: 0 4px 0 #616161; cursor: not-allowed; opacity: 0.7;}
+        .serve-btn:active.disabled { transform: none; box-shadow: 0 4px 0 #616161; }
         
-        .station-panel { flex: 0 0 45%; padding: 6px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; background: #fff; }
+        .station-panel { flex: 0 0 42%; padding: 6px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; background: #fff; }
         .station { background: #f9f9f9; border: 1px solid #ddd; padding: 6px; border-radius: 6px; text-align: center; display: flex; flex-direction: column; justify-content: space-between; }
-        .station h4 { margin: 0 0 2px 0; font-size: 11px; }
+        .station h4 { margin: 0 0 2px 0; font-size: 10px; }
         .station p { font-size: 8px; margin: 0; color: #666; }
         
-        .btn-action { width: 100%; padding: 6px; border: none; border-radius: 5px; font-family: inherit; font-size: 11px; font-weight: bold; cursor: pointer; color: white; transition: 0.1s; margin-top: 3px; }
+        .btn-action { width: 100%; padding: 6px; border: none; border-radius: 5px; font-family: inherit; font-size: 10px; font-weight: bold; cursor: pointer; color: white; transition: 0.1s; margin-top: 3px; }
         .btn-action:disabled { background: #ccc !important; cursor: not-allowed; }
         .btn-action:active { transform: scale(0.92); }
         
         .machine-slots { display: flex; flex-direction: column; gap: 2px; margin-top: 3px; }
-        .slot-bar { width: 100%; height: 9px; background: #eee; border-radius: 4px; overflow: hidden; position: relative; }
+        .slot-bar { width: 100%; height: 8px; background: #eee; border-radius: 4px; overflow: hidden; position: relative; }
         .slot-fill { height: 100%; width: 0%; background: var(--single); transition: width linear; }
-        .slot-text { position: absolute; width: 100%; text-align: center; font-size: 7px; color: white; line-height: 9px; font-weight: bold; top: 0; }
+        .slot-text { position: absolute; width: 100%; text-align: center; font-size: 6px; color: white; line-height: 8px; font-weight: bold; top: 0; }
 
         .progress-bar { width: 100%; height: 6px; background: #eee; border-radius: 3px; margin-top: 3px; overflow: hidden; display: none; }
         .progress-fill { width: 0%; height: 100%; transition: width linear; }
         .stock-indicator { font-size: 10px; font-weight: bold; color: var(--blended); margin: 2px 0; }
         
-        .score-popup { position: absolute; color: var(--success); font-weight: bold; font-size: 14px; animation: floatUp 1s forwards; pointer-events: none; z-index: 50; text-shadow: 1px 1px white;}
-        @keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-30px); } }
+        .score-popup { position: absolute; color: var(--success); font-weight: bold; font-size: 12px; animation: floatUp 1s forwards; pointer-events: none; z-index: 50; text-shadow: 1px 1px white;}
+        @keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-25px); } }
 
         .hidden { display: none !important; }
         
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 100; text-align: center; padding: 10px; box-sizing: border-box; overflow-y: auto;}
+        /* Overlay ลดขนาดและจัด Layout ให้กระชับ */
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 100; text-align: center; padding: 10px; box-sizing: border-box;}
         .overlay h1 { font-size: 18px !important; margin: 0 0 2px 0; text-shadow: 1px 1px var(--brand); }
         .overlay p { font-size: 11px !important; margin: 2px 0; color: #ddd; }
         .btn-primary { background: var(--brand); color: white; padding: 6px 12px; border: none; border-radius: 6px; font-size: 12px; font-family: inherit; cursor: pointer; margin: 3px; font-weight: bold; transition: 0.2s; }
@@ -92,7 +105,7 @@
         #landscape-warning { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #2b2b2b; color: white; z-index: 999; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; box-sizing: border-box; }
         @media screen and (orientation: portrait) { #landscape-warning { display: flex; } #app { display: none; } }
         
-        .input-name { padding: 6px; width: 80%; max-width: 200px; margin: 5px 0; border-radius: 6px; border: 2px solid var(--brand); text-align: center; font-family: inherit; font-size: 12px; outline: none; }
+        .input-name { padding: 6px; width: 80%; max-width: 180px; margin: 5px 0; border-radius: 6px; border: 2px solid var(--brand); text-align: center; font-family: inherit; font-size: 12px; outline: none; }
         
         .leaderboard-container { background: #fff; color: #333; width: 100%; border-radius: 8px; padding: 8px; margin: 0; text-align: left; overflow-y: auto; box-shadow: 0 4px 10px rgba(0,0,0,0.5); flex-grow: 1; display: flex; flex-direction: column;}
         .leaderboard-title { font-size: 11px; font-weight: bold; border-bottom: 2px solid var(--brand); margin-bottom: 3px; padding-bottom: 2px; flex-shrink: 0;}
@@ -101,15 +114,14 @@
         .leaderboard-row:last-child { border-bottom: none; }
         .lb-rank { font-weight: bold; width: 15px; text-align: center;}
         
-        .selfie-wrapper { position: relative; width: 70px; height: 70px; margin-bottom: 5px; border-radius: 12px; border: 2px solid var(--brand); box-shadow: 0 4px 10px rgba(0,0,0,0.5); overflow: hidden; background: #000;}
+        .selfie-wrapper { position: relative; width: 60px; height: 60px; margin-bottom: 5px; border-radius: 12px; border: 2px solid var(--brand); box-shadow: 0 4px 10px rgba(0,0,0,0.5); overflow: hidden; background: #000;}
         #selfie-video { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); } 
-        #selfie-preview { display: none; width: 70px; height: 70px; border-radius: 12px; border: 2px solid var(--brand); margin-bottom: 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); object-fit: cover;} 
-        .selfie-icon { position: absolute; font-size: 16px; color: rgba(255,255,255,0.7); top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none;}
+        #selfie-preview { display: none; width: 60px; height: 60px; border-radius: 12px; border: 2px solid var(--brand); margin-bottom: 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); object-fit: cover;} 
+        .selfie-icon { position: absolute; font-size: 14px; color: rgba(255,255,255,0.7); top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none;}
         
-        .player-img-header { width: 24px; height: 24px; border-radius: 50%; border: 1px solid #fff; object-fit: cover; margin-right: 5px;}
+        .player-img-header { width: 22px; height: 22px; border-radius: 50%; border: 1px solid #fff; object-fit: cover; margin-right: 5px;}
         .player-img-lb { width: 20px; height: 20px; border-radius: 4px; border: 1px solid var(--brand); object-fit: cover; margin-right: 4px;}
-        
-        .shop-logo-top { width: 80px; height: 80px; object-fit: cover; border-radius: 12px; border: 2px solid var(--brand); margin-bottom: 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+        .shop-logo-top { width: 70px; height: 70px; object-fit: cover; border-radius: 12px; border: 2px solid var(--brand); margin-bottom: 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
     </style>
 </head>
 <body>
@@ -137,14 +149,14 @@
                     <span id="active-count-badge" style="background: var(--danger); color: white; padding: 2px 6px; border-radius: 8px; font-size: 10px;">บนจอ: 0 บิล</span>
                 </div>
                 <div id="tickets-container"></div>
-                <p id="no-order-msg" class="hidden" style="color: var(--success); font-weight: bold; text-align: center; font-size: 12px; width: 100%; margin-top: 10px;">✅ เคลียร์คิวหมดแล้ว!</p>
+                <p id="no-order-msg" class="hidden" style="color: var(--success); font-weight: bold; text-align: center; font-size: 11px; width: 100%; margin-top: 10px;">✅ เคลียร์คิวหมดแล้ว!</p>
             </div>
             
             <div class="serve-panel">
                 <p style="margin: 0 0 3px 0; font-size: 9px; font-weight: bold; color: #555;">จัดเสิร์ฟ (4)</p>
                 <button class="serve-btn disabled" id="btn-serve-tray" onclick="serveOrders()">
-                    <span style="font-size: 20px; margin-bottom: 2px;">🛎️</span> กดเสิร์ฟ
-                    <span style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 2px 6px; margin-top: 3px; font-size: 10px;"><span id="ready-count">0</span> / 4</span>
+                    <span style="font-size: 18px; margin-bottom: 2px;">🛎️</span> กดเสิร์ฟ
+                    <span style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 2px 6px; margin-top: 3px; font-size: 9px;"><span id="ready-count">0</span> / 4</span>
                 </button>
             </div>
         </div>
@@ -208,18 +220,17 @@
 <div id="overlay-level-clear" class="overlay hidden">
     <div class="split-layout">
         <div class="split-left">
-            <img id="selfie-preview-final" src="" alt="Your Selfie" style="width: 60px; height: 60px; border-radius: 12px; border: 2px solid #ffd54f; object-fit: cover; box-shadow: 0 4px 10px rgba(0,0,0,0.5); margin-bottom: 5px;">
-            
+            <img id="selfie-preview-final" src="" alt="Your Selfie" style="width: 50px; height: 50px; border-radius: 12px; border: 2px solid #ffd54f; object-fit: cover; margin-bottom: 5px;">
             <h1 id="clear-title" style="color: var(--success);">ด่านเคลียร์!</h1>
             <p style="margin: 0;">คะแนนรวมของคุณ:</p>
-            <h3 id="clear-score" style="margin: 0 0 5px 0; color: #ffd54f; font-size: 20px;">0</h3>
+            <h3 id="clear-score" style="margin: 0 0 5px 0; color: #ffd54f; font-size: 18px;">0</h3>
             <p id="level-msg"></p>
 
             <div class="button-group" id="action-buttons">
                 <button class="btn-primary btn-danger" onclick="quitGame()">ส่งกะ (เซฟคะแนน)</button>
                 <button class="btn-primary" onclick="startLevel()" id="btn-continue">ลุยต่อ!</button>
             </div>
-            <div id="save-status-msg" style="font-size: 10px; margin-top: 5px;"></div>
+            <div id="save-status-msg" style="font-size: 9px; margin-top: 5px;"></div>
         </div>
 
         <div class="split-right">
@@ -232,7 +243,7 @@
 </div>
 
 <script>
-    // 🔴🔴🔴 นำ URL ใหม่ที่ได้จาก Google Apps Script มาใส่ในนี้ครับ 🔴🔴🔴
+    // 🔴 URL ใหม่ที่บอสส่งมา 🔴
     const GOOGLE_APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzMhSU88XluGGETaGD3XEU_NoQnG_VumBbh5Zo55g28gtz_ofFQjqKrB9xkgsTrc-Au/exec";
 
     const menuDB = {
@@ -300,13 +311,13 @@
     
     async function startCamera() {
         try {
-            const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user", width: 200, height: 200 }, audio: false });
+            const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user", width: 150, height: 150 }, audio: false });
             const videoEl = document.getElementById('selfie-video');
             videoEl.srcObject = stream;
             streamReference = stream; 
         } catch (err) {
             console.error(err);
-            document.getElementById('selfie-wrapper').innerHTML = "<div style='color:#ff9800; font-size:8px; padding:10px;'>ต้องอนุญาตกล้อง<br>เพื่อเล่นครับบอส</div>";
+            document.getElementById('selfie-wrapper').innerHTML = "<div style='color:#ff9800; font-size:8px; padding:10px;'>โปรดอนุญาตกล้อง</div>";
         }
     }
     
@@ -318,14 +329,14 @@
         const btnStart = document.getElementById('btn-start');
         const btnCapture = document.getElementById('btn-capture');
 
-        if(!streamReference || video.readyState !== 4) { alert("❌ กล้องยังไม่พร้อมครับ"); return; }
+        if(!streamReference || video.readyState !== 4) return;
 
-        canvas.width = 200; canvas.height = 200;
+        canvas.width = 150; canvas.height = 150;
         const ctx = canvas.getContext('2d');
-        ctx.save(); ctx.scale(-1, 1); ctx.drawImage(video, -200, 0, 200, 200); ctx.restore();
+        ctx.save(); ctx.scale(-1, 1); ctx.drawImage(video, -150, 0, 150, 150); ctx.restore();
         
-        // บีบอัดรูปให้เล็กที่สุด (Quality 0.5) เพื่อให้ส่งเข้า Google Sheets ได้ไว ไม่ค้าง
-        selfieDataURL = canvas.toDataURL('image/jpeg', 0.5); 
+        // บีบรูปให้เล็กที่สุด ป้องกัน Google ชีตพัง (Quality 0.4)
+        selfieDataURL = canvas.toDataURL('image/jpeg', 0.4); 
 
         wrapper.style.display = 'none';
         video.srcObject = null;
@@ -339,12 +350,10 @@
 
     function initGame() {
         playerName = document.getElementById('player-name-input').value.trim();
-        if(!playerName) { alert("❌ กรุณาใส่ชื่อตอกบัตรก่อนเข้างานครับ!"); return; }
-        if(!selfieDataURL) { alert("❌ บอสต้องถ่ายรูปเซลฟี่ตอกบัตรก่อนนะครับ!"); return; }
+        if(!playerName || !selfieDataURL) { alert("❌ โปรดถ่ายรูปและใส่ชื่อให้ครบครับ!"); return; }
 
-        const headerImg = document.getElementById('header-player-img');
-        headerImg.src = selfieDataURL;
-        headerImg.classList.remove('hidden');
+        document.getElementById('header-player-img').src = selfieDataURL;
+        document.getElementById('header-player-img').classList.remove('hidden');
         document.getElementById('display-player-name').innerText = playerName;
         document.getElementById('selfie-preview-final').src = selfieDataURL;
         
@@ -524,7 +533,7 @@
 
             setTimeout(() => {
                 currentLevel++;
-                renderLeaderboard();
+                renderLeaderboard(); 
                 
                 const clearOverlay = document.getElementById('overlay-level-clear');
                 document.getElementById('clear-score').innerText = score;
@@ -545,23 +554,18 @@
         }
     }
 
-    // --- ดึงข้อมูล Leaderboard (ออนไลน์ 100%) ---
+    // ดึง Leaderboard
     async function renderLeaderboard() {
         const listDiv = document.getElementById('leaderboard-list');
-        listDiv.innerHTML = "<div style='text-align:center; padding: 15px; color:#888; font-size:10px;'>⏳ กำลังดึงสถิติจากเซิร์ฟเวอร์...</div>";
+        listDiv.innerHTML = "<div style='text-align:center; padding: 15px; color:#888; font-size:10px;'>⏳ โหลดสถิติร้าน...</div>";
         
         try {
-            if(GOOGLE_APP_SCRIPT_URL === "https://script.google.com/macros/s/AKfycbzMhSU88XluGGETaGD3XEU_NoQnG_VumBbh5Zo55g28gtz_ofFQjqKrB9xkgsTrc-Au/exec") {
-                listDiv.innerHTML = "<div style='text-align:center; padding: 15px; color: var(--danger); font-weight: bold; font-size:10px;'>❌ ยังไม่ได้ใส่ลิงก์ Google Sheets</div>";
-                return;
-            }
-
             const response = await fetch(GOOGLE_APP_SCRIPT_URL);
             const globalLb = await response.json();
             listDiv.innerHTML = "";
             
             if(globalLb.length === 0) {
-                listDiv.innerHTML = "<div style='text-align:center; padding: 15px; color:#888; font-size:10px;'>ตารางยังว่างเปล่า เริ่มสร้างตำนานเลย!</div>";
+                listDiv.innerHTML = "<div style='text-align:center; padding: 15px; color:#888; font-size:10px;'>ตารางยังว่างเปล่า ลุยเลย!</div>";
                 return;
             }
 
@@ -573,7 +577,7 @@
                     <div class="leaderboard-row">
                         <span class="lb-rank">${index + 1}.</span>
                         <span style="flex:1; display:flex; align-items:center;">
-                            <img src="${imgSrc}" alt="User" class="player-img-lb">
+                            <img src="${imgSrc}" alt="User" class="player-img-lb" onerror="this.src='IMG_4511.jpeg'">
                             ${entry.name} <span style="font-size:8px; color:#888; margin-left:3px;">(${displayLevel})</span>
                         </span>
                         <span style="font-weight:bold;">${entry.score} pts</span>
@@ -583,22 +587,15 @@
             });
 
         } catch (error) {
-            console.error(error);
-            listDiv.innerHTML = "<div style='text-align:center; padding: 15px; color: var(--danger); font-size:10px;'>❌ เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ (ลองรีเฟรช)</div>";
+            listDiv.innerHTML = "<div style='text-align:center; padding: 15px; color: var(--danger); font-size:10px;'>❌ เชื่อมต่อไม่ได้ (ออฟไลน์)</div>";
         }
     }
 
-    // --- ระบบส่งข้อมูลเข้า Google Sheets แบบ Text Plain แก้บัค CORS 100% ---
+    // ส่งคะแนนแบบยิง API ทะลุ CORS
     function quitGame() {
         document.getElementById('action-buttons').classList.add('hidden');
         const statusText = document.getElementById('save-status-msg');
-        
-        if(GOOGLE_APP_SCRIPT_URL === "https://script.google.com/macros/s/AKfycbzMhSU88XluGGETaGD3XEU_NoQnG_VumBbh5Zo55g28gtz_ofFQjqKrB9xkgsTrc-Au/exec") {
-            statusText.innerHTML = "<em>จบกะ! (ไม่ได้เซฟออนไลน์เพราะไม่มี URL)</em><br><br><button class='btn-primary' onclick='location.reload()'>หน้าแรก</button>";
-            return;
-        }
-
-        statusText.innerText = "⏳ กำลังเซฟคะแนนและส่งรูปเข้าเซิร์ฟเวอร์ (รอสักครู่)...";
+        statusText.innerText = "⏳ กำลังส่งข้อมูล (อาจใช้เวลาสักครู่)...";
         
         const payload = { 
             name: playerName, 
@@ -607,23 +604,16 @@
             selfie: selfieDataURL 
         };
 
-        // เปลี่ยนวิธีส่งเป็น text/plain เพื่อทะลุกำแพง CORS ของเบราว์เซอร์
+        // ยิงคำสั่ง POST แบบไม่รอ Response (ป้องกัน Browser Block)
         fetch(GOOGLE_APP_SCRIPT_URL, {
             method: 'POST',
+            mode: 'no-cors',
             headers: { 'Content-Type': 'text/plain;charset=utf-8' },
             body: JSON.stringify(payload)
-        })
-        .then(response => response.json())
-        .then(data => {
-            if(data.status === "success") {
-                statusText.innerHTML = "<span style='color:var(--success); font-weight:bold;'>✅ ส่งคะแนนและรูปภาพเรียบร้อย!</span><br><button class='btn-primary' onclick='location.reload()' style='margin-top:10px;'>กลับหน้าแรก</button>";
-            } else {
-                throw new Error("เซิร์ฟเวอร์ตอบกลับ Error");
-            }
-        })
-        .catch(err => {
-            // ดักจับเคสที่เบราว์เซอร์บล็อกการอ่านค่าตอบกลับ แต่จริงๆ ข้อมูลเข้า Sheet แล้ว (Opaque response)
-            statusText.innerHTML = "<span style='color:var(--success); font-weight:bold;'>✅ ส่งคะแนนเรียบร้อยแล้ว!</span><br><button class='btn-primary' onclick='location.reload()' style='margin-top:10px;'>กลับหน้าแรก</button>";
+        }).then(() => {
+            statusText.innerHTML = "<span style='color:var(--success); font-weight:bold;'>✅ ส่งข้อมูลเรียบร้อย!</span><br><button class='btn-primary' onclick='location.reload()' style='margin-top:5px;'>กลับหน้าแรก</button>";
+        }).catch(err => {
+            statusText.innerHTML = "<span style='color:var(--danger);'>❌ ส่งข้อมูลไม่สำเร็จ</span><br><button class='btn-primary' onclick='location.reload()'>ตกลง</button>";
         });
     }
 
