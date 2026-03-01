@@ -3,132 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Gimbocha KDS - Cloud Server</title>
+    <title>Gimbocha KDS - Fresh Start</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --brand: #8c5b3e; --bg: #1a1a1a; 
-            --hot: #e65100; --single: #c62828; 
-            --blended: #2e7d32; --dessert: #fbc02d; 
-            --success: #4caf50; --danger: #f44336;
-        }
-        
-        body { 
-            font-family: 'Kanit', sans-serif; background: var(--bg); 
-            margin: 0; padding: 2svh 2vw; /* ป้องกันการชนขอบ Browser */
-            display: flex; justify-content: center; align-items: center; 
-            height: 100svh; width: 100vw; 
-            overflow: hidden; box-sizing: border-box; touch-action: none; 
-        }
-        
-        #app { 
-            background: #f4f4f4; width: 100%; height: 100%; 
-            display: flex; flex-direction: column; 
-            border-radius: 10px; overflow: hidden; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5); 
-        }
-        
+        :root { --brand: #8c5b3e; --bg: #1a1a1a; --hot: #e65100; --single: #c62828; --blended: #2e7d32; --dessert: #fbc02d; --success: #4caf50; --danger: #f44336; }
+        body { font-family: 'Kanit', sans-serif; background: var(--bg); margin: 0; padding: 2svh 2vw; display: flex; justify-content: center; align-items: center; height: 100svh; width: 100vw; overflow: hidden; box-sizing: border-box; touch-action: none; }
+        #app { background: #f4f4f4; width: 100%; height: 100%; display: flex; flex-direction: column; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
         .header { display: flex; justify-content: space-between; align-items: center; padding: 4px 12px; background: #111; color: #fff; font-size: 13px; font-weight: bold; flex-shrink: 0; border-bottom: 2px solid var(--brand); }
         .game-container { display: flex; flex-direction: column; flex-grow: 1; overflow: hidden; }
-        
         .order-panel-wrapper { display: flex; flex: 1; overflow: hidden; border-bottom: 3px solid #ccc; }
         .order-panel { flex: 1; padding: 8px; background: #eceff1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
         .order-header { font-size: 12px; font-weight: bold; color: #333; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center;}
         
         @keyframes popInOrder { 0% { transform: scale(0.8) translateY(-20px); opacity: 0; } 100% { transform: scale(1) translateY(0); opacity: 1; } }
-
         #tickets-container { display: flex; gap: 8px; overflow-x: auto; overflow-y: hidden; padding-bottom: 5px; flex-grow: 1; align-items: flex-start; scroll-behavior: smooth; }
         #tickets-container::-webkit-scrollbar { height: 5px; }
         #tickets-container::-webkit-scrollbar-thumb { background: #bbb; border-radius: 3px; }
 
-        .ticket { background: white; border: 2px solid #ddd; padding: 6px; border-radius: 6px; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); min-width: 155px; max-width: 155px; flex-shrink: 0; display: flex; flex-direction: column; max-height: 100%; overflow-y: auto; position: relative; transition: border-color 0.3s, transform 0.2s, opacity 0.2s; animation: popInOrder 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        .ticket { background: white; border: 2px solid #ddd; padding: 6px; border-radius: 6px; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); min-width: 155px; max-width: 155px; flex-shrink: 0; display: flex; flex-direction: column; max-height: 100%; overflow-y: auto; position: relative; transition: 0.3s; animation: popInOrder 0.3s forwards; }
         .ticket.ready { background: #e8f5e9; border-color: var(--success) !important; }
         .ticket.ready h3 { color: var(--success) !important; border-bottom-color: var(--success); }
-        .ready-stamp { background: var(--success); color: white; text-align: center; font-size: 11px; font-weight: bold; padding: 3px; border-radius: 4px; margin-bottom: 5px; animation: pulse 1s infinite; }
-        @keyframes pulse { 0% { transform: scale(0.98); } 50% { transform: scale(1.02); } 100% { transform: scale(0.98); } }
+        .ready-stamp { background: var(--success); color: white; text-align: center; font-size: 11px; font-weight: bold; padding: 3px; border-radius: 4px; margin-bottom: 5px; }
 
         .ticket h3 { margin: 0 0 4px 0; color: #111; display: flex; justify-content: space-between; font-size: 11px; border-bottom: 1px dashed #ccc; padding-bottom: 3px;}
         .ticket-timer-bg { width: 100%; height: 4px; background: #eee; border-radius: 2px; margin-bottom: 5px; overflow: hidden; }
         .ticket-timer-fill { height: 100%; background: var(--success); width: 100%; transition: width 1s linear, background-color 0.5s; }
         
-        .order-item { display: flex; align-items: center; margin-bottom: 3px; font-size: 9px; font-weight: 500; line-height: 1.2; transition: opacity 0.3s; }
+        .order-item { display: flex; align-items: center; margin-bottom: 3px; font-size: 9px; font-weight: 500; line-height: 1.2; }
         .order-item.done { text-decoration: line-through; color: #aaa; opacity: 0.5; }
-        
-        .badge { display: inline-block; padding: 2px 3px; border-radius: 3px; font-size: 8px; color: white; margin-right: 4px; font-weight: bold; min-width: 25px; text-align: center; flex-shrink: 0; }
-        .bg-single { background: var(--single); } 
-        .bg-blended { background: var(--blended); } 
-        .bg-hot { background: transparent; font-size: 11px; padding: 0; min-width: 20px; } 
-        .bg-dessert { background: var(--dessert); color: #333; }
+        .badge { display: inline-block; padding: 2px 3px; border-radius: 3px; font-size: 8px; color: white; margin-right: 4px; font-weight: bold; min-width: 25px; text-align: center; }
+        .bg-single { background: var(--single); } .bg-blended { background: var(--blended); } .bg-hot { background: transparent; font-size: 11px; padding: 0; min-width: 20px; } .bg-dessert { background: var(--dessert); color: #333; }
 
         .serve-panel { width: 75px; background: #d7ccc8; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 5px; border-left: 3px solid var(--brand); box-shadow: -2px 0 10px rgba(0,0,0,0.1); z-index: 10; }
         .serve-btn { width: 100%; height: 80%; background: var(--success); color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 12px; cursor: pointer; box-shadow: 0 4px 0 #2e7d32; transition: 0.1s; display: flex; flex-direction: column; justify-content: center; align-items: center; }
         .serve-btn:active { transform: translateY(4px); box-shadow: 0 0 0 #2e7d32; }
         .serve-btn.disabled { background: #9e9e9e; box-shadow: 0 4px 0 #616161; cursor: not-allowed; opacity: 0.7;}
-        .serve-btn:active.disabled { transform: none; box-shadow: 0 4px 0 #616161; }
         
         .station-panel { flex: 0 0 42%; padding: 6px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; background: #fff; }
         .station { background: #f9f9f9; border: 1px solid #ddd; padding: 6px; border-radius: 6px; text-align: center; display: flex; flex-direction: column; justify-content: space-between; }
         .station h4 { margin: 0 0 2px 0; font-size: 10px; }
         .station p { font-size: 8px; margin: 0; color: #666; }
-        
         .btn-action { width: 100%; padding: 6px; border: none; border-radius: 5px; font-family: inherit; font-size: 10px; font-weight: bold; cursor: pointer; color: white; transition: 0.1s; margin-top: 3px; }
         .btn-action:disabled { background: #ccc !important; cursor: not-allowed; }
-        .btn-action:active { transform: scale(0.92); }
         
         .machine-slots { display: flex; flex-direction: column; gap: 2px; margin-top: 3px; }
         .slot-bar { width: 100%; height: 8px; background: #eee; border-radius: 4px; overflow: hidden; position: relative; }
         .slot-fill { height: 100%; width: 0%; background: var(--single); transition: width linear; }
         .slot-text { position: absolute; width: 100%; text-align: center; font-size: 6px; color: white; line-height: 8px; font-weight: bold; top: 0; }
-
         .progress-bar { width: 100%; height: 6px; background: #eee; border-radius: 3px; margin-top: 3px; overflow: hidden; display: none; }
         .progress-fill { width: 0%; height: 100%; transition: width linear; }
         .stock-indicator { font-size: 10px; font-weight: bold; color: var(--blended); margin: 2px 0; }
         
         .score-popup { position: absolute; color: var(--success); font-weight: bold; font-size: 12px; animation: floatUp 1s forwards; pointer-events: none; z-index: 50; text-shadow: 1px 1px white;}
         @keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-25px); } }
-
         .hidden { display: none !important; }
         
-        /* Overlay ลดขนาดและจัด Layout ให้กระชับ */
+        /* Overlays */
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 100; text-align: center; padding: 10px; box-sizing: border-box;}
         .overlay h1 { font-size: 18px !important; margin: 0 0 2px 0; text-shadow: 1px 1px var(--brand); }
         .overlay p { font-size: 11px !important; margin: 2px 0; color: #ddd; }
         .btn-primary { background: var(--brand); color: white; padding: 6px 12px; border: none; border-radius: 6px; font-size: 12px; font-family: inherit; cursor: pointer; margin: 3px; font-weight: bold; transition: 0.2s; }
-        .btn-primary:hover { background: #7a4e34; }
         .btn-primary.btn-capture { background: var(--single); font-size: 11px; padding: 5px 10px; margin-top: 5px;}
         .btn-danger { background: var(--danger); }
-
         .split-layout { display: flex; flex-direction: row; align-items: stretch; justify-content: center; width: 100%; max-width: 600px; gap: 10px; height: 100%; max-height: 220px; }
         .split-left { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative;}
-        .split-right { flex: 1; display: flex; flex-direction: column; justify-content: center; }
-
-        #landscape-warning { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #2b2b2b; color: white; z-index: 999; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; box-sizing: border-box; }
-        @media screen and (orientation: portrait) { #landscape-warning { display: flex; } #app { display: none; } }
+        .split-right { flex: 1; display: flex; flex-direction: column; justify-content: center; overflow: hidden;}
         
         .input-name { padding: 6px; width: 80%; max-width: 180px; margin: 5px 0; border-radius: 6px; border: 2px solid var(--brand); text-align: center; font-family: inherit; font-size: 12px; outline: none; }
-        
-        .leaderboard-container { background: #fff; color: #333; width: 100%; border-radius: 8px; padding: 8px; margin: 0; text-align: left; overflow-y: auto; box-shadow: 0 4px 10px rgba(0,0,0,0.5); flex-grow: 1; display: flex; flex-direction: column;}
+        .leaderboard-container { background: #fff; color: #333; width: 100%; border-radius: 8px; padding: 8px; margin: 0; text-align: left; overflow-y: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.5); flex-grow: 1; display: flex; flex-direction: column;}
         .leaderboard-title { font-size: 11px; font-weight: bold; border-bottom: 2px solid var(--brand); margin-bottom: 3px; padding-bottom: 2px; flex-shrink: 0;}
         #leaderboard-list { overflow-y: auto; flex-grow: 1; }
-        .leaderboard-row { display: flex; justify-content: space-between; align-items: center; padding: 2px 0; border-bottom: 1px solid #eee; font-size: 10px; gap: 5px;}
+        .leaderboard-row { display: flex; justify-content: space-between; align-items: center; padding: 3px 0; border-bottom: 1px solid #eee; font-size: 10px; gap: 5px;}
         .leaderboard-row:last-child { border-bottom: none; }
         .lb-rank { font-weight: bold; width: 15px; text-align: center;}
         
-        .selfie-wrapper { position: relative; width: 60px; height: 60px; margin-bottom: 5px; border-radius: 12px; border: 2px solid var(--brand); box-shadow: 0 4px 10px rgba(0,0,0,0.5); overflow: hidden; background: #000;}
+        .selfie-wrapper { position: relative; width: 70px; height: 70px; margin-bottom: 5px; border-radius: 12px; border: 2px solid var(--brand); box-shadow: 0 4px 10px rgba(0,0,0,0.5); overflow: hidden; background: #000;}
         #selfie-video { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); } 
-        #selfie-preview { display: none; width: 60px; height: 60px; border-radius: 12px; border: 2px solid var(--brand); margin-bottom: 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); object-fit: cover;} 
+        #selfie-preview { display: none; width: 70px; height: 70px; border-radius: 12px; border: 2px solid var(--brand); margin-bottom: 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); object-fit: cover;} 
         .selfie-icon { position: absolute; font-size: 14px; color: rgba(255,255,255,0.7); top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none;}
         
         .player-img-header { width: 22px; height: 22px; border-radius: 50%; border: 1px solid #fff; object-fit: cover; margin-right: 5px;}
         .player-img-lb { width: 20px; height: 20px; border-radius: 4px; border: 1px solid var(--brand); object-fit: cover; margin-right: 4px;}
-        .shop-logo-top { width: 70px; height: 70px; object-fit: cover; border-radius: 12px; border: 2px solid var(--brand); margin-bottom: 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+        .shop-logo-top { width: 70px; height: 70px; object-fit: cover; border-radius: 12px; border: 2px solid var(--brand); margin-bottom: 5px; }
+        
+        #landscape-warning { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #2b2b2b; color: white; z-index: 999; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; box-sizing: border-box; }
+        @media screen and (orientation: portrait) { #landscape-warning { display: flex; } #app { display: none; } }
     </style>
 </head>
 <body>
 
 <div id="landscape-warning">
     <h1 style="color: var(--brand); margin-bottom: 10px;">📱 หมุนจอเป็นแนวนอนด้วยครับ</h1>
-    <p>ระบบ Kitchen Display System (KDS)</p>
 </div>
 
 <div id="app">
@@ -153,7 +118,7 @@
             </div>
             
             <div class="serve-panel">
-                <p style="margin: 0 0 3px 0; font-size: 9px; font-weight: bold; color: #555;">จัดเสิร์ฟ (4)</p>
+                <p style="margin: 0 0 3px 0; font-size: 9px; font-weight: bold; color: #555;">จัดเสิร์ฟ</p>
                 <button class="serve-btn disabled" id="btn-serve-tray" onclick="serveOrders()">
                     <span style="font-size: 18px; margin-bottom: 2px;">🛎️</span> กดเสิร์ฟ
                     <span style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 2px 6px; margin-top: 3px; font-size: 9px;"><span id="ready-count">0</span> / 4</span>
@@ -169,13 +134,11 @@
                     <div class="progress-bar" id="prog-hot"><div class="progress-fill" style="background: #e65100;" id="fill-hot"></div></div>
                 </div>
             </div>
-
             <div class="station" style="border-color: var(--single);">
                 <div><h4 style="color: var(--single);">🍵 2. Single Iced</h4><p>ชงสด 4 หัว (8 วิ)</p></div>
                 <div class="machine-slots" id="single-slots"></div>
                 <button class="btn-action bg-single" id="btn-single" onclick="brewSingleTea()">กดชง 1 แก้ว</button>
             </div>
-
             <div class="station" style="border-color: var(--blended);">
                 <div><h4 style="color: var(--blended);">🧋 3. Blended</h4><p>ต้มแกลลอน (10 วิ)</p></div>
                 <div class="stock-indicator">สต็อค: <span id="blended-stock" style="font-size: 12px;">4</span>/4</div>
@@ -185,7 +148,6 @@
                     <div class="progress-bar" id="prog-refill"><div class="progress-fill" style="background: #ff9800;" id="fill-refill"></div></div>
                 </div>
             </div>
-
             <div class="station" style="border-color: var(--dessert);">
                 <div><h4 style="color: var(--dessert);">🍰 4. Dessert</h4><p>จัดจาน (2 วิ)</p></div>
                 <div>
@@ -230,7 +192,7 @@
                 <button class="btn-primary btn-danger" onclick="quitGame()">ส่งกะ (เซฟคะแนน)</button>
                 <button class="btn-primary" onclick="startLevel()" id="btn-continue">ลุยต่อ!</button>
             </div>
-            <div id="save-status-msg" style="font-size: 9px; margin-top: 5px;"></div>
+            <div id="save-status-msg" style="font-size: 10px; margin-top: 5px;"></div>
         </div>
 
         <div class="split-right">
@@ -243,8 +205,8 @@
 </div>
 
 <script>
-    // 🔴 URL ใหม่ที่บอสส่งมา 🔴
-    const GOOGLE_APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzMhSU88XluGGETaGD3XEU_NoQnG_VumBbh5Zo55g28gtz_ofFQjqKrB9xkgsTrc-Au/exec";
+    // 🔴🔴🔴 URL ใหม่ที่ได้จาก Google Apps Script (ตรวจสอบให้แน่ใจว่าลงท้ายด้วย /exec)
+    const GOOGLE_APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzvW-nQUFQVi5WPIl4xNb7sqeGsSgyM_lcrAL3zBmSem2YiQiqYNsKbfFBqREAfS20/exec"; 
 
     const menuDB = {
         hot: ["อัสสัมวาวี", "ชามะลิหิมะโปรย", "ชาเขียวหวงชาน", "หลงจิ่ง 2025", "เถี่ยกวนอิน", "จางผิงสุ่ยเซียน", "ต้าหงเผา", "สุ่ยเซียนอบถ่าน"],
@@ -267,7 +229,6 @@
     ];
 
     let levels = [];
-    
     function generateLevels() {
         levelsConfig.forEach((config, idx) => {
             let levelOrders = [];
@@ -287,18 +248,9 @@
     }
     generateLevels();
 
-    let currentLevel = 0;
-    let score = 0;
-    let spawnQueue = []; 
-    let activeOrders = []; 
-    let timeToNextSpawn = 0;
-    let blendedStock = 4;
-    let singleBrewSlots = 0;
-    let globalTimer;
-    
-    let playerName = "";
-    let selfieDataURL = ""; 
-    let streamReference = null; 
+    let currentLevel = 0; let score = 0; let spawnQueue = []; let activeOrders = []; 
+    let timeToNextSpawn = 0; let blendedStock = 4; let singleBrewSlots = 0; let globalTimer;
+    let playerName = ""; let selfieDataURL = ""; let streamReference = null; 
 
     function initSingleSlots() {
         const container = document.getElementById('single-slots');
@@ -322,30 +274,21 @@
     }
     
     function takeSelfie() {
-        const video = document.getElementById('selfie-video');
-        const canvas = document.getElementById('selfie-canvas');
-        const preview = document.getElementById('selfie-preview');
-        const wrapper = document.getElementById('selfie-wrapper');
-        const btnStart = document.getElementById('btn-start');
-        const btnCapture = document.getElementById('btn-capture');
+        const video = document.getElementById('selfie-video'); const canvas = document.getElementById('selfie-canvas');
+        const preview = document.getElementById('selfie-preview'); const wrapper = document.getElementById('selfie-wrapper');
+        const btnStart = document.getElementById('btn-start'); const btnCapture = document.getElementById('btn-capture');
 
         if(!streamReference || video.readyState !== 4) return;
-
         canvas.width = 150; canvas.height = 150;
         const ctx = canvas.getContext('2d');
         ctx.save(); ctx.scale(-1, 1); ctx.drawImage(video, -150, 0, 150, 150); ctx.restore();
         
-        // บีบรูปให้เล็กที่สุด ป้องกัน Google ชีตพัง (Quality 0.4)
         selfieDataURL = canvas.toDataURL('image/jpeg', 0.4); 
-
-        wrapper.style.display = 'none';
-        video.srcObject = null;
+        wrapper.style.display = 'none'; video.srcObject = null;
         streamReference.getTracks().forEach(track => track.stop()); 
 
-        preview.src = selfieDataURL;
-        preview.style.display = 'block';
-        btnCapture.classList.add('hidden'); 
-        btnStart.disabled = false; btnStart.style.opacity = '1';
+        preview.src = selfieDataURL; preview.style.display = 'block';
+        btnCapture.classList.add('hidden'); btnStart.disabled = false; btnStart.style.opacity = '1';
     }
 
     function initGame() {
@@ -356,7 +299,6 @@
         document.getElementById('header-player-img').classList.remove('hidden');
         document.getElementById('display-player-name').innerText = playerName;
         document.getElementById('selfie-preview-final').src = selfieDataURL;
-        
         document.getElementById('overlay-start').classList.add('hidden');
         startLevel();
     }
@@ -369,13 +311,8 @@
         document.getElementById('no-order-msg').classList.add('hidden');
         
         spawnQueue = JSON.parse(JSON.stringify(levels[currentLevel].orders));
-        activeOrders = [];
-        timeToNextSpawn = 0; 
-        blendedStock = 4; 
-        singleBrewSlots = 0;
-        
-        updateUI();
-        document.getElementById('tickets-container').innerHTML = ""; 
+        activeOrders = []; timeToNextSpawn = 0; blendedStock = 4; singleBrewSlots = 0;
+        updateUI(); document.getElementById('tickets-container').innerHTML = ""; 
 
         clearInterval(globalTimer);
         globalTimer = setInterval(() => {
@@ -384,52 +321,32 @@
                 if (timeToNextSpawn <= 0) {
                     let maxSpawn = currentLevel >= 8 ? 3 : (currentLevel >= 4 ? 2 : 1);
                     let numToSpawn = Math.floor(Math.random() * maxSpawn) + 1; 
-                    
                     for(let i=0; i<numToSpawn; i++) {
                         if(spawnQueue.length > 0) {
-                            let newOrder = spawnQueue.shift();
-                            activeOrders.push(newOrder);
-                            appendTicketToDOM(newOrder); 
-                            setTimeout(() => {
-                                const container = document.getElementById('tickets-container');
-                                container.scrollLeft = container.scrollWidth;
-                            }, 100);
+                            let newOrder = spawnQueue.shift(); activeOrders.push(newOrder); appendTicketToDOM(newOrder); 
+                            setTimeout(() => { const c = document.getElementById('tickets-container'); c.scrollLeft = c.scrollWidth; }, 100);
                         }
                     }
                     timeToNextSpawn = levels[currentLevel].spawnBaseRate + Math.floor(Math.random() * 2); 
                 }
             }
-
             activeOrders.forEach(order => { order.timeLeft--; });
-            updateTimersUI(); 
-            checkLevelCompletion();
+            updateTimersUI(); checkLevelCompletion();
         }, 1000);
     }
 
     function appendTicketToDOM(order) {
         const container = document.getElementById('tickets-container');
-        const div = document.createElement('div');
-        div.className = 'ticket';
-        div.id = `ticket-${order.id}`;
-        
-        let html = `
-            <h3>คิว #${order.id} <span class="timer-text" style="color:#666">⏱ ${order.timeLeft}s</span></h3>
-            <div class="ticket-timer-bg"><div class="ticket-timer-fill" style="width: 100%; background-color: var(--success);"></div></div>
-            <div id="stamp-${order.id}"></div>
-        `;
-        
+        const div = document.createElement('div'); div.className = 'ticket'; div.id = `ticket-${order.id}`;
+        let html = `<h3>คิว #${order.id} <span class="timer-text" style="color:#666">⏱ ${order.timeLeft}s</span></h3>
+            <div class="ticket-timer-bg"><div class="ticket-timer-fill" style="width: 100%; background-color: var(--success);"></div></div><div id="stamp-${order.id}"></div>`;
         order.items.forEach((item, index) => {
             let badgeText = ""; let badgeClass = `bg-${item.type}`;
-            if (item.type === 'hot') { badgeText = "🫖"; }
-            else if (item.type === 'single') { badgeText = "SIN"; }
-            else if (item.type === 'blended') { badgeText = "BLE"; }
-            else if (item.type === 'dessert') { badgeText = "DES"; }
-
+            if (item.type === 'hot') { badgeText = "🫖"; } else if (item.type === 'single') { badgeText = "SIN"; }
+            else if (item.type === 'blended') { badgeText = "BLE"; } else if (item.type === 'dessert') { badgeText = "DES"; }
             html += `<div class="order-item" id="item-${order.id}-${index}"><span class="badge ${badgeClass}">${badgeText}</span>${item.name}</div>`;
         });
-        div.innerHTML = html;
-        container.appendChild(div);
-        
+        div.innerHTML = html; container.appendChild(div);
         document.getElementById('order-count-badge').innerText = `รอพ่น: ${spawnQueue.length}`;
         document.getElementById('active-count-badge').innerText = `บนจอ: ${activeOrders.length}`;
     }
@@ -438,60 +355,41 @@
         activeOrders.forEach(order => {
             const ticketEl = document.getElementById(`ticket-${order.id}`);
             if (!ticketEl) return;
-            
-            const timeSpan = ticketEl.querySelector('.timer-text');
-            const fillBar = ticketEl.querySelector('.ticket-timer-fill');
-            
+            const timeSpan = ticketEl.querySelector('.timer-text'); const fillBar = ticketEl.querySelector('.ticket-timer-fill');
             if (timeSpan && fillBar) {
                 const percent = (order.timeLeft / order.timeLimit) * 100;
                 timeSpan.innerText = `⏱ ${order.timeLeft}s`; 
-                
                 let barColor = "var(--success)";
-                if (order.timeLeft <= 0) { 
-                    barColor = "var(--danger)"; timeSpan.style.color = "var(--danger)";
-                    if (order.status !== 'ready') ticketEl.style.borderColor = "var(--danger)";
-                } else if (percent <= 30) { 
-                    barColor = "#ff9800"; timeSpan.style.color = "#666";
-                }
-                
-                fillBar.style.width = `${Math.max(0, percent)}%`; 
-                fillBar.style.backgroundColor = barColor;
+                if (order.timeLeft <= 0) { barColor = "var(--danger)"; timeSpan.style.color = "var(--danger)"; if (order.status !== 'ready') ticketEl.style.borderColor = "var(--danger)"; } 
+                else if (percent <= 30) { barColor = "#ff9800"; timeSpan.style.color = "#666"; }
+                fillBar.style.width = `${Math.max(0, percent)}%`; fillBar.style.backgroundColor = barColor;
             }
         });
-        
         let readyCount = activeOrders.filter(o => o.status === 'ready').length;
         document.getElementById('ready-count').innerText = readyCount;
         const serveBtn = document.getElementById('btn-serve-tray');
-        if (readyCount > 0) serveBtn.classList.remove('disabled');
-        else serveBtn.classList.add('disabled');
+        if (readyCount > 0) serveBtn.classList.remove('disabled'); else serveBtn.classList.add('disabled');
     }
 
     function checkOffItem(typeCompleted) {
-        if (activeOrders.length === 0) return;
-        let foundMatch = false;
-
+        if (activeOrders.length === 0) return; let foundMatch = false;
         for (let order of activeOrders) {
             if (order.status === 'ready') continue; 
             for (let i = 0; i < order.items.length; i++) {
-                let item = order.items[i];
-                if (item.type === typeCompleted && !item.done) {
-                    item.done = true; foundMatch = true; score += 20;
-                    let itemEl = document.getElementById(`item-${order.id}-${i}`);
-                    if(itemEl) itemEl.classList.add('done');
+                if (order.items[i].type === typeCompleted && !order.items[i].done) {
+                    order.items[i].done = true; foundMatch = true; score += 20;
+                    let itemEl = document.getElementById(`item-${order.id}-${i}`); if(itemEl) itemEl.classList.add('done');
                     break;
                 }
             }
             if(foundMatch) break;
         }
-
         if (foundMatch) {
             for (let order of activeOrders) {
                 if (order.status !== 'ready' && order.items.every(item => item.done)) {
                     order.status = 'ready'; 
-                    let ticketEl = document.getElementById(`ticket-${order.id}`);
-                    if(ticketEl) ticketEl.classList.add('ready');
-                    let stampEl = document.getElementById(`stamp-${order.id}`);
-                    if(stampEl) stampEl.innerHTML = `<div class="ready-stamp">✅ รอเสิร์ฟ!</div>`;
+                    let ticketEl = document.getElementById(`ticket-${order.id}`); if(ticketEl) ticketEl.classList.add('ready');
+                    let stampEl = document.getElementById(`stamp-${order.id}`); if(stampEl) stampEl.innerHTML = `<div class="ready-stamp">✅ รอเสิร์ฟ!</div>`;
                 }
             }
             updateUI(); updateTimersUI();
@@ -501,25 +399,14 @@
     function serveOrders() {
         let readyOrders = activeOrders.filter(o => o.status === 'ready');
         if (readyOrders.length === 0) return; 
-        
         let toServe = readyOrders.slice(0, 4); 
-        
         toServe.forEach(order => {
-            let speedBonus = order.timeLeft > 0 ? order.timeLeft * 10 : 0;
-            score += (50 + speedBonus);
+            let speedBonus = order.timeLeft > 0 ? order.timeLeft * 10 : 0; score += (50 + speedBonus);
             showFloatingScore(`+${50 + speedBonus}`, `ticket-${order.id}`);
-            
             let ticketEl = document.getElementById(`ticket-${order.id}`);
-            if(ticketEl) {
-                ticketEl.style.transform = "scale(0)";
-                ticketEl.style.opacity = "0";
-                setTimeout(() => ticketEl.remove(), 200);
-            }
-            
-            let idx = activeOrders.findIndex(o => o.id === order.id);
-            if (idx > -1) activeOrders.splice(idx, 1);
+            if(ticketEl) { ticketEl.style.transform = "scale(0)"; ticketEl.style.opacity = "0"; setTimeout(() => ticketEl.remove(), 200); }
+            let idx = activeOrders.findIndex(o => o.id === order.id); if (idx > -1) activeOrders.splice(idx, 1);
         });
-        
         document.getElementById('active-count-badge').innerText = `บนจอ: ${activeOrders.length}`;
         updateUI(); updateTimersUI(); checkLevelCompletion();
     }
@@ -528,17 +415,12 @@
         const serveBtn = document.getElementById('btn-serve-tray');
         if (activeOrders.length === 0 && spawnQueue.length === 0) {
             document.getElementById('no-order-msg').classList.remove('hidden');
-            serveBtn.classList.add('disabled');
-            clearInterval(globalTimer);
-
+            serveBtn.classList.add('disabled'); clearInterval(globalTimer);
             setTimeout(() => {
-                currentLevel++;
-                renderLeaderboard(); 
-                
+                currentLevel++; renderLeaderboard(); 
                 const clearOverlay = document.getElementById('overlay-level-clear');
                 document.getElementById('clear-score').innerText = score;
                 document.getElementById('save-status-msg').innerText = "";
-                
                 if(currentLevel < levels.length) {
                     document.getElementById('clear-title').innerText = "✅ เคลียร์คิวสำเร็จ!";
                     document.getElementById('level-msg').innerText = `ออเดอร์รออยู่ ${levels[currentLevel].orders.length} บิล!`;
@@ -548,31 +430,27 @@
                     document.getElementById('level-msg').innerText = "คุณเคลียร์ครบ 10 ด่านได้สำเร็จ!";
                     document.getElementById('btn-continue').classList.add('hidden'); 
                 }
-                
                 clearOverlay.classList.remove('hidden');
             }, 1000);
         }
     }
 
-    // ดึง Leaderboard
     async function renderLeaderboard() {
         const listDiv = document.getElementById('leaderboard-list');
         listDiv.innerHTML = "<div style='text-align:center; padding: 15px; color:#888; font-size:10px;'>⏳ โหลดสถิติร้าน...</div>";
-        
         try {
+            if(GOOGLE_APP_SCRIPT_URL === "ใส่_URL_ของ_GOOGLE_APPS_SCRIPT_ตรงนี้") {
+                listDiv.innerHTML = "<div style='text-align:center; padding: 15px; color: var(--danger); font-size:10px;'>❌ ยังไม่ได้ใส่ลิงก์ Google Sheets</div>"; return;
+            }
             const response = await fetch(GOOGLE_APP_SCRIPT_URL);
             const globalLb = await response.json();
             listDiv.innerHTML = "";
-            
             if(globalLb.length === 0) {
-                listDiv.innerHTML = "<div style='text-align:center; padding: 15px; color:#888; font-size:10px;'>ตารางยังว่างเปล่า ลุยเลย!</div>";
-                return;
+                listDiv.innerHTML = "<div style='text-align:center; padding: 15px; color:#888; font-size:10px;'>ตารางยังว่างเปล่า ลุยเลย!</div>"; return;
             }
-
             globalLb.slice(0, 5).forEach((entry, index) => {
                 let displayLevel = entry.level > 10 ? "Clear!" : `Lv.${entry.level}`;
                 let imgSrc = (entry.selfie && entry.selfie !== "") ? entry.selfie : "IMG_4511.jpeg";
-                
                 let rowHtml = `
                     <div class="leaderboard-row">
                         <span class="lb-rank">${index + 1}.</span>
@@ -581,36 +459,32 @@
                             ${entry.name} <span style="font-size:8px; color:#888; margin-left:3px;">(${displayLevel})</span>
                         </span>
                         <span style="font-weight:bold;">${entry.score} pts</span>
-                    </div>
-                `;
+                    </div>`;
                 listDiv.innerHTML += rowHtml;
             });
-
-        } catch (error) {
-            listDiv.innerHTML = "<div style='text-align:center; padding: 15px; color: var(--danger); font-size:10px;'>❌ เชื่อมต่อไม่ได้ (ออฟไลน์)</div>";
-        }
+        } catch (error) { listDiv.innerHTML = "<div style='text-align:center; padding: 15px; color: var(--danger); font-size:10px;'>❌ เชื่อมต่อไม่ได้ (ออฟไลน์)</div>"; }
     }
 
-    // ส่งคะแนนแบบยิง API ทะลุ CORS
+    // 🟢 ระบบส่งข้อมูลแบบกัน CORS Block 100% 🟢
     function quitGame() {
         document.getElementById('action-buttons').classList.add('hidden');
         const statusText = document.getElementById('save-status-msg');
-        statusText.innerText = "⏳ กำลังส่งข้อมูล (อาจใช้เวลาสักครู่)...";
         
-        const payload = { 
-            name: playerName, 
-            score: score, 
-            levelReached: currentLevel,
-            selfie: selfieDataURL 
-        };
+        if(GOOGLE_APP_SCRIPT_URL === "ใส่_URL_ของ_GOOGLE_APPS_SCRIPT_ตรงนี้") {
+            statusText.innerHTML = "<em>จบกะ (ไม่ได้เซฟออนไลน์เพราะไม่มี URL)</em><br><br><button class='btn-primary' onclick='location.reload()'>หน้าแรก</button>";
+            return;
+        }
 
-        // ยิงคำสั่ง POST แบบไม่รอ Response (ป้องกัน Browser Block)
+        statusText.innerText = "⏳ กำลังส่งข้อมูล (อาจใช้เวลาสักครู่)...";
+        const payload = { name: playerName, score: score, levelReached: currentLevel, selfie: selfieDataURL };
+
         fetch(GOOGLE_APP_SCRIPT_URL, {
             method: 'POST',
-            mode: 'no-cors',
-            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            mode: 'no-cors', // บังคับให้ข้ามการเช็คความปลอดภัยของ Browser
+            headers: { 'Content-Type': 'text/plain' },
             body: JSON.stringify(payload)
         }).then(() => {
+            // สำเร็จแน่นอนเพราะ mode no-cors ไม่สน response
             statusText.innerHTML = "<span style='color:var(--success); font-weight:bold;'>✅ ส่งข้อมูลเรียบร้อย!</span><br><button class='btn-primary' onclick='location.reload()' style='margin-top:5px;'>กลับหน้าแรก</button>";
         }).catch(err => {
             statusText.innerHTML = "<span style='color:var(--danger);'>❌ ส่งข้อมูลไม่สำเร็จ</span><br><button class='btn-primary' onclick='location.reload()'>ตกลง</button>";
@@ -618,18 +492,11 @@
     }
 
     function brewSingleTea() {
-        if (singleBrewSlots >= 4) { alert("❌ หัวชงเต็ม 4 หัวแล้ว!"); return; }
-        singleBrewSlots++;
-        const currentSlot = singleBrewSlots;
+        if (singleBrewSlots >= 4) return; singleBrewSlots++; const currentSlot = singleBrewSlots;
         const fill = document.getElementById(`slot-fill-${currentSlot}`), text = document.getElementById(`slot-text-${currentSlot}`), btn = document.getElementById('btn-single');
-        text.innerText = "สกัด..."; fill.style.transition = 'none'; fill.style.width = '0%';
-        if(singleBrewSlots >= 4) btn.disabled = true;
+        text.innerText = "สกัด..."; fill.style.transition = 'none'; fill.style.width = '0%'; if(singleBrewSlots >= 4) btn.disabled = true;
         setTimeout(() => { fill.style.transition = `width 8000ms linear`; fill.style.width = '100%'; }, 50);
-        setTimeout(() => {
-            singleBrewSlots--; btn.disabled = false; text.innerText = "ว่าง";
-            fill.style.transition = 'none'; fill.style.width = '0%';
-            checkOffItem('single');
-        }, 8000);
+        setTimeout(() => { singleBrewSlots--; btn.disabled = false; text.innerText = "ว่าง"; fill.style.transition = 'none'; fill.style.width = '0%'; checkOffItem('single'); }, 8000);
     }
 
     function doTask(type, duration, btnId) {
@@ -639,40 +506,22 @@
         setTimeout(() => { btn.disabled = false; progBar.style.display = 'none'; checkOffItem(type); }, duration);
     }
 
-    function pourBlended() {
-        if (blendedStock > 0) { blendedStock--; updateUI(); checkOffItem('blended'); } 
-        else { alert("❌ แกลลอนหมด! กดต้มใหม่"); }
-    }
-
+    function pourBlended() { if (blendedStock > 0) { blendedStock--; updateUI(); checkOffItem('blended'); } }
     function refillGallon() {
-        if (blendedStock > 0) { alert("❌ แกลลอนยังไม่หมด! ห้ามต้มทับ"); return; }
-        const btn1 = document.getElementById('btn-blend-pour'), btn2 = document.getElementById('btn-blend-refill'), progBar = document.getElementById('prog-refill'), fill = document.getElementById('fill-refill');
+        if (blendedStock > 0) return; const btn1 = document.getElementById('btn-blend-pour'), btn2 = document.getElementById('btn-blend-refill'), progBar = document.getElementById('prog-refill'), fill = document.getElementById('fill-refill');
         btn1.disabled = true; btn2.disabled = true; progBar.style.display = 'block'; fill.style.transition = 'none'; fill.style.width = '0%';
         setTimeout(() => { fill.style.transition = `width 10000ms linear`; fill.style.width = '100%'; }, 50);
         setTimeout(() => { btn1.disabled = false; progBar.style.display = 'none'; blendedStock = 4; updateUI(); }, 10000);
     }
 
     function showFloatingScore(text, elementId) {
-        const target = document.getElementById(elementId);
-        if(!target) return;
-        const floatEl = document.createElement('div');
-        floatEl.className = 'score-popup'; floatEl.innerText = text;
-        floatEl.style.left = '30%'; floatEl.style.top = '10%';
-        target.appendChild(floatEl);
-        setTimeout(() => floatEl.remove(), 1000);
+        const target = document.getElementById(elementId); if(!target) return;
+        const floatEl = document.createElement('div'); floatEl.className = 'score-popup'; floatEl.innerText = text; floatEl.style.left = '30%'; floatEl.style.top = '10%'; target.appendChild(floatEl); setTimeout(() => floatEl.remove(), 1000);
     }
 
     function updateUI() {
-        document.getElementById('score').innerText = score;
-        document.getElementById('blended-stock').innerText = blendedStock;
-        document.getElementById('blended-stock').style.color = blendedStock === 0 ? 'var(--danger)' : 'var(--blended)';
-        
-        const btnRefill = document.getElementById('btn-blend-refill');
-        if (blendedStock > 0) {
-            btnRefill.style.opacity = '0.5'; btnRefill.style.cursor = 'not-allowed';
-        } else {
-            btnRefill.style.opacity = '1'; btnRefill.style.cursor = 'pointer'; btnRefill.disabled = false;
-        }
+        document.getElementById('score').innerText = score; document.getElementById('blended-stock').innerText = blendedStock; document.getElementById('blended-stock').style.color = blendedStock === 0 ? 'var(--danger)' : 'var(--blended)';
+        const btnRefill = document.getElementById('btn-blend-refill'); if (blendedStock > 0) { btnRefill.style.opacity = '0.5'; btnRefill.style.cursor = 'not-allowed'; } else { btnRefill.style.opacity = '1'; btnRefill.style.cursor = 'pointer'; btnRefill.disabled = false; }
     }
 </script>
 
