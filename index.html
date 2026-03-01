@@ -9,59 +9,62 @@
         :root { --brand: #8c5b3e; --bg: #1a1a1a; --hot: #e65100; --single: #c62828; --blended: #2e7d32; --dessert: #fbc02d; --success: #4caf50; --danger: #f44336; }
         body { font-family: 'Kanit', sans-serif; background: var(--bg); margin: 0; padding: 2svh 2vw; display: flex; justify-content: center; align-items: center; height: 100svh; width: 100vw; overflow: hidden; box-sizing: border-box; touch-action: none; }
         #app { background: #f4f4f4; width: 100%; height: 100%; display: flex; flex-direction: column; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
-        .header { display: flex; justify-content: space-between; align-items: center; padding: 4px 12px; background: #111; color: #fff; font-size: 13px; font-weight: bold; flex-shrink: 0; border-bottom: 2px solid var(--brand); }
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 4px 12px; background: #111; color: #fff; font-size: 12px; font-weight: bold; flex-shrink: 0; border-bottom: 2px solid var(--brand); }
         .game-container { display: flex; flex-direction: column; flex-grow: 1; overflow: hidden; }
         .order-panel-wrapper { display: flex; flex: 1; overflow: hidden; border-bottom: 3px solid #ccc; }
-        .order-panel { flex: 1; padding: 8px; background: #eceff1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
-        .order-header { font-size: 12px; font-weight: bold; color: #333; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center;}
+        
+        /* เพิ่มพื้นที่ให้ Order Panel */
+        .order-panel { flex: 1; padding: 6px; background: #eceff1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
+        .order-header { font-size: 11px; font-weight: bold; color: #333; margin-bottom: 4px; display: flex; justify-content: space-between; align-items: center;}
         
         @keyframes popInOrder { 0% { transform: scale(0.8) translateY(-20px); opacity: 0; } 100% { transform: scale(1) translateY(0); opacity: 1; } }
-        #tickets-container { display: flex; gap: 8px; overflow-x: auto; overflow-y: hidden; padding-bottom: 5px; flex-grow: 1; align-items: flex-start; scroll-behavior: smooth; }
-        #tickets-container::-webkit-scrollbar { height: 5px; }
-        #tickets-container::-webkit-scrollbar-thumb { background: #bbb; border-radius: 3px; }
+        #tickets-container { display: flex; gap: 6px; overflow-x: auto; overflow-y: hidden; padding-bottom: 5px; flex-grow: 1; align-items: flex-start; scroll-behavior: smooth; }
+        #tickets-container::-webkit-scrollbar { height: 6px; }
+        #tickets-container::-webkit-scrollbar-thumb { background: #999; border-radius: 3px; }
 
-        .ticket { background: white; border: 2px solid #ddd; padding: 6px; border-radius: 6px; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); min-width: 155px; max-width: 155px; flex-shrink: 0; display: flex; flex-direction: column; max-height: 100%; overflow-y: auto; position: relative; transition: 0.3s; animation: popInOrder 0.3s forwards; }
+        /* ลดขนาดบิลให้เล็กลงนิดนึง จะได้เห็นหลายบิล */
+        .ticket { background: white; border: 2px solid #ddd; padding: 5px; border-radius: 6px; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); min-width: 140px; max-width: 140px; flex-shrink: 0; display: flex; flex-direction: column; max-height: 100%; overflow-y: auto; position: relative; transition: 0.3s; animation: popInOrder 0.3s forwards; }
         .ticket.ready { background: #e8f5e9; border-color: var(--success) !important; }
         .ticket.ready h3 { color: var(--success) !important; border-bottom-color: var(--success); }
-        .ready-stamp { background: var(--success); color: white; text-align: center; font-size: 11px; font-weight: bold; padding: 3px; border-radius: 4px; margin-bottom: 5px; }
+        .ready-stamp { background: var(--success); color: white; text-align: center; font-size: 10px; font-weight: bold; padding: 2px; border-radius: 4px; margin-bottom: 4px; }
 
-        .ticket h3 { margin: 0 0 4px 0; color: #111; display: flex; justify-content: space-between; font-size: 11px; border-bottom: 1px dashed #ccc; padding-bottom: 3px;}
-        .ticket-timer-bg { width: 100%; height: 4px; background: #eee; border-radius: 2px; margin-bottom: 5px; overflow: hidden; }
+        .ticket h3 { margin: 0 0 3px 0; color: #111; display: flex; justify-content: space-between; font-size: 10px; border-bottom: 1px dashed #ccc; padding-bottom: 3px;}
+        .ticket-timer-bg { width: 100%; height: 4px; background: #eee; border-radius: 2px; margin-bottom: 4px; overflow: hidden; }
         .ticket-timer-fill { height: 100%; background: var(--success); width: 100%; transition: width 1s linear, background-color 0.5s; }
         
-        .order-item { display: flex; align-items: center; margin-bottom: 3px; font-size: 9px; font-weight: 500; line-height: 1.2; }
+        .order-item { display: flex; align-items: center; margin-bottom: 2px; font-size: 9px; font-weight: 500; line-height: 1.1; }
         .order-item.in-progress { color: #f57c00; font-weight: bold; }
         .order-item.done { text-decoration: line-through; color: #aaa; opacity: 0.5; font-weight: normal; }
-        .badge { display: inline-block; padding: 2px 3px; border-radius: 3px; font-size: 8px; color: white; margin-right: 4px; font-weight: bold; min-width: 25px; text-align: center; }
-        .bg-single { background: var(--single); } .bg-blended { background: var(--blended); } .bg-hot { background: transparent; font-size: 11px; padding: 0; min-width: 20px; } .bg-dessert { background: var(--dessert); color: #333; }
+        .badge { display: inline-block; padding: 2px; border-radius: 3px; font-size: 7px; color: white; margin-right: 4px; font-weight: bold; min-width: 22px; text-align: center; }
+        .bg-single { background: var(--single); } .bg-blended { background: var(--blended); } .bg-hot { background: transparent; font-size: 10px; padding: 0; min-width: 18px; } .bg-dessert { background: var(--dessert); color: #333; }
 
-        .serve-panel { width: 75px; background: #d7ccc8; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 5px; border-left: 3px solid var(--brand); box-shadow: -2px 0 10px rgba(0,0,0,0.1); z-index: 10; }
-        .serve-btn { width: 100%; height: 80%; background: var(--success); color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 12px; cursor: pointer; box-shadow: 0 4px 0 #2e7d32; transition: 0.1s; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .serve-panel { width: 65px; background: #d7ccc8; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 5px; border-left: 3px solid var(--brand); box-shadow: -2px 0 10px rgba(0,0,0,0.1); z-index: 10; }
+        .serve-btn { width: 100%; height: 80%; background: var(--success); color: white; border: none; border-radius: 6px; font-weight: bold; font-size: 11px; cursor: pointer; box-shadow: 0 4px 0 #2e7d32; transition: 0.1s; display: flex; flex-direction: column; justify-content: center; align-items: center; }
         .serve-btn:active { transform: translateY(4px); box-shadow: 0 0 0 #2e7d32; }
         .serve-btn.disabled { background: #9e9e9e; box-shadow: 0 4px 0 #616161; cursor: not-allowed; opacity: 0.7;}
         
-        .station-panel { flex: 0 0 42%; padding: 6px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; background: #fff; position: relative;}
+        /* บีบขนาดแผงปุ่มชงชาให้เหลือแค่ 28% */
+        .station-panel { flex: 0 0 28%; padding: 4px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; background: #fff; position: relative;}
         
-        /* สไตล์หน้ากากล็อกตัวตอนชงชาร้อนและขนม */
-        #busy-overlay { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.6); z-index: 20; justify-content: center; align-items: center; font-weight: bold; color: var(--danger); font-size: 14px; text-shadow: 1px 1px white; border-radius: 6px;}
+        #busy-overlay { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.7); z-index: 20; justify-content: center; align-items: center; font-weight: bold; color: var(--danger); font-size: 12px; text-shadow: 1px 1px white; border-radius: 4px;}
 
-        .station { background: #f9f9f9; border: 1px solid #ddd; padding: 6px; border-radius: 6px; text-align: center; display: flex; flex-direction: column; justify-content: space-between; position: relative;}
-        .station h4 { margin: 0 0 2px 0; font-size: 10px; }
-        .station p { font-size: 8px; margin: 0; color: #666; }
-        .btn-action { width: 100%; padding: 6px; border: none; border-radius: 5px; font-family: inherit; font-size: 10px; font-weight: bold; cursor: pointer; color: white; transition: 0.1s; margin-top: 3px; position: relative;}
+        .station { background: #f9f9f9; border: 1px solid #ddd; padding: 4px; border-radius: 4px; text-align: center; display: flex; flex-direction: column; justify-content: space-between; position: relative;}
+        .station h4 { margin: 0 0 2px 0; font-size: 9px; }
+        .station p { font-size: 7px; margin: 0; color: #666; }
+        .btn-action { width: 100%; padding: 4px; border: none; border-radius: 4px; font-family: inherit; font-size: 9px; font-weight: bold; cursor: pointer; color: white; transition: 0.1s; margin-top: 2px; position: relative;}
         .btn-action:disabled { background: #ccc !important; cursor: not-allowed; transform: none;}
         .btn-action:active:not(:disabled) { transform: scale(0.92); }
         
-        .machine-slots { display: flex; flex-direction: column; gap: 2px; margin-top: 3px; }
-        .slot-bar { width: 100%; height: 8px; background: #eee; border-radius: 4px; overflow: hidden; position: relative; }
+        .machine-slots { display: flex; flex-direction: column; gap: 1px; margin-top: 2px; }
+        .slot-bar { width: 100%; height: 6px; background: #eee; border-radius: 3px; overflow: hidden; position: relative; }
         .slot-fill { height: 100%; width: 0%; background: var(--single); transition: width linear; }
-        .slot-text { position: absolute; width: 100%; text-align: center; font-size: 6px; color: white; line-height: 8px; font-weight: bold; top: 0; }
-        .progress-bar { width: 100%; height: 6px; background: #eee; border-radius: 3px; margin-top: 3px; overflow: hidden; display: none; }
+        .slot-text { position: absolute; width: 100%; text-align: center; font-size: 5px; color: white; line-height: 6px; font-weight: bold; top: 0; }
+        .progress-bar { width: 100%; height: 4px; background: #eee; border-radius: 2px; margin-top: 2px; overflow: hidden; display: none; }
         .progress-fill { width: 0%; height: 100%; transition: width linear; }
-        .stock-indicator { font-size: 10px; font-weight: bold; color: var(--blended); margin: 2px 0; }
+        .stock-indicator { font-size: 9px; font-weight: bold; color: var(--blended); margin: 1px 0; }
         
-        .score-popup { position: absolute; color: var(--success); font-weight: bold; font-size: 12px; animation: floatUp 1s forwards; pointer-events: none; z-index: 50; text-shadow: 1px 1px white; white-space: nowrap;}
-        @keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-25px); } }
+        .score-popup { position: absolute; color: var(--success); font-weight: bold; font-size: 11px; animation: floatUp 1s forwards; pointer-events: none; z-index: 50; text-shadow: 1px 1px white; white-space: nowrap;}
+        @keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-20px); } }
         .hidden { display: none !important; }
         
         /* Overlays */
@@ -88,7 +91,7 @@
         #selfie-preview { display: none; width: 60px; height: 60px; border-radius: 12px; border: 2px solid var(--brand); margin-bottom: 4px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); object-fit: cover;} 
         .selfie-icon { position: absolute; font-size: 12px; color: rgba(255,255,255,0.7); top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none;}
         
-        .player-img-header { width: 22px; height: 22px; border-radius: 50%; border: 1px solid #fff; object-fit: cover; margin-right: 5px;}
+        .player-img-header { width: 20px; height: 20px; border-radius: 50%; border: 1px solid #fff; object-fit: cover; margin-right: 4px;}
         .player-img-lb { width: 18px; height: 18px; border-radius: 4px; border: 1px solid var(--brand); object-fit: cover; margin-right: 4px;}
         .shop-logo-top { width: 60px; height: 60px; object-fit: cover; border-radius: 12px; border: 2px solid var(--brand); margin-bottom: 4px; }
         
@@ -120,17 +123,17 @@
             <div class="order-panel">
                 <div class="order-header">
                     <span>🧾 คิวออเดอร์ <span id="order-count-badge" style="background: #333; color: white; padding: 2px 6px; border-radius: 6px; font-size: 9px; margin-left: 5px;">รอเข้าคิว: 0</span></span>
-                    <span id="active-count-badge" style="background: var(--danger); color: white; padding: 2px 6px; border-radius: 8px; font-size: 10px;">บนจอ: 0 บิล</span>
+                    <span id="active-count-badge" style="background: var(--danger); color: white; padding: 2px 6px; border-radius: 8px; font-size: 9px;">บนจอ: 0 บิล</span>
                 </div>
                 <div id="tickets-container"></div>
                 <p id="no-order-msg" class="hidden" style="color: var(--success); font-weight: bold; text-align: center; font-size: 11px; width: 100%; margin-top: 10px;">✅ เคลียร์คิวหมดแล้ว!</p>
             </div>
             
             <div class="serve-panel">
-                <p style="margin: 0 0 3px 0; font-size: 9px; font-weight: bold; color: #555;">จัดเสิร์ฟ</p>
+                <p style="margin: 0 0 3px 0; font-size: 8px; font-weight: bold; color: #555;">จัดเสิร์ฟ</p>
                 <button class="serve-btn disabled" id="btn-serve-tray" onclick="serveOrders()">
-                    <span style="font-size: 18px; margin-bottom: 2px;">🛎️</span> กดเสิร์ฟ
-                    <span style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 2px 6px; margin-top: 3px; font-size: 9px;"><span id="ready-count">0</span> / 4</span>
+                    <span style="font-size: 16px; margin-bottom: 2px;">🛎️</span> เสิร์ฟ
+                    <span style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 2px 6px; margin-top: 3px; font-size: 8px;"><span id="ready-count">0</span>/4</span>
                 </button>
             </div>
         </div>
@@ -138,25 +141,25 @@
         <div class="station-panel">
             <div id="busy-overlay">⏳ ติดสอนชา/จัดขนม...</div>
             <div class="station" style="border-color: var(--hot);">
-                <div><h4 style="color: var(--hot);">🫖 1. Hot Tea</h4><p>สอนชงชา (5 วิ)</p></div>
+                <div><h4 style="color: var(--hot);">🫖 1. Hot Tea</h4><p>สอนชง (5 วิ)</p></div>
                 <div style="position:relative;">
                     <button class="btn-action bg-hot" style="background: #e65100;" id="btn-hot" onclick="doTask('hot', 5000, 'btn-hot')">สอนชงชาร้อน</button>
                     <div class="progress-bar" id="prog-hot"><div class="progress-fill" style="background: #e65100;" id="fill-hot"></div></div>
                 </div>
             </div>
             <div class="station" style="border-color: var(--single);">
-                <div><h4 style="color: var(--single);">🍵 2. Single Iced</h4><p>ชงสด 4 หัว (10 วิ)</p></div>
+                <div><h4 style="color: var(--single);">🍵 2. Single Iced</h4><p>ชงสด (10 วิ)</p></div>
                 <div class="machine-slots" id="single-slots"></div>
                 <div style="position:relative;">
                     <button class="btn-action bg-single" id="btn-single" onclick="brewSingleTea()">กดชง 1 แก้ว</button>
                 </div>
             </div>
             <div class="station" style="border-color: var(--blended);">
-                <div><h4 style="color: var(--blended);">🧋 3. Blended</h4><p>ต้มแกลลอน (10 วิ)</p></div>
-                <div class="stock-indicator">สต็อค: <span id="blended-stock" style="font-size: 12px;">8</span>/8</div>
+                <div><h4 style="color: var(--blended);">🧋 3. Blended</h4><p>ต้มชา (10 วิ)</p></div>
+                <div class="stock-indicator">สต็อค: <span id="blended-stock" style="font-size: 11px;">8</span>/8</div>
                 <div style="position:relative;">
                     <button class="btn-action bg-blended" id="btn-blend-pour" onclick="pourBlended()">เทเสิร์ฟ</button>
-                    <button class="btn-action" style="background: #ff9800; font-size: 9px; padding: 4px; opacity: 0.5;" id="btn-blend-refill" onclick="refillGallon()">ต้มชาเพิ่ม</button>
+                    <button class="btn-action" style="background: #ff9800; font-size: 8px; padding: 3px; opacity: 0.5;" id="btn-blend-refill" onclick="refillGallon()">ต้มชาเพิ่ม</button>
                     <div class="progress-bar" id="prog-refill"><div class="progress-fill" style="background: #ff9800;" id="fill-refill"></div></div>
                 </div>
             </div>
@@ -271,7 +274,6 @@
     let playerName = ""; let selfieDataURL = ""; let streamReference = null; 
     let levelWaitTimes = [];
     
-    // 🟢 ตัวแปรสำหรับเช็คสถานะการล็อกตัว 🟢
     let isPlayerBusy = false;
     let isRefilling = false;
 
@@ -323,7 +325,6 @@
         document.getElementById('level-display').innerText = levels[currentLevel].title;
         document.getElementById('no-order-msg').classList.add('hidden');
         
-        // ก๊อปปี้ข้อมูลแบบล้างสถานะใหม่หมด
         spawnQueue = JSON.parse(JSON.stringify(levels[currentLevel].orders));
         activeOrders = []; timeToNextSpawn = 0; blendedStock = 8; singleBrewSlots = 0;
         levelScore = 0; levelWaitTimes = [];
@@ -344,7 +345,7 @@
                             newOrder.spawnTime = Date.now(); 
                             activeOrders.push(newOrder); 
                             appendTicketToDOM(newOrder); 
-                            setTimeout(() => { const c = document.getElementById('tickets-container'); c.scrollLeft = c.scrollWidth; }, 100);
+                            // ❌ เอาโค้ดเลื่อนหน้าจออัตโนมัติออก เพื่อไม่ให้จอกระตุก ❌
                         }
                     }
                     timeToNextSpawn = levels[currentLevel].spawnBaseRate + Math.floor(Math.random() * 2); 
@@ -391,14 +392,13 @@
         if (readyCount > 0) serveBtn.classList.remove('disabled'); else serveBtn.classList.add('disabled');
     }
 
-    // 🟢 ระบบตรวจสอบว่ามีออเดอร์ในบิลหรือไม่ (Anti-Spam) 🟢
     function findAndClaimItem(type) {
         for (let order of activeOrders) {
             if (order.status === 'ready') continue;
             for (let i=0; i<order.items.length; i++) {
                 let item = order.items[i];
                 if (item.type === type && !item.done && !item.inProgress) {
-                    item.inProgress = true; // ล็อกไว้ว่ากำลังทำอยู่
+                    item.inProgress = true;
                     let itemEl = document.getElementById(`item-${order.id}-${i}`);
                     if(itemEl) itemEl.classList.add('in-progress');
                     return { orderId: order.id, itemIndex: i };
@@ -408,7 +408,6 @@
         return null;
     }
 
-    // 🟢 ระบบตรวจสอบลำดับความสำคัญ (Workflow Priority) 🟢
     function checkPriority(actionAttempted) {
         let needSingle = false; let needRefill = (blendedStock <= 2 && !isRefilling);
         let needHot = false; let needDessert = false; let needPour = false;
@@ -425,7 +424,6 @@
             }
         }
         
-        // ลำดับบังคับ: 1.Single -> 2.Refill(ถ้า<=2) -> 3.Hot -> 4.Dessert -> 5.Pour
         let highest = "";
         if (needSingle) highest = 'single';
         else if (needRefill) highest = 'refill';
@@ -447,7 +445,6 @@
             if(itemEl) { itemEl.classList.remove('in-progress'); itemEl.classList.add('done'); }
         }
         
-        // เช็คว่าบิลพร้อมเสิร์ฟหรือยัง
         if (order.status !== 'ready' && order.items.every(itm => itm.done)) {
             order.status = 'ready'; 
             let ticketEl = document.getElementById(`ticket-${order.id}`); if(ticketEl) ticketEl.classList.add('ready');
@@ -476,23 +473,19 @@
         updateUI(); updateTimersUI(); checkLevelCompletion();
     }
 
-    // 🟢 อัปเดตตรรกะการทำเครื่องดื่ม 🟢
     function brewSingleTea() {
         if (isPlayerBusy || singleBrewSlots >= 4) return; 
         let claim = findAndClaimItem('single');
         if (!claim) { showFloatingScore("❌ ไม่มีออเดอร์!", 'btn-single'); return; }
 
-        if (checkPriority('single')) {
-            showFloatingScore("⭐ ลำดับเป๊ะ! +10", 'btn-single');
-            levelScore += 10; totalScore += 10;
-        }
+        if (checkPriority('single')) { showFloatingScore("⭐ ลำดับเป๊ะ! +10", 'btn-single'); levelScore += 10; totalScore += 10; }
 
         singleBrewSlots++; const currentSlot = singleBrewSlots;
         const fill = document.getElementById(`slot-fill-${currentSlot}`), text = document.getElementById(`slot-text-${currentSlot}`), btn = document.getElementById('btn-single');
         text.innerText = "ชง..."; fill.style.transition = 'none'; fill.style.width = '0%'; 
         if(singleBrewSlots >= 4) btn.disabled = true;
         
-        setTimeout(() => { fill.style.transition = `width 10000ms linear`; fill.style.width = '100%'; }, 50); // เปลี่ยนเป็น 10 วิ
+        setTimeout(() => { fill.style.transition = `width 10000ms linear`; fill.style.width = '100%'; }, 50);
         setTimeout(() => { 
             singleBrewSlots--; text.innerText = "ว่าง"; fill.style.transition = 'none'; fill.style.width = '0%'; 
             completeItem(claim.orderId, claim.itemIndex); 
@@ -505,12 +498,8 @@
         let claim = findAndClaimItem(type);
         if (!claim) { showFloatingScore("❌ ไม่มีออเดอร์!", btnId); return; }
 
-        if (checkPriority(type)) {
-            showFloatingScore("⭐ ลำดับเป๊ะ! +10", btnId);
-            levelScore += 10; totalScore += 10;
-        }
+        if (checkPriority(type)) { showFloatingScore("⭐ ลำดับเป๊ะ! +10", btnId); levelScore += 10; totalScore += 10; }
 
-        // ล็อกตัวผู้เล่น (Busy)
         isPlayerBusy = true; updateUI();
         
         const progBar = document.getElementById(`prog-${type}`), fill = document.getElementById(`fill-${type}`);
@@ -530,16 +519,12 @@
         
         if (blendedStock <= 0) { 
             showFloatingScore("❌ แกลลอนหมด!", 'btn-blend-pour'); 
-            // คืนค่าออเดอร์ให้กลับไปสถานะรอทำ
             let order = activeOrders.find(o => o.id === claim.orderId);
             if(order) order.items[claim.itemIndex].inProgress = false;
             return; 
         } 
 
-        if (checkPriority('pour')) {
-            showFloatingScore("⭐ ลำดับเป๊ะ! +5", 'btn-blend-pour');
-            levelScore += 5; totalScore += 5;
-        }
+        if (checkPriority('pour')) { showFloatingScore("⭐ ลำดับเป๊ะ! +5", 'btn-blend-pour'); levelScore += 5; totalScore += 5; }
 
         blendedStock--; updateUI(); completeItem(claim.orderId, claim.itemIndex); 
     }
@@ -548,10 +533,7 @@
         if (isPlayerBusy || isRefilling) return;
         if (blendedStock > 2) { showFloatingScore("❌ รอให้เหลือ <= 2 ก่อน", 'btn-blend-refill'); return; }
         
-        if (checkPriority('refill')) {
-            showFloatingScore("⭐ เตรียมของดี! +10", 'btn-blend-refill');
-            levelScore += 10; totalScore += 10;
-        }
+        if (checkPriority('refill')) { showFloatingScore("⭐ เตรียมของดี! +10", 'btn-blend-refill'); levelScore += 10; totalScore += 10; }
 
         isRefilling = true; updateUI();
         const progBar = document.getElementById('prog-refill'), fill = document.getElementById('fill-refill');
@@ -560,17 +542,14 @@
         setTimeout(() => { isRefilling = false; progBar.style.display = 'none'; blendedStock = 8; updateUI(); }, 10000);
     }
 
-    // 🟢 ระบบอัปเดต UI เปิดปิดปุ่มตอนตัวติด (Busy) 🟢
     function updateUI() {
         document.getElementById('total-score').innerText = totalScore; 
         document.getElementById('blended-stock').innerText = blendedStock; 
         document.getElementById('blended-stock').style.color = blendedStock <= 2 ? 'var(--hot)' : 'var(--blended)';
         
-        // จัดการหน้ากากล็อกตัว
         const overlay = document.getElementById('busy-overlay');
         if (isPlayerBusy) { overlay.style.display = 'flex'; } else { overlay.style.display = 'none'; }
 
-        // ปิดปุ่มต้มแกลลอนถ้ายังไม่ถึงเวลา
         const btnRefill = document.getElementById('btn-blend-refill'); 
         if (blendedStock > 2 || isRefilling || isPlayerBusy) { 
             btnRefill.disabled = true; btnRefill.style.opacity = '0.5'; btnRefill.style.cursor = 'not-allowed'; 
@@ -578,7 +557,6 @@
             btnRefill.disabled = false; btnRefill.style.opacity = '1'; btnRefill.style.cursor = 'pointer'; 
         }
         
-        // ปิดปุ่ม Single ถ้าหัวชงเต็ม
         const btnSingle = document.getElementById('btn-single');
         if (singleBrewSlots >= 4 || isPlayerBusy) { btnSingle.disabled = true; } else { btnSingle.disabled = false; }
     }
@@ -682,12 +660,9 @@
     function showFloatingScore(text, targetId) {
         const target = document.getElementById(targetId); if(!target) return;
         const floatEl = document.createElement('div'); floatEl.className = 'score-popup'; floatEl.innerText = text; 
-        
-        // สุ่มให้มันลอยกระจายๆ ไม่ทับกัน
         const randX = Math.floor(Math.random() * 40) - 20; 
         floatEl.style.left = `calc(50% + ${randX}px)`; 
         floatEl.style.top = '10%'; 
-        
         target.appendChild(floatEl); setTimeout(() => floatEl.remove(), 1000);
     }
 </script>
