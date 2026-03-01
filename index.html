@@ -161,8 +161,8 @@
 
 <div id="overlay-start" class="overlay">
     <img src="IMG_4511.jpeg" alt="Gimbocha Logo" class="shop-logo-top" onerror="this.style.display='none'">
-    <h1 style="color: #fff;">Gimbocha KDS</h1>
-    <p>ระบบตอกบัตรพนักงานแบบ Self Check-in</p>
+    <h1 style="color: #fff;">เส้นทางสู่นักชงชามืออาชีพ</h1>
+    <p>หากจะเป็นศิษย์ร้านยายล่ะก็ ผ่านเกมนี้ให้ได้สิ โฮ่ ๆ ๆ</p>
     
     <div class="selfie-wrapper" id="selfie-wrapper">
         <span class="selfie-icon">📷</span>
@@ -170,11 +170,11 @@
     </div>
     <img id="selfie-preview" src="" alt="Selfie Preview">
     
-    <button class="btn-primary btn-capture" id="btn-capture" onclick="takeSelfie()">กดถ่ายรูปเซลฟี่</button>
-    <input type="text" id="player-name-input" class="input-name" placeholder="ใส่ชื่อของคุณที่นี่..." autocomplete="off">
+    <button class="btn-primary btn-capture" id="btn-capture" onclick="takeSelfie()">กดถ่ายรูป</button>
+    <input type="text" id="player-name-input" class="input-name" placeholder="ใส่ชื่อของหลาน..." autocomplete="off">
     
     <div class="button-group">
-        <button class="btn-primary" id="btn-start" onclick="initGame()" disabled style="opacity: 0.5;">เริ่มกะทำงาน</button>
+        <button class="btn-primary" id="btn-start" onclick="initGame()" disabled style="opacity: 0.5;">เริ่ม</button>
     </div>
     <canvas id="selfie-canvas" style="display: none;"></canvas>
 </div>
@@ -184,20 +184,20 @@
         <div class="split-left">
             <img id="selfie-preview-final" src="" alt="Your Selfie" style="width: 50px; height: 50px; border-radius: 12px; border: 2px solid #ffd54f; object-fit: cover; margin-bottom: 5px;">
             <h1 id="clear-title" style="color: var(--success);">ด่านเคลียร์!</h1>
-            <p style="margin: 0;">คะแนนรวมของคุณ:</p>
+            <p style="margin: 0;">คะแนนรวมของหลาน:</p>
             <h3 id="clear-score" style="margin: 0 0 5px 0; color: #ffd54f; font-size: 18px;">0</h3>
             <p id="level-msg"></p>
 
             <div class="button-group" id="action-buttons">
-                <button class="btn-primary btn-danger" onclick="quitGame()">ส่งกะ (เซฟคะแนน)</button>
-                <button class="btn-primary" onclick="startLevel()" id="btn-continue">ลุยต่อ!</button>
+                <button class="btn-primary btn-danger" onclick="quitGame()">พอและยาย เหนื่อย</button>
+                <button class="btn-primary" onclick="startLevel()" id="btn-continue">ลุยต่อ ขอยาก ๆ!</button>
             </div>
             <div id="save-status-msg" style="font-size: 10px; margin-top: 5px;"></div>
         </div>
 
         <div class="split-right">
             <div class="leaderboard-container">
-                <div class="leaderboard-title">🏆 KDS Leaderboard (ออนไลน์)</div>
+                <div class="leaderboard-title">🏆 คนที่เร็วที่สุดในร้านยายก็คื๊อ...</div>
                 <div id="leaderboard-list"></div>
             </div>
         </div>
@@ -295,7 +295,7 @@
 
     function initGame() {
         playerName = document.getElementById('player-name-input').value.trim();
-        if(!playerName || !selfieDataURL) { alert("❌ โปรดถ่ายรูปและใส่ชื่อให้ครบครับ!"); return; }
+        if(!playerName || !selfieDataURL) { alert("❌ถ่ายรูปและใส่ชื่อให้ครบจ้ะหลาน"); return; }
 
         document.getElementById('header-player-img').src = selfieDataURL;
         document.getElementById('header-player-img').classList.remove('hidden');
@@ -349,7 +349,7 @@
             html += `<div class="order-item" id="item-${order.id}-${index}"><span class="badge ${badgeClass}">${badgeText}</span>${item.name}</div>`;
         });
         div.innerHTML = html; container.appendChild(div);
-        document.getElementById('order-count-badge').innerText = `รอพ่น: ${spawnQueue.length}`;
+        document.getElementById('order-count-badge').innerText = `รอ: ${spawnQueue.length}`;
         document.getElementById('active-count-badge').innerText = `บนจอ: ${activeOrders.length}`;
     }
 
@@ -428,8 +428,8 @@
                     document.getElementById('level-msg').innerText = `ออเดอร์รออยู่ ${levels[currentLevel].orders.length} บิล!`;
                     document.getElementById('btn-continue').classList.remove('hidden');
                 } else {
-                    document.getElementById('clear-title').innerText = "🎉 THE ULTIMATE BARISTA!";
-                    document.getElementById('level-msg').innerText = "คุณเคลียร์ครบ 10 ด่านได้สำเร็จ!";
+                    document.getElementById('clear-title').innerText = "🎉 สุดยอดที่มาถึงตรงนี้ได้ ต่อไปนี้หลานคือศิษย์พี่!";
+                    document.getElementById('level-msg').innerText = "ยายซาบซึ่งในความตั้งใจของหลานจริง ๆ ";
                     document.getElementById('btn-continue').classList.add('hidden'); 
                 }
                 clearOverlay.classList.remove('hidden');
