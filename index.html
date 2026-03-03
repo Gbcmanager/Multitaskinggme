@@ -82,6 +82,7 @@
         .lb-rank { font-weight: bold; width: 15px; text-align: center;}
         
         .player-img-header { width: 22px; height: 22px; border-radius: 50%; border: 1px solid #fff; object-fit: cover; margin-right: 5px;}
+        .player-img-lb { width: 18px; height: 18px; border-radius: 4px; border: 1px solid var(--brand); object-fit: cover; margin-right: 4px;}
         .shop-logo-top { width: 70px; height: 70px; object-fit: cover; border-radius: 12px; border: 2px solid var(--brand); margin-bottom: 8px; }
         
         #landscape-warning { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #2b2b2b; color: white; z-index: 999; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; box-sizing: border-box; }
@@ -227,7 +228,7 @@
 </div>
 
 <script>
-    // 🔴🔴🔴 URL ของ Google Apps Script ล่าสุด 🔴🔴🔴
+    // 🔴 URL ใหม่ล่าสุดที่รองรับระบบเบอร์โทรศัพท์
     const GOOGLE_APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzMKnJDroIvrlSVqlqBqNG30yIs4SL2jeS2yac11vx92bghlk0FUE1VC-rAV7PkN11G/exec";
 
     const menuDB = {
@@ -278,6 +279,7 @@
     let levelWaitTimes = [];
     let isPlayerBusy = false; let isRefilling = false;
 
+    // ดึงข้อมูลเก่าที่เคยพิมพ์ไว้ในเครื่อง
     window.onload = () => {
         let savedPhone = localStorage.getItem('gimbocha_phone');
         let savedName = localStorage.getItem('gimbocha_name');
@@ -300,6 +302,7 @@
         
         if(!playerPhone || !playerName) { alert("❌ โปรดใส่เบอร์โทรและชื่อให้ครบครับ!"); return; }
         
+        // บันทึกลงเครื่อง รอบหน้าจะได้ไม่ต้องพิมพ์ใหม่
         localStorage.setItem('gimbocha_phone', playerPhone);
         localStorage.setItem('gimbocha_name', playerName);
         
@@ -331,6 +334,7 @@
             globalLb.forEach(entry => {
                 let lvl = entry.level;
                 if(lvl >= 1 && lvl <= 10) {
+                    // หาแชมป์
                     if(!topPlayers[lvl]) {
                         topPlayers[lvl] = entry;
                     } else {
@@ -338,8 +342,9 @@
                             topPlayers[lvl] = entry;
                         }
                     }
-                    // เช็คสถิติตัวเองผ่านเบอร์โทรศัพท์
-                    if(entry.phone === playerPhone) {
+                    
+                    // หาสถิติตัวเอง โดยเปรียบเทียบจากเบอร์โทรศัพท์ (แปลงเป็น String เพื่อความชัวร์)
+                    if(String(entry.phone).trim() === String(playerPhone).trim()) {
                         myStats[lvl] = entry;
                     }
                 }
@@ -401,7 +406,6 @@
         showLevelSelection();
     }
 
-    // 🟢 แก้ไขปุ่มลุยด่านต่อไปให้ทำงานได้สมบูรณ์ 🟢
     function startNextLevel() {
         document.getElementById('overlay-level-clear').classList.add('hidden');
         currentLevel++;
@@ -723,12 +727,12 @@
                 }
                 levelData.sort((a, b) => { if (b.score !== a.score) return b.score - a.score; return a.avgWait - b.avgWait; });
                 levelData.slice(0, 5).forEach((entry, index) => {
-                    let isMe = (entry.phone === playerPhone);
+                    let isMe = (String(entry.phone).trim() === String(playerPhone).trim());
                     let rowHtml = `
                         <div class="leaderboard-row" style="${isMe ? 'background:rgba(76,175,80,0.2); border-radius:4px; padding:2px;' : ''}">
                             <span class="lb-rank">${index + 1}.</span>
                             <span style="flex:1; display:flex; align-items:center;">
-                                <img src="IMG_4511.jpeg" class="player-img-lb">
+                                <img src="IMG_4511.jpeg" class="player-img-lb" onerror="this.src='IMG_4511.jpeg'">
                                 ${entry.name} <span style="font-size:7px; color:#888; margin-left:3px;">| ⏱️ ${entry.avgWait}m</span>
                             </span>
                             <span style="font-weight:bold;">${entry.score} pts</span>
@@ -737,13 +741,11 @@
                 });
             }
             
-            // 🟢 เปิดปุ่มให้กดไปด่านต่อไปได้ 🟢
+            // เปิดปุ่มให้กดไปด่านต่อไปได้
             document.getElementById('action-buttons').classList.remove('hidden');
             if(lvlNum < levels.length) {
-                document.getElementById('clear-title').innerText = `✅ เคลียร์ด่าน ${lvlNum} สำเร็จ!`;
                 document.getElementById('btn-continue').classList.remove('hidden');
             } else {
-                document.getElementById('clear-title').innerText = "🎉 THE ULTIMATE BARISTA!";
                 document.getElementById('btn-continue').classList.add('hidden'); 
             }
         } catch (error) { 
