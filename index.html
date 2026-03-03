@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Gimbocha KDS - Pro System</title>
+    <title>Gimbocha KDS - Master System</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         :root { --brand: #8c5b3e; --bg: #1a1a1a; --hot: #e65100; --single: #c62828; --blended: #2e7d32; --dessert: #fbc02d; --success: #4caf50; --danger: #f44336; }
@@ -16,31 +16,31 @@
         .order-header { font-size: 12px; font-weight: bold; color: #333; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center;}
         
         @keyframes popInOrder { 0% { transform: scale(0.8) translateY(-20px); opacity: 0; } 100% { transform: scale(1) translateY(0); opacity: 1; } }
-        #tickets-container { display: flex; gap: 8px; overflow-x: auto; overflow-y: hidden; padding-bottom: 5px; flex-grow: 1; align-items: flex-start; scroll-behavior: smooth; }
-        #tickets-container::-webkit-scrollbar { height: 5px; }
-        #tickets-container::-webkit-scrollbar-thumb { background: #bbb; border-radius: 3px; }
+        #tickets-container { display: flex; gap: 6px; overflow-x: auto; overflow-y: hidden; padding-bottom: 5px; flex-grow: 1; align-items: flex-start; scroll-behavior: smooth; }
+        #tickets-container::-webkit-scrollbar { height: 6px; }
+        #tickets-container::-webkit-scrollbar-thumb { background: #999; border-radius: 3px; }
 
-        .ticket { background: white; border: 2px solid #ddd; padding: 6px; border-radius: 6px; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); min-width: 155px; max-width: 155px; flex-shrink: 0; display: flex; flex-direction: column; max-height: 100%; overflow-y: auto; position: relative; transition: 0.3s; animation: popInOrder 0.3s forwards; }
+        .ticket { background: white; border: 2px solid #ddd; padding: 5px; border-radius: 6px; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); min-width: 140px; max-width: 140px; flex-shrink: 0; display: flex; flex-direction: column; max-height: 100%; overflow-y: auto; position: relative; transition: 0.3s; animation: popInOrder 0.3s forwards; }
         .ticket.ready { background: #e8f5e9; border-color: var(--success) !important; }
         .ticket.ready h3 { color: var(--success) !important; border-bottom-color: var(--success); }
-        .ready-stamp { background: var(--success); color: white; text-align: center; font-size: 11px; font-weight: bold; padding: 3px; border-radius: 4px; margin-bottom: 5px; }
+        .ready-stamp { background: var(--success); color: white; text-align: center; font-size: 10px; font-weight: bold; padding: 2px; border-radius: 4px; margin-bottom: 4px; }
 
-        .ticket h3 { margin: 0 0 4px 0; color: #111; display: flex; justify-content: space-between; font-size: 11px; border-bottom: 1px dashed #ccc; padding-bottom: 3px;}
-        .ticket-timer-bg { width: 100%; height: 4px; background: #eee; border-radius: 2px; margin-bottom: 5px; overflow: hidden; }
+        .ticket h3 { margin: 0 0 3px 0; color: #111; display: flex; justify-content: space-between; font-size: 10px; border-bottom: 1px dashed #ccc; padding-bottom: 3px;}
+        .ticket-timer-bg { width: 100%; height: 4px; background: #eee; border-radius: 2px; margin-bottom: 4px; overflow: hidden; }
         .ticket-timer-fill { height: 100%; background: var(--success); width: 100%; transition: width 1s linear, background-color 0.5s; }
         
-        .order-item { display: flex; align-items: center; margin-bottom: 3px; font-size: 9px; font-weight: 500; line-height: 1.2; }
+        .order-item { display: flex; align-items: center; margin-bottom: 2px; font-size: 9px; font-weight: 500; line-height: 1.1; }
         .order-item.in-progress { color: #f57c00; font-weight: bold; }
         .order-item.done { text-decoration: line-through; color: #aaa; opacity: 0.5; font-weight: normal; }
-        .badge { display: inline-block; padding: 2px 3px; border-radius: 3px; font-size: 8px; color: white; margin-right: 4px; font-weight: bold; min-width: 25px; text-align: center; }
-        .bg-single { background: var(--single); } .bg-blended { background: var(--blended); } .bg-hot { background: transparent; font-size: 11px; padding: 0; min-width: 20px; } .bg-dessert { background: var(--dessert); color: #333; }
+        .badge { display: inline-block; padding: 2px; border-radius: 3px; font-size: 7px; color: white; margin-right: 4px; font-weight: bold; min-width: 22px; text-align: center; }
+        .bg-single { background: var(--single); } .bg-blended { background: var(--blended); } .bg-hot { background: transparent; font-size: 10px; padding: 0; min-width: 18px; } .bg-dessert { background: var(--dessert); color: #333; }
 
-        .serve-panel { width: 75px; background: #d7ccc8; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 5px; border-left: 3px solid var(--brand); box-shadow: -2px 0 10px rgba(0,0,0,0.1); z-index: 10; }
-        .serve-btn { width: 100%; height: 80%; background: var(--success); color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 12px; cursor: pointer; box-shadow: 0 4px 0 #2e7d32; transition: 0.1s; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .serve-panel { width: 65px; background: #d7ccc8; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 5px; border-left: 3px solid var(--brand); box-shadow: -2px 0 10px rgba(0,0,0,0.1); z-index: 10; }
+        .serve-btn { width: 100%; height: 80%; background: var(--success); color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 11px; cursor: pointer; box-shadow: 0 4px 0 #2e7d32; transition: 0.1s; display: flex; flex-direction: column; justify-content: center; align-items: center; }
         .serve-btn:active { transform: translateY(4px); box-shadow: 0 0 0 #2e7d32; }
         .serve-btn.disabled { background: #9e9e9e; box-shadow: 0 4px 0 #616161; cursor: not-allowed; opacity: 0.7;}
         
-        .station-panel { flex: 0 0 28%; padding: 6px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; background: #fff; position: relative;}
+        .station-panel { flex: 0 0 28%; padding: 4px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; background: #fff; position: relative;}
         #busy-overlay { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.7); z-index: 20; justify-content: center; align-items: center; font-weight: bold; color: var(--danger); font-size: 12px; text-shadow: 1px 1px white; border-radius: 4px;}
 
         .station { background: #f9f9f9; border: 1px solid #ddd; padding: 4px; border-radius: 4px; text-align: center; display: flex; flex-direction: column; justify-content: space-between; position: relative;}
@@ -62,6 +62,7 @@
         @keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-20px); } }
         .hidden { display: none !important; }
         
+        /* Overlays */
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 100; text-align: center; padding: 5px 10px; box-sizing: border-box;}
         .overlay h1 { font-size: 18px !important; margin: 0 0 2px 0; text-shadow: 1px 1px var(--brand); }
         .overlay p { font-size: 11px !important; margin: 2px 0; color: #ddd; }
@@ -83,7 +84,7 @@
         
         .player-img-header { width: 22px; height: 22px; border-radius: 50%; border: 1px solid #fff; object-fit: cover; margin-right: 5px;}
         .player-img-lb { width: 18px; height: 18px; border-radius: 4px; border: 1px solid var(--brand); object-fit: cover; margin-right: 4px;}
-        .shop-logo-top { width: 70px; height: 70px; object-fit: cover; border-radius: 12px; border: 2px solid var(--brand); margin-bottom: 8px; }
+        .shop-logo-top { width: 90px; height: 90px; object-fit: cover; border-radius: 12px; border: 2px solid var(--brand); margin-bottom: 10px; }
         
         #landscape-warning { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #2b2b2b; color: white; z-index: 999; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; box-sizing: border-box; }
         @media screen and (orientation: portrait) { #landscape-warning { display: flex; } #app { display: none; } }
@@ -91,7 +92,8 @@
         .kpi-box { background: rgba(255,255,255,0.1); padding: 5px; border-radius: 8px; margin: 4px 0; width: 100%; border: 1px solid rgba(255,255,255,0.2); }
         .kpi-box p { margin: 1px 0 !important; }
 
-        .level-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; width: 100%; max-width: 600px; padding: 10px; max-height: 70vh; overflow-y: auto;}
+        /* จัดตารางหน้าเลือกด่าน */
+        .level-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; width: 100%; max-width: 650px; padding: 10px; max-height: 70vh; overflow-y: auto;}
         .level-card { background: rgba(255,255,255,0.1); border: 2px solid var(--brand); border-radius: 8px; padding: 8px; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; justify-content: space-between; text-align: center;}
         .level-card:hover { background: rgba(255,255,255,0.2); transform: scale(1.05); }
         .level-card h3 { margin: 0 0 2px 0; color: #fff; font-size: 14px;}
@@ -111,7 +113,7 @@
     <div class="header">
         <span id="level-display" style="color: #ffd54f;">Level 1</span>
         <span style="display: flex; align-items: center;">
-            <img id="header-player-img" src="IMG_4511.jpeg" alt="Player" class="hidden player-img-header">
+            <img id="header-player-img" src="IMG_4511.jpeg" alt="Player" class="hidden player-img-header" onerror="this.style.display='none'">
             <span id="display-player-name" style="color: #fff; margin-left: 3px;">-</span>
         </span>
         <div style="text-align: right; line-height: 1.1;">
@@ -192,8 +194,7 @@
 <div id="overlay-level-select" class="overlay hidden">
     <h1 style="color: #ffd54f; margin: 0 0 5px 0;">เลือกระดับการฝึกซ้อม</h1>
     <p id="loading-leaderboard-msg" style="color: #ddd;">⏳ กำลังดึงข้อมูลสถิติร้าน...</p>
-    <div id="level-grid" class="level-grid">
-        </div>
+    <div id="level-grid" class="level-grid"></div>
 </div>
 
 <div id="overlay-level-clear" class="overlay hidden">
@@ -228,8 +229,8 @@
 </div>
 
 <script>
-    // 🔴 URL ใหม่ล่าสุดที่รองรับระบบเบอร์โทรศัพท์
-    const GOOGLE_APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzMKnJDroIvrlSVqlqBqNG30yIs4SL2jeS2yac11vx92bghlk0FUE1VC-rAV7PkN11G/exec";
+    // 🔴 URL ใหม่ล่าสุดที่บอสส่งมา
+    const GOOGLE_APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwGijAooQNr14plPD5XqrkVURldGvJ3ylNB8iPOzC0OCxEZTKS6qa8UlqqQ3oluO8Oo/exec";
 
     const menuDB = {
         hot: ["อัสสัมวาวี", "ชามะลิหิมะโปรย", "ชาเขียวหวงชาน", "หลงจิ่ง 2025", "เถี่ยกวนอิน", "จางผิงสุ่ยเซียน", "ต้าหงเผา", "สุ่ยเซียนอบถ่าน"],
@@ -279,7 +280,9 @@
     let levelWaitTimes = [];
     let isPlayerBusy = false; let isRefilling = false;
 
-    // ดึงข้อมูลเก่าที่เคยพิมพ์ไว้ในเครื่อง
+    // ฟังก์ชันฟอกเบอร์โทร ลบ 0 ตัวหน้าและตัวอักษรที่ไม่ใช่ตัวเลขออกให้หมด
+    const normalizePhone = (p) => String(p).replace(/\D/g, '').replace(/^0+/, '');
+
     window.onload = () => {
         let savedPhone = localStorage.getItem('gimbocha_phone');
         let savedName = localStorage.getItem('gimbocha_name');
@@ -302,7 +305,6 @@
         
         if(!playerPhone || !playerName) { alert("❌ โปรดใส่เบอร์โทรและชื่อให้ครบครับ!"); return; }
         
-        // บันทึกลงเครื่อง รอบหน้าจะได้ไม่ต้องพิมพ์ใหม่
         localStorage.setItem('gimbocha_phone', playerPhone);
         localStorage.setItem('gimbocha_name', playerName);
         
@@ -327,6 +329,8 @@
         let myStats = {};
         for(let i=1; i<=10; i++) { topPlayers[i] = null; myStats[i] = null; }
 
+        let cleanMyPhone = normalizePhone(playerPhone);
+
         try {
             const response = await fetch(GOOGLE_APP_SCRIPT_URL);
             const globalLb = await response.json();
@@ -334,7 +338,6 @@
             globalLb.forEach(entry => {
                 let lvl = entry.level;
                 if(lvl >= 1 && lvl <= 10) {
-                    // หาแชมป์
                     if(!topPlayers[lvl]) {
                         topPlayers[lvl] = entry;
                     } else {
@@ -342,9 +345,7 @@
                             topPlayers[lvl] = entry;
                         }
                     }
-                    
-                    // หาสถิติตัวเอง โดยเปรียบเทียบจากเบอร์โทรศัพท์ (แปลงเป็น String เพื่อความชัวร์)
-                    if(String(entry.phone).trim() === String(playerPhone).trim()) {
+                    if(normalizePhone(entry.phone) === cleanMyPhone) {
                         myStats[lvl] = entry;
                     }
                 }
@@ -684,6 +685,7 @@
         document.getElementById('lb-title').innerText = `🏆 สถิติคนชงไว (ด่าน ${lvlNum})`;
         document.getElementById('save-status-msg').innerText = "กำลังเซฟข้อมูลอัตโนมัติ...";
 
+        // สร้าง Payload ล่าสุดที่ลบ selfie ออกแล้ว และใส่เบอร์โทร
         const payload = { phone: playerPhone, name: playerName, score: levelScore, levelReached: lvlNum, avgWaitTime: myAvgWaitRealMin };
         const formData = new URLSearchParams(); formData.append('data', JSON.stringify(payload));
 
@@ -727,12 +729,13 @@
                 }
                 levelData.sort((a, b) => { if (b.score !== a.score) return b.score - a.score; return a.avgWait - b.avgWait; });
                 levelData.slice(0, 5).forEach((entry, index) => {
-                    let isMe = (String(entry.phone).trim() === String(playerPhone).trim());
+                    let cleanMyPhone = normalizePhone(playerPhone);
+                    let isMe = (normalizePhone(entry.phone) === cleanMyPhone);
                     let rowHtml = `
                         <div class="leaderboard-row" style="${isMe ? 'background:rgba(76,175,80,0.2); border-radius:4px; padding:2px;' : ''}">
                             <span class="lb-rank">${index + 1}.</span>
                             <span style="flex:1; display:flex; align-items:center;">
-                                <img src="IMG_4511.jpeg" class="player-img-lb" onerror="this.src='IMG_4511.jpeg'">
+                                <img src="IMG_4511.jpeg" class="player-img-lb" onerror="this.style.display='none'">
                                 ${entry.name} <span style="font-size:7px; color:#888; margin-left:3px;">| ⏱️ ${entry.avgWait}m</span>
                             </span>
                             <span style="font-weight:bold;">${entry.score} pts</span>
