@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Gimbocha KDS - Manager System</title>
+    <title>Gimbocha KDS - Head Barista Mode</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
-        :root { --brand: #8c5b3e; --bg: #1a1a1a; --hot: #e65100; --single: #c62828; --blended: #2e7d32; --dessert: #fbc02d; --success: #4caf50; --danger: #f44336; }
+        :root { --brand: #8c5b3e; --bg: #1a1a1a; --hot: #e65100; --single: #c62828; --blended: #2e7d32; --dessert: #fbc02d; --success: #4caf50; --danger: #f44336; --wip: #e3f2fd; }
         body { font-family: 'Kanit', sans-serif; background: var(--bg); margin: 0; padding: 2svh 2vw; display: flex; justify-content: center; align-items: center; height: 100svh; width: 100vw; overflow: hidden; box-sizing: border-box; touch-action: none; }
         #app { background: #f4f4f4; width: 100%; height: 100%; display: flex; flex-direction: column; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
         .header { display: flex; justify-content: space-between; align-items: center; padding: 4px 12px; background: #111; color: #fff; font-size: 13px; font-weight: bold; flex-shrink: 0; border-bottom: 2px solid var(--brand); }
@@ -18,10 +18,13 @@
         @keyframes popInOrder { 0% { transform: scale(0.8) translateY(-20px); opacity: 0; } 100% { transform: scale(1) translateY(0); opacity: 1; } }
         #tickets-container { display: flex; gap: 6px; overflow-x: auto; overflow-y: hidden; padding-bottom: 5px; flex-grow: 1; align-items: flex-start; scroll-behavior: smooth; }
         #tickets-container::-webkit-scrollbar { height: 6px; }
-        #tickets-container::-webkit-scrollbar-thumb { background: #999; border-radius: 3px; }
+        #tickets-container::-webkit-scrollbar-thumb { background: #bbb; border-radius: 3px; }
 
         .ticket { background: white; border: 2px solid #ddd; padding: 5px; border-radius: 6px; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); min-width: 140px; max-width: 140px; flex-shrink: 0; display: flex; flex-direction: column; max-height: 100%; overflow-y: auto; position: relative; transition: 0.3s; animation: popInOrder 0.3s forwards; }
-        .ticket.ready { background: #e8f5e9; border-color: var(--success) !important; }
+        
+        /* 🚧 สไตล์สำหรับบิลที่อยู่ในโควต้า WIP (3 บิลแรก) 🚧 */
+        .ticket.wip-active { border-color: #2196f3; box-shadow: 0 0 8px rgba(33, 150, 243, 0.4); background: #fafcff; }
+        .ticket.ready { background: #e8f5e9; border-color: var(--success) !important; box-shadow: none;}
         .ticket.ready h3 { color: var(--success) !important; border-bottom-color: var(--success); }
         .ready-stamp { background: var(--success); color: white; text-align: center; font-size: 10px; font-weight: bold; padding: 2px; border-radius: 4px; margin-bottom: 4px; }
 
@@ -31,6 +34,7 @@
         
         .order-item { display: flex; align-items: center; margin-bottom: 2px; font-size: 9px; font-weight: 500; line-height: 1.1; }
         .order-item.in-progress { color: #f57c00; font-weight: bold; }
+        .order-item.in-progress-helper { color: #2196f3; font-weight: bold; } /* สีออเดอร์ที่ลูกน้องทำ */
         .order-item.done { text-decoration: line-through; color: #aaa; opacity: 0.5; font-weight: normal; }
         .badge { display: inline-block; padding: 2px; border-radius: 3px; font-size: 7px; color: white; margin-right: 4px; font-weight: bold; min-width: 22px; text-align: center; }
         .bg-single { background: var(--single); } .bg-blended { background: var(--blended); } .bg-hot { background: transparent; font-size: 10px; padding: 0; min-width: 18px; } .bg-dessert { background: var(--dessert); color: #333; }
@@ -40,28 +44,37 @@
         .serve-btn:active { transform: translateY(4px); box-shadow: 0 0 0 #2e7d32; }
         .serve-btn.disabled { background: #9e9e9e; box-shadow: 0 4px 0 #616161; cursor: not-allowed; opacity: 0.7;}
         
-        .station-panel { flex: 0 0 28%; padding: 4px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; background: #fff; position: relative;}
+        .station-panel { flex: 0 0 30%; padding: 4px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; background: #fff; position: relative;}
         #busy-overlay { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.7); z-index: 20; justify-content: center; align-items: center; font-weight: bold; color: var(--danger); font-size: 12px; text-shadow: 1px 1px white; border-radius: 4px;}
 
-        .station { background: #f9f9f9; border: 1px solid #ddd; padding: 4px; border-radius: 4px; text-align: center; display: flex; flex-direction: column; justify-content: space-between; position: relative;}
+        .station { background: #f9f9f9; border: 1px solid #ddd; padding: 4px; border-radius: 4px; text-align: center; display: flex; flex-direction: column; justify-content: flex-start; position: relative;}
+        .station-header { border-bottom: 1px solid #eee; padding-bottom: 3px; margin-bottom: 3px; }
         .station h4 { margin: 0 0 2px 0; font-size: 9px; }
         .station p { font-size: 7px; margin: 0; color: #666; }
         
-        .helper-status { font-size: 7.5px; color: var(--success); font-weight: bold; min-height: 10px; margin-top: 1px; }
+        /* 🟢 ปุ่มย้ายลูกน้อง 🟢 */
+        .btn-assign { background: #fff; border: 1px dashed #2196f3; color: #2196f3; width: 100%; padding: 2px; font-size: 7px; border-radius: 4px; cursor: pointer; transition: 0.2s; margin-bottom: 2px; font-family: inherit;}
+        .btn-assign.active { background: #2196f3; color: #fff; border-style: solid; font-weight: bold; box-shadow: 0 2px 5px rgba(33,150,243,0.3);}
 
         .btn-action { width: 100%; padding: 4px; border: none; border-radius: 4px; font-family: inherit; font-size: 9px; font-weight: bold; cursor: pointer; color: white; transition: 0.1s; margin-top: 2px; position: relative;}
         .btn-action:disabled { background: #ccc !important; cursor: not-allowed; transform: none;}
         .btn-action:active:not(:disabled) { transform: scale(0.92); }
         
-        .machine-slots { display: flex; flex-direction: column; gap: 1px; margin-top: 2px; }
+        .machine-slots { display: flex; flex-direction: column; gap: 1px; margin-top: 2px; margin-bottom: auto;}
         .slot-bar { width: 100%; height: 6px; background: #eee; border-radius: 3px; overflow: hidden; position: relative; }
         .slot-fill { height: 100%; width: 0%; background: var(--single); transition: width linear; }
         .slot-text { position: absolute; width: 100%; text-align: center; font-size: 5px; color: white; line-height: 6px; font-weight: bold; top: 0; }
+        
         .progress-bar { width: 100%; height: 4px; background: #eee; border-radius: 2px; margin-top: 2px; overflow: hidden; display: none; }
         .progress-fill { width: 0%; height: 100%; transition: width linear; }
+        
+        /* 🟢 หลอดเกจของลูกน้อง 🟢 */
+        .helper-prog-bar { width: 100%; height: 6px; background: #e3f2fd; border-radius: 3px; margin-top: 4px; overflow: hidden; display: none; border: 1px solid #bbdefb;}
+        .helper-prog-fill { width: 0%; height: 100%; background: #2196f3; transition: width linear; }
+        
         .stock-indicator { font-size: 9px; font-weight: bold; color: var(--blended); margin: 1px 0; }
         
-        .score-popup { position: absolute; font-weight: bold; font-size: 14px; padding: 4px 8px; border-radius: 8px; background: rgba(255, 255, 255, 0.95); box-shadow: 0 4px 10px rgba(0,0,0,0.3); border: 2px solid; animation: floatUp 1.2s forwards; pointer-events: none; z-index: 9999; white-space: nowrap; left: 50%; top: -20px; text-align: center; }
+        .score-popup { position: absolute; font-weight: bold; font-size: 13px; padding: 3px 6px; border-radius: 6px; background: rgba(255, 255, 255, 0.95); box-shadow: 0 4px 10px rgba(0,0,0,0.3); border: 2px solid; animation: floatUp 1.2s forwards; pointer-events: none; z-index: 9999; white-space: nowrap; left: 50%; top: -15px; text-align: center; }
         @keyframes floatUp { 0% { opacity: 0; transform: translate(-50%, 10px) scale(0.8); } 20% { opacity: 1; transform: translate(-50%, 0px) scale(1.1); } 100% { opacity: 0; transform: translate(-50%, -40px) scale(1); } }
         .hidden { display: none !important; }
         
@@ -97,7 +110,6 @@
         .level-card { background: rgba(255,255,255,0.1); border: 2px solid var(--brand); border-radius: 8px; padding: 8px; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; justify-content: space-between; text-align: center;}
         .level-card:hover { background: rgba(255,255,255,0.2); transform: scale(1.05); }
         .level-card h3 { margin: 0 0 2px 0; color: #fff; font-size: 14px;}
-        .level-card .order-count { font-size: 10px; color: #ffd54f; margin-bottom: 4px; font-weight: bold;}
         
         .stat-box { background: rgba(0,0,0,0.5); border-radius: 4px; padding: 4px; font-size: 9px; margin-top: 4px; border-left: 2px solid var(--success);}
         .stat-box.champion { border-left: 2px solid #ffd54f; }
@@ -113,7 +125,7 @@
     <div class="header">
         <span id="level-display" style="color: #ffd54f;">Level 1</span>
         <span style="display: flex; align-items: center;">
-            <img id="header-player-img" src="IMG_4511.jpeg" class="hidden player-img-header" onerror="this.style.display='none'">
+            <img id="header-player-img" src="IMG_4511.jpeg" alt="Player" class="hidden player-img-header" onerror="this.style.display='none'">
             <span id="display-player-name" style="color: #fff; margin-left: 3px;">-</span>
         </span>
         <div style="text-align: right; line-height: 1.1;">
@@ -126,7 +138,10 @@
         <div class="order-panel-wrapper">
             <div class="order-panel">
                 <div class="order-header">
-                    <span>🧾 คิวออเดอร์ <span id="order-count-badge" style="background: #333; color: white; padding: 2px 6px; border-radius: 6px; font-size: 9px; margin-left: 5px;">รอเข้าคิว: 0</span></span>
+                    <span>🧾 คิวออเดอร์ 
+                        <span id="order-count-badge" style="background: #333; color: white; padding: 2px 6px; border-radius: 6px; font-size: 9px; margin-left: 5px;">รอเข้าคิว: 0</span>
+                        <span style="font-size: 9px; color:#2196f3; margin-left:5px;">(โฟกัส 3 บิลแรก)</span>
+                    </span>
                     <span id="active-count-badge" style="background: var(--danger); color: white; padding: 2px 6px; border-radius: 8px; font-size: 9px;">บนจอ: 0 บิล</span>
                 </div>
                 <div id="tickets-container"></div>
@@ -145,47 +160,59 @@
         <div class="station-panel">
             <div id="busy-overlay">⏳ คุณกำลังติดสอนชา/จัดขนม...</div>
             
-            <div class="station" style="border-color: var(--hot);">
-                <div>
+            <div class="station" style="border-color: var(--hot);" id="station-hot">
+                <div class="station-header">
+                    <button class="btn-assign" id="btn-assign-hot" onclick="assignHelper('hot')">🧑‍🍳 เรียกลูกน้องมานี่</button>
                     <h4 style="color: var(--hot);">🫖 1. Hot Tea</h4>
                     <p style="font-size: 8px; margin: 1px 0;">สต็อคชุดชา: <span id="hot-stock" style="font-size: 11px;">0</span>/3</p>
-                    <div id="hot-helper-status" class="helper-status"></div>
                 </div>
-                <div style="position:relative;">
+                <div style="position:relative; margin-top:auto;">
                     <button class="btn-action bg-hot" style="background: #e65100; margin-bottom: 2px; padding: 3px;" id="btn-hot-serve" onclick="serveHotTea()">สอน+เสิร์ฟ (5วิ)</button>
                     <div class="progress-bar" id="prog-hot-serve" style="margin-bottom: 3px;"><div class="progress-fill" style="background: #e65100;" id="fill-hot-serve"></div></div>
                     
                     <button class="btn-action" style="background: #ffcc80; color: #d84315; font-size: 8px; padding: 3px;" id="btn-hot-prep" onclick="prepareHotTea()">จัดชุดชาล่วงหน้า (2วิ)</button>
                     <div class="progress-bar" id="prog-hot-prep"><div class="progress-fill" style="background: #ffcc80;" id="fill-hot-prep"></div></div>
+                    
+                    <div class="helper-prog-bar" id="helper-prog-hot"><div class="helper-prog-fill" id="helper-fill-hot"></div></div>
                 </div>
             </div>
 
-            <div class="station" style="border-color: var(--single);">
-                <div><h4 style="color: var(--single);">🍵 2. Single Iced</h4><p>ชงสด (10 วิ)</p></div>
+            <div class="station" style="border-color: var(--single); background: #fff0f0;" id="station-single">
+                <div class="station-header">
+                    <div style="font-size: 7px; color: var(--danger); font-weight: bold; text-align: center; margin-bottom: 2px; height: 12px;">❌ ลูกน้องทำไม่ได้</div>
+                    <h4 style="color: var(--single);">🍵 2. Single</h4><p>ชงสด (10 วิ)</p>
+                </div>
                 <div class="machine-slots" id="single-slots"></div>
-                <div style="position:relative;">
+                <div style="position:relative; margin-top:auto;">
                     <button class="btn-action bg-single" id="btn-single" onclick="brewSingleTea()">กดชง 1 แก้ว</button>
                 </div>
             </div>
 
-            <div class="station" style="border-color: var(--blended);">
-                <div><h4 style="color: var(--blended);">🧋 3. Blended</h4><p>ต้มชา (10 วิ)</p></div>
-                <div class="stock-indicator">สต็อค: <span id="blended-stock" style="font-size: 11px;">8</span>/8</div>
-                <div style="position:relative;">
+            <div class="station" style="border-color: var(--blended);" id="station-blended">
+                <div class="station-header">
+                    <button class="btn-assign" id="btn-assign-blended" onclick="assignHelper('blended')">🧑‍🍳 เรียกลูกน้องมานี่</button>
+                    <h4 style="color: var(--blended);">🧋 3. Blended</h4><p>ต้มชา (10 วิ)</p>
+                </div>
+                <div style="margin-top:auto; position:relative;">
+                    <div class="stock-indicator">สต็อค: <span id="blended-stock" style="font-size: 11px;">8</span>/8</div>
                     <button class="btn-action bg-blended" id="btn-blend-pour" onclick="pourBlended()">เทเสิร์ฟ</button>
-                    <button class="btn-action" style="background: #ff9800; font-size: 8px; padding: 3px; opacity: 0.5;" id="btn-blend-refill" onclick="refillGallon()">ต้มชาเพิ่ม</button>
+                    <button class="btn-action" style="background: #ff9800; font-size: 8px; padding: 3px; opacity: 0.5;" id="btn-blend-refill" onclick="refillGallon()">บอสต้มชาเพิ่มเอง</button>
                     <div class="progress-bar" id="prog-refill"><div class="progress-fill" style="background: #ff9800;" id="fill-refill"></div></div>
+                    
+                    <div class="helper-prog-bar" id="helper-prog-blended"><div class="helper-prog-fill" id="helper-fill-blended"></div></div>
                 </div>
             </div>
 
-            <div class="station" style="border-color: var(--dessert);">
-                <div>
+            <div class="station" style="border-color: var(--dessert);" id="station-dessert">
+                <div class="station-header">
+                    <button class="btn-assign" id="btn-assign-dessert" onclick="assignHelper('dessert')">🧑‍🍳 เรียกลูกน้องมานี่</button>
                     <h4 style="color: var(--dessert);">🍰 4. Dessert</h4><p>จัดจาน (2 วิ)</p>
-                    <div id="dessert-helper-status" class="helper-status"></div>
                 </div>
-                <div style="position:relative;">
+                <div style="position:relative; margin-top:auto;">
                     <button class="btn-action bg-dessert" id="btn-dessert" onclick="doTask('dessert', 2000, 'btn-dessert')">เตรียมขนม</button>
                     <div class="progress-bar" id="prog-dessert"><div class="progress-fill bg-dessert" id="fill-dessert"></div></div>
+                    
+                    <div class="helper-prog-bar" id="helper-prog-dessert"><div class="helper-prog-fill" id="helper-fill-dessert"></div></div>
                 </div>
             </div>
         </div>
@@ -302,12 +329,10 @@
     let isPlayerBusy = false; let isRefilling = false;
     let hotStock = 0; let isHotPrepping = false;
     
-    let hotHelpersTotal = 0; let hotHelpersBusy = 0;
-    let dessertHelpersTotal = 0; let dessertHelpersBusy = 0;
-
-    // 🟢 ตัวแปรสำหรับแจ้งเตือนลูกน้องว่าง 🟢
-    let hotIdleTimer = 0;
-    let dessertIdleTimer = 0;
+    // 🟢 ระบบลูกน้อง (Helper System) 🟢
+    let currentHelperStation = 'none'; // 'none', 'hot', 'blended', 'dessert'
+    let isHelperBusy = false;
+    let helperTimer;
 
     const normalizePhone = (p) => String(p).replace(/\D/g, '').replace(/^0+/, '');
 
@@ -326,14 +351,6 @@
         }
     }
     initSingleSlots();
-
-    function setupHelpersForLevel() {
-        hotHelpersTotal = 0; dessertHelpersTotal = 0;
-        if (currentLevel >= 3) { dessertHelpersTotal = 1; } 
-        if (currentLevel >= 5) { dessertHelpersTotal = 1; hotHelpersTotal = 1; } 
-        if (currentLevel >= 7) { dessertHelpersTotal = 2; hotHelpersTotal = 2; } 
-        hotHelpersBusy = 0; dessertHelpersBusy = 0;
-    }
 
     function initGame() {
         playerPhone = document.getElementById('player-phone-input').value.trim();
@@ -385,9 +402,7 @@
                     }
                 }
             });
-        } catch (error) {
-            console.error("ดึงข้อมูลไม่สำเร็จ");
-        }
+        } catch (error) { console.error("ดึงข้อมูลไม่สำเร็จ"); }
 
         loadingMsg.style.display = 'none';
 
@@ -398,54 +413,41 @@
             
             let topHtml = `<div class="stat-box champion" style="color:#aaa;">ยังไม่มีแชมป์</div>`;
             if (topP) {
-                topHtml = `
-                    <div class="stat-box champion">
-                        <span style="color:#ffd54f;">👑 ${topP.name}</span><br>
-                        ${topP.score}pts | ${topP.avgWait}m
-                    </div>
-                `;
+                topHtml = `<div class="stat-box champion"><span style="color:#ffd54f;">👑 ${topP.name}</span><br>${topP.score}pts | ${topP.avgWait}m</div>`;
             }
 
             let myHtml = `<div class="stat-box" style="color:#aaa;">สถิติคุณ: ยังไม่เคยเล่น</div>`;
             if (myP) {
-                myHtml = `
-                    <div class="stat-box">
-                        <span style="color:#4caf50;">👤 สถิติคุณ</span><br>
-                        ${myP.score}pts | ${myP.avgWait}m
-                    </div>
-                `;
+                myHtml = `<div class="stat-box"><span style="color:#4caf50;">👤 สถิติคุณ</span><br>${myP.score}pts | ${myP.avgWait}m</div>`;
             }
 
             let card = document.createElement('div');
             card.className = 'level-card';
             card.onclick = () => selectLevel(idx);
-            card.innerHTML = `
-                <h3>ด่าน ${lvlNum}</h3>
-                <div class="order-count">จำนวน ${lvlData.totalOrders} บิล</div>
-                <div style="text-align: left; width: 100%;">
-                    ${topHtml}
-                    ${myHtml}
-                </div>
-            `;
+            card.innerHTML = `<h3>ด่าน ${lvlNum}</h3><div class="order-count">จำนวน ${lvlData.totalOrders} บิล</div><div style="text-align: left; width: 100%;">${topHtml}${myHtml}</div>`;
             grid.appendChild(card);
         });
     }
 
-    function selectLevel(idx) {
-        currentLevel = idx;
-        document.getElementById('overlay-level-select').classList.add('hidden');
-        startLevel();
-    }
+    function selectLevel(idx) { currentLevel = idx; document.getElementById('overlay-level-select').classList.add('hidden'); startLevel(); }
+    function backToLevelSelect() { document.getElementById('overlay-level-clear').classList.add('hidden'); showLevelSelection(); }
+    function startNextLevel() { document.getElementById('overlay-level-clear').classList.add('hidden'); currentLevel++; startLevel(); }
 
-    function backToLevelSelect() {
-        document.getElementById('overlay-level-clear').classList.add('hidden');
-        showLevelSelection();
-    }
-
-    function startNextLevel() {
-        document.getElementById('overlay-level-clear').classList.add('hidden');
-        currentLevel++;
-        startLevel();
+    // 🟢 ระบบเลือกประจำการลูกน้อง 🟢
+    function assignHelper(station) {
+        if(currentLevel < 4) { showFloatingScore("❌ ลูกน้องปลดล็อกด่าน 5!", `btn-assign-${station}`, true); return; }
+        
+        currentHelperStation = station;
+        
+        // อัปเดตปุ่ม UI
+        ['hot', 'blended', 'dessert'].forEach(st => {
+            let btn = document.getElementById(`btn-assign-${st}`);
+            if(st === station) {
+                btn.classList.add('active'); btn.innerText = '🧑‍🍳 ยืนประจำการที่นี่!';
+            } else {
+                btn.classList.remove('active'); btn.innerText = '🧑‍🍳 เรียกลูกน้องมานี่';
+            }
+        });
     }
 
     function startLevel() {
@@ -458,9 +460,16 @@
         
         isPlayerBusy = false; isRefilling = false;
         hotStock = 0; isHotPrepping = false;
-        setupHelpersForLevel();
         
-        hotIdleTimer = 0; dessertIdleTimer = 0;
+        // รีเซ็ตลูกน้อง
+        currentHelperStation = 'none'; isHelperBusy = false;
+        ['hot', 'blended', 'dessert'].forEach(st => {
+            let btn = document.getElementById(`btn-assign-${st}`);
+            if(btn) { 
+                btn.classList.remove('active'); btn.innerText = '🧑‍🍳 เรียกลูกน้องมานี่'; 
+                btn.style.display = (currentLevel >= 4) ? 'block' : 'none'; // ด่าน 5 ขึ้นไปถึงจะเห็นปุ่ม
+            }
+        });
         
         updateUI(); document.getElementById('tickets-container').innerHTML = ""; 
 
@@ -484,40 +493,44 @@
             }
             activeOrders.forEach(order => { order.timeLeft--; });
             
-            // 🟢 ระบบตรวจสอบลูกน้องอู้งาน (แจ้งเตือนทุกๆ 5 วินาที) 🟢
-            let pendingHot = 0;
-            let pendingDessert = 0;
-            activeOrders.forEach(o => {
-                if (o.status !== 'ready') {
-                    o.items.forEach(item => {
-                        if (item.type === 'hot' && !item.done && !item.inProgress) pendingHot++;
-                        if (item.type === 'dessert' && !item.done && !item.inProgress) pendingDessert++;
-                    });
-                }
-            });
-
-            // ตรวจสอบลูกน้องชาร้อน (จะทำงานได้ก็ต่อเมื่อมีสต็อคชาร้อนที่จัดไว้แล้วเท่านั้น)
-            if (hotHelpersTotal > 0 && hotHelpersBusy < hotHelpersTotal && pendingHot > 0 && hotStock > 0) {
-                hotIdleTimer++;
-                if (hotIdleTimer > 0 && hotIdleTimer % 5 === 0) {
-                    showFloatingScore("⚠️ ลูกน้องว่าง สั่งเร็ว!", 'btn-hot-serve', true);
-                }
-            } else {
-                hotIdleTimer = 0;
-            }
-
-            // ตรวจสอบลูกน้องจัดขนม
-            if (dessertHelpersTotal > 0 && dessertHelpersBusy < dessertHelpersTotal && pendingDessert > 0) {
-                dessertIdleTimer++;
-                if (dessertIdleTimer > 0 && dessertIdleTimer % 5 === 0) {
-                    showFloatingScore("⚠️ ลูกน้องว่าง สั่งเร็ว!", 'btn-dessert', true);
-                }
-            } else {
-                dessertIdleTimer = 0;
-            }
-
             updateTimersUI(); checkLevelCompletion();
         }, 1000);
+
+        // 🟢 วงจรสมองกลของลูกน้อง (AI Helper Loop) 🟢
+        clearInterval(helperTimer);
+        helperTimer = setInterval(() => {
+            if (currentHelperStation !== 'none' && !isHelperBusy) {
+                // ถ้าแกลลอนหมด ลูกน้องจะยืนงง ไม่ยอมต้ม
+                if (currentHelperStation === 'blended' && blendedStock <= 0) return;
+
+                // ลูกน้องก็ติดกฎ WIP Limit 3 บิลเหมือนกัน
+                let claim = findAndClaimItem(currentHelperStation, false); 
+                
+                if (claim) {
+                    isHelperBusy = true;
+                    let duration = 0;
+                    
+                    if (currentHelperStation === 'hot') duration = 9000; // ลูกน้องทำรวดเดียว 9 วิ
+                    else if (currentHelperStation === 'dessert') duration = 4000; // ลูกน้องช้ากว่าบอส (4 วิ)
+                    else if (currentHelperStation === 'blended') duration = 2000; // ลูกน้องเทชา 2 วิ
+
+                    let progBar = document.getElementById(`helper-prog-${currentHelperStation}`);
+                    let fill = document.getElementById(`helper-fill-${currentHelperStation}`);
+                    if(progBar) {
+                        progBar.style.display = 'block';
+                        fill.style.transition = 'none'; fill.style.width = '0%';
+                        setTimeout(() => { fill.style.transition = `width ${duration}ms linear`; fill.style.width = '100%'; }, 50);
+                    }
+
+                    setTimeout(() => {
+                        completeItem(claim.orderId, claim.itemIndex);
+                        isHelperBusy = false;
+                        if(progBar) progBar.style.display = 'none';
+                        if(currentHelperStation === 'blended') { blendedStock--; updateUI(); }
+                    }, duration);
+                }
+            }
+        }, 500); // AI ประเมินสถานการณ์ทุกครึ่งวินาที
     }
 
     function appendTicketToDOM(order) {
@@ -534,6 +547,22 @@
         div.innerHTML = html; container.appendChild(div);
         document.getElementById('order-count-badge').innerText = `รอพ่น: ${spawnQueue.length}`;
         document.getElementById('active-count-badge').innerText = `บนจอ: ${activeOrders.length}`;
+        updateWIPHighlight(); // อัปเดตกรอบแสง
+    }
+
+    // 🟢 ระบบจัดการขอบเขต WIP Limit (ทำได้แค่ 3 บิลแรก) 🟢
+    function updateWIPHighlight() {
+        let pendingOrders = activeOrders.filter(o => o.status !== 'ready');
+        activeOrders.forEach(o => {
+            let el = document.getElementById(`ticket-${o.id}`);
+            if(el) el.classList.remove('wip-active');
+        });
+        
+        // ไฮไลท์แค่ 3 บิลแรกที่ยังไม่พร้อมเสิร์ฟ
+        for(let i=0; i<Math.min(3, pendingOrders.length); i++) {
+            let el = document.getElementById(`ticket-${pendingOrders[i].id}`);
+            if(el) el.classList.add('wip-active');
+        }
     }
 
     function updateTimersUI() {
@@ -554,51 +583,41 @@
         document.getElementById('ready-count').innerText = readyCount;
         const serveBtn = document.getElementById('btn-serve-tray');
         if (readyCount > 0) serveBtn.classList.remove('disabled'); else serveBtn.classList.add('disabled');
+        updateWIPHighlight();
     }
 
-    function findAndClaimItem(type) {
-        for (let order of activeOrders) {
-            if (order.status === 'ready') continue;
-            for (let i=0; i<order.items.length; i++) {
+    // 🟢 ฟังก์ชันค้นหาออเดอร์ ที่ล็อคไว้ให้ค้นเฉพาะใน 3 บิลแรกเท่านั้น (WIP Limit) 🟢
+    function findAndClaimItem(type, isPlayer = true) {
+        let pendingOrders = activeOrders.filter(o => o.status !== 'ready');
+        let wipOrders = pendingOrders.slice(0, 3); // ขอบเขต WIP Limit คือ 3 บิลแรก
+
+        // ค้นหาในโซน WIP ก่อน
+        for (let order of wipOrders) {
+            for (let i = 0; i < order.items.length; i++) {
                 let item = order.items[i];
                 if (item.type === type && !item.done && !item.inProgress) {
                     item.inProgress = true;
                     let itemEl = document.getElementById(`item-${order.id}-${i}`);
-                    if(itemEl) itemEl.classList.add('in-progress');
-                    return { orderId: order.id, itemIndex: i };
-                }
-            }
-        }
-        return null;
-    }
-
-    function checkPriority(actionAttempted) {
-        let needSingle = false; let needRefill = (blendedStock <= 2 && !isRefilling);
-        let needHot = false; let needDessert = false; let needPour = false;
-
-        for (let order of activeOrders) {
-            if (order.status === 'ready') continue;
-            for (let item of order.items) {
-                if (!item.done && !item.inProgress) {
-                    if (item.type === 'single' && singleBrewSlots < 4) needSingle = true;
-                    if (item.type === 'hot') needHot = true;
-                    if (item.type === 'dessert') needDessert = true;
-                    if (item.type === 'blended' && blendedStock > 0) needPour = true;
+                    if(itemEl) itemEl.classList.add(isPlayer ? 'in-progress' : 'in-progress-helper');
+                    return { orderId: order.id, itemIndex: i, isWIP: true };
                 }
             }
         }
         
-        let needHotPrep = (needHot && hotStock === 0 && !isHotPrepping);
-        let highest = "";
-        
-        if (needSingle) highest = 'single';
-        else if (needRefill) highest = 'refill';
-        else if (needHotPrep) highest = 'hot-prep';
-        else if (needHot && hotStock > 0) highest = 'hot-serve';
-        else if (needDessert) highest = 'dessert';
-        else if (needPour) highest = 'pour';
+        // ถ้าเป็นผู้เล่นกด แล้วไม่เจอใน WIP ให้ลองแอบดูบิลที่ 4+ ว่ามีไหม (เพื่อเอามาลงโทษ)
+        if (isPlayer) {
+            let outOfBoundsOrders = pendingOrders.slice(3);
+            for (let order of outOfBoundsOrders) {
+                for (let i = 0; i < order.items.length; i++) {
+                    let item = order.items[i];
+                    if (item.type === type && !item.done && !item.inProgress) {
+                        return { isWIP: false }; // เจอในบิลที่อยู่นอกโควต้า!
+                    }
+                }
+            }
+        }
 
-        return highest === actionAttempted;
+        return null; // ไม่มีออเดอร์นี้บนจอเลย
     }
 
     function completeItem(orderId, itemIndex) {
@@ -609,12 +628,12 @@
             item.done = true; item.inProgress = false;
             levelScore += 20; totalScore += 20;
             let itemEl = document.getElementById(`item-${order.id}-${itemIndex}`); 
-            if(itemEl) { itemEl.classList.remove('in-progress'); itemEl.classList.add('done'); }
+            if(itemEl) { itemEl.classList.remove('in-progress'); itemEl.classList.remove('in-progress-helper'); itemEl.classList.add('done'); }
         }
         
         if (order.status !== 'ready' && order.items.every(itm => itm.done)) {
             order.status = 'ready'; 
-            let ticketEl = document.getElementById(`ticket-${order.id}`); if(ticketEl) ticketEl.classList.add('ready');
+            let ticketEl = document.getElementById(`ticket-${order.id}`); if(ticketEl) { ticketEl.classList.add('ready'); ticketEl.classList.remove('wip-active'); }
             let stampEl = document.getElementById(`stamp-${order.id}`); if(stampEl) stampEl.innerHTML = `<div class="ready-stamp">✅ รอเสิร์ฟ!</div>`;
         }
         updateUI(); updateTimersUI();
@@ -640,24 +659,39 @@
         updateUI(); updateTimersUI(); checkLevelCompletion();
     }
 
-    // 🟢 แก้ไข: จัดชุดชาร้อน ต้องมีออเดอร์บนจอเท่านั้น 🟢
+    // 🟢 ระบบจัดการ Penalty เมื่อผิด WIP Limit 🟢
+    function handlePlayerActionClick(type, btnId) {
+        let claim = findAndClaimItem(type, true);
+        
+        if (!claim) { 
+            showFloatingScore("❌ ไม่มีออเดอร์!", btnId, true); 
+            levelScore = Math.max(0, levelScore - 5); totalScore = Math.max(0, totalScore - 5);
+            updateUI(); return false; 
+        }
+        
+        if (!claim.isWIP) {
+            showFloatingScore("❌ ลัดคิว! ทำ 3 บิลแรกก่อน", btnId, true); 
+            levelScore = Math.max(0, levelScore - 5); totalScore = Math.max(0, totalScore - 5);
+            updateUI(); return false; 
+        }
+        
+        return claim; // ผ่านเงื่อนไข ทำได้!
+    }
+
     function prepareHotTea() {
         if (isPlayerBusy || isHotPrepping || hotStock >= 3) return;
         
         let pendingHot = 0;
-        activeOrders.forEach(order => {
-            if(order.status !== 'ready') {
-                order.items.forEach(item => { if(item.type === 'hot' && !item.done) pendingHot++; });
-            }
+        let wipOrders = activeOrders.filter(o => o.status !== 'ready').slice(0, 3);
+        wipOrders.forEach(order => {
+            order.items.forEach(item => { if(item.type === 'hot' && !item.done) pendingHot++; });
         });
 
         if (hotStock >= pendingHot) {
-            showFloatingScore("❌ กดมั่ว! -5", 'btn-hot-prep', true);
+            showFloatingScore("❌ จัดเกินโควต้า 3 บิลแรก!", 'btn-hot-prep', true);
             levelScore = Math.max(0, levelScore - 5); totalScore = Math.max(0, totalScore - 5);
             updateUI(); return;
         }
-        
-        if (checkPriority('hot-prep')) { showFloatingScore("⭐ เตรียมของดี! +5", 'btn-hot-prep'); levelScore += 5; totalScore += 5; }
 
         isHotPrepping = true; updateUI();
         const progBar = document.getElementById('prog-hot-prep'), fill = document.getElementById('fill-hot-prep');
@@ -668,50 +702,28 @@
     }
 
     function serveHotTea() {
-        if (hotStock <= 0) return;
+        if (hotStock <= 0 || isPlayerBusy) return;
         
-        let claim = findAndClaimItem('hot');
-        if (!claim) { 
-            showFloatingScore("❌ กดมั่ว! -5", 'btn-hot-serve', true); 
-            levelScore = Math.max(0, levelScore - 5); totalScore = Math.max(0, totalScore - 5);
-            updateUI(); return; 
-        }
-
-        if (checkPriority('hot-serve')) { showFloatingScore("⭐ ลำดับเป๊ะ! +10", 'btn-hot-serve'); levelScore += 10; totalScore += 10; }
+        let claim = handlePlayerActionClick('hot', 'btn-hot-serve');
+        if(!claim) return;
 
         hotStock--;
+        isPlayerBusy = true; updateUI();
+        const progBar = document.getElementById('prog-hot-serve'), fill = document.getElementById('fill-hot-serve');
+        progBar.style.display = 'block'; fill.style.transition = 'none'; fill.style.width = '0%';
         
-        if (hotHelpersBusy < hotHelpersTotal) {
-            hotHelpersBusy++;
-            showFloatingScore("🧑‍🍳 ส่งลูกน้องรับจบ!", 'btn-hot-serve');
-            updateUI();
-            setTimeout(() => {
-                hotHelpersBusy--;
-                completeItem(claim.orderId, claim.itemIndex);
-            }, 5000);
-        } else if (!isPlayerBusy) {
-            isPlayerBusy = true; updateUI();
-            const progBar = document.getElementById('prog-hot-serve'), fill = document.getElementById('fill-hot-serve');
-            progBar.style.display = 'block'; fill.style.transition = 'none'; fill.style.width = '0%';
-            
-            setTimeout(() => { fill.style.transition = `width 5000ms linear`; fill.style.width = '100%'; }, 50);
-            setTimeout(() => { 
-                isPlayerBusy = false; progBar.style.display = 'none'; updateUI();
-                completeItem(claim.orderId, claim.itemIndex); 
-            }, 5000);
-        }
+        setTimeout(() => { fill.style.transition = `width 5000ms linear`; fill.style.width = '100%'; }, 50);
+        setTimeout(() => { 
+            isPlayerBusy = false; progBar.style.display = 'none'; updateUI();
+            completeItem(claim.orderId, claim.itemIndex); 
+        }, 5000);
     }
 
     function brewSingleTea() {
         if (isPlayerBusy || singleBrewSlots >= 4) return; 
-        let claim = findAndClaimItem('single');
-        if (!claim) { 
-            showFloatingScore("❌ กดมั่ว! -5", 'btn-single', true); 
-            levelScore = Math.max(0, levelScore - 5); totalScore = Math.max(0, totalScore - 5);
-            updateUI(); return; 
-        }
-
-        if (checkPriority('single')) { showFloatingScore("⭐ ลำดับเป๊ะ! +10", 'btn-single'); levelScore += 10; totalScore += 10; }
+        
+        let claim = handlePlayerActionClick('single', 'btn-single');
+        if(!claim) return;
 
         singleBrewSlots++; const currentSlot = singleBrewSlots;
         const fill = document.getElementById(`slot-fill-${currentSlot}`), text = document.getElementById(`slot-text-${currentSlot}`), btn = document.getElementById('btn-single');
@@ -727,27 +739,10 @@
     }
 
     function doTask(type, duration, btnId) {
-        let claim = findAndClaimItem(type); 
-        if (!claim) { 
-            showFloatingScore("❌ กดมั่ว! -5", btnId, true); 
-            levelScore = Math.max(0, levelScore - 5); totalScore = Math.max(0, totalScore - 5);
-            updateUI(); return; 
-        }
-
-        if (checkPriority(type)) { showFloatingScore("⭐ ลำดับเป๊ะ! +10", btnId); levelScore += 10; totalScore += 10; }
-
-        if (type === 'dessert' && dessertHelpersBusy < dessertHelpersTotal) {
-            dessertHelpersBusy++;
-            showFloatingScore("🧑‍🍳 ลูกน้องจัดให้!", btnId);
-            updateUI();
-            setTimeout(() => {
-                dessertHelpersBusy--;
-                completeItem(claim.orderId, claim.itemIndex);
-            }, duration);
-            return; 
-        }
-
-        if (isPlayerBusy) return; 
+        if (isPlayerBusy) return;
+        
+        let claim = handlePlayerActionClick(type, btnId);
+        if(!claim) return;
 
         isPlayerBusy = true; updateUI();
         const progBar = document.getElementById(`prog-${type}`), fill = document.getElementById(`fill-${type}`);
@@ -762,12 +757,9 @@
 
     function pourBlended() { 
         if (isPlayerBusy) return;
-        let claim = findAndClaimItem('blended');
-        if (!claim) { 
-            showFloatingScore("❌ กดมั่ว! -5", 'btn-blend-pour', true); 
-            levelScore = Math.max(0, levelScore - 5); totalScore = Math.max(0, totalScore - 5);
-            updateUI(); return; 
-        }
+        
+        let claim = handlePlayerActionClick('blended', 'btn-blend-pour');
+        if(!claim) return;
         
         if (blendedStock <= 0) { 
             showFloatingScore("❌ แกลลอนหมด!", 'btn-blend-pour', true); 
@@ -776,8 +768,6 @@
             return; 
         } 
 
-        if (checkPriority('pour')) { showFloatingScore("⭐ ลำดับเป๊ะ! +5", 'btn-blend-pour'); levelScore += 5; totalScore += 5; }
-
         blendedStock--; updateUI(); completeItem(claim.orderId, claim.itemIndex); 
     }
 
@@ -785,8 +775,6 @@
         if (isPlayerBusy || isRefilling) return;
         if (blendedStock > 2) { showFloatingScore("❌ รอให้เหลือ <= 2 ก่อน", 'btn-blend-refill', true); return; }
         
-        if (checkPriority('refill')) { showFloatingScore("⭐ เตรียมของดี! +10", 'btn-blend-refill'); levelScore += 10; totalScore += 10; }
-
         isRefilling = true; updateUI();
         const progBar = document.getElementById('prog-refill'), fill = document.getElementById('fill-refill');
         progBar.style.display = 'block'; fill.style.transition = 'none'; fill.style.width = '0%';
@@ -800,18 +788,9 @@
         
         document.getElementById('blended-stock').innerText = blendedStock; 
         document.getElementById('blended-stock').style.color = blendedStock <= 2 ? 'var(--hot)' : 'var(--blended)';
-
         document.getElementById('hot-stock').innerText = hotStock; 
         document.getElementById('hot-stock').style.color = hotStock === 0 ? 'var(--danger)' : 'var(--hot)';
         
-        if(hotHelpersTotal > 0) {
-            document.getElementById('hot-helper-status').innerText = `🧑‍🍳 ลูกน้องว่าง: ${hotHelpersTotal - hotHelpersBusy}/${hotHelpersTotal}`;
-        } else { document.getElementById('hot-helper-status').innerText = ""; }
-
-        if(dessertHelpersTotal > 0) {
-            document.getElementById('dessert-helper-status').innerText = `🧑‍🍳 ลูกน้องว่าง: ${dessertHelpersTotal - dessertHelpersBusy}/${dessertHelpersTotal}`;
-        } else { document.getElementById('dessert-helper-status').innerText = ""; }
-
         const overlay = document.getElementById('busy-overlay');
         if (isPlayerBusy) { overlay.style.display = 'flex'; } else { overlay.style.display = 'none'; }
 
@@ -820,7 +799,7 @@
         else { btnHotPrep.disabled = false; btnHotPrep.style.opacity = '1'; }
 
         const btnHotServe = document.getElementById('btn-hot-serve');
-        if (hotStock <= 0 || (isPlayerBusy && hotHelpersBusy >= hotHelpersTotal)) { btnHotServe.disabled = true; btnHotServe.style.opacity = '0.5'; } 
+        if (hotStock <= 0 || isPlayerBusy) { btnHotServe.disabled = true; btnHotServe.style.opacity = '0.5'; } 
         else { btnHotServe.disabled = false; btnHotServe.style.opacity = '1'; }
 
         const btnRefill = document.getElementById('btn-blend-refill'); 
@@ -828,7 +807,7 @@
         else { btnRefill.disabled = false; btnRefill.style.opacity = '1'; }
         
         const btnDessert = document.getElementById('btn-dessert');
-        if (isPlayerBusy && dessertHelpersBusy >= dessertHelpersTotal) { btnDessert.disabled = true; btnDessert.style.opacity = '0.5'; } 
+        if (isPlayerBusy) { btnDessert.disabled = true; btnDessert.style.opacity = '0.5'; } 
         else { btnDessert.disabled = false; btnDessert.style.opacity = '1'; }
 
         const btnSingle = document.getElementById('btn-single');
@@ -839,7 +818,7 @@
         const serveBtn = document.getElementById('btn-serve-tray');
         if (activeOrders.length === 0 && spawnQueue.length === 0) {
             document.getElementById('no-order-msg').classList.remove('hidden');
-            serveBtn.classList.add('disabled'); clearInterval(globalTimer);
+            serveBtn.classList.add('disabled'); clearInterval(globalTimer); clearInterval(helperTimer);
             
             setTimeout(() => {
                 let sumWait = levelWaitTimes.reduce((a, b) => a + b, 0);
@@ -938,7 +917,6 @@
         }
     }
 
-    // 💥 ระบบเด้งแจ้งเตือนแบบตะโกน! 💥
     function showFloatingScore(text, targetId, isPenalty = false) {
         const target = document.getElementById(targetId); if(!target) return;
         const floatEl = document.createElement('div'); 
