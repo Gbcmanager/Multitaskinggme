@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Gimbocha KDS - Level Selection</title>
+    <title>Gimbocha KDS - Pro Training</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         :root { --brand: #8c5b3e; --bg: #1a1a1a; --hot: #e65100; --single: #c62828; --blended: #2e7d32; --dessert: #fbc02d; --success: #4caf50; --danger: #f44336; }
@@ -64,16 +64,15 @@
         
         /* Overlays */
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 100; text-align: center; padding: 5px 10px; box-sizing: border-box;}
-        .overlay h1 { font-size: 16px !important; margin: 0 0 2px 0; text-shadow: 1px 1px var(--brand); }
-        .overlay p { font-size: 10px !important; margin: 2px 0; color: #ddd; }
-        .btn-primary { background: var(--brand); color: white; padding: 6px 10px; border: none; border-radius: 6px; font-size: 11px; font-family: inherit; cursor: pointer; margin: 2px; font-weight: bold; transition: 0.2s; }
-        .btn-primary.btn-capture { background: var(--single); font-size: 11px; padding: 4px 8px; margin-top: 3px;}
+        .overlay h1 { font-size: 18px !important; margin: 0 0 2px 0; text-shadow: 1px 1px var(--brand); }
+        .overlay p { font-size: 12px !important; margin: 2px 0; color: #ddd; }
+        .btn-primary { background: var(--brand); color: white; padding: 8px 16px; border: none; border-radius: 6px; font-size: 13px; font-family: inherit; cursor: pointer; margin: 5px; font-weight: bold; transition: 0.2s; }
         .btn-danger { background: var(--danger); }
         .split-layout { display: flex; flex-direction: row; align-items: stretch; justify-content: center; width: 100%; max-width: 600px; gap: 10px; height: 100%; max-height: 250px; }
         .split-left { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative;}
         .split-right { flex: 1; display: flex; flex-direction: column; justify-content: center; overflow: hidden;}
         
-        .input-name { padding: 4px; width: 80%; max-width: 180px; margin: 4px 0; border-radius: 6px; border: 2px solid var(--brand); text-align: center; font-family: inherit; font-size: 11px; outline: none; }
+        .input-name { padding: 8px; width: 80%; max-width: 220px; margin: 15px 0; border-radius: 6px; border: 2px solid var(--brand); text-align: center; font-family: inherit; font-size: 14px; outline: none; }
         .leaderboard-container { background: #fff; color: #333; width: 100%; border-radius: 8px; padding: 6px; margin: 0; text-align: left; overflow-y: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.5); flex-grow: 1; display: flex; flex-direction: column;}
         .leaderboard-title { font-size: 10px; font-weight: bold; border-bottom: 2px solid var(--brand); margin-bottom: 3px; padding-bottom: 2px; flex-shrink: 0;}
         #leaderboard-list { overflow-y: auto; flex-grow: 1; }
@@ -81,14 +80,9 @@
         .leaderboard-row:last-child { border-bottom: none; }
         .lb-rank { font-weight: bold; width: 15px; text-align: center;}
         
-        .selfie-wrapper { position: relative; width: 60px; height: 60px; margin-bottom: 4px; border-radius: 12px; border: 2px solid var(--brand); box-shadow: 0 4px 10px rgba(0,0,0,0.5); overflow: hidden; background: #000;}
-        #selfie-video { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); } 
-        #selfie-preview { display: none; width: 60px; height: 60px; border-radius: 12px; border: 2px solid var(--brand); margin-bottom: 4px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); object-fit: cover;} 
-        .selfie-icon { position: absolute; font-size: 12px; color: rgba(255,255,255,0.7); top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none;}
-        
         .player-img-header { width: 22px; height: 22px; border-radius: 50%; border: 1px solid #fff; object-fit: cover; margin-right: 5px;}
         .player-img-lb { width: 18px; height: 18px; border-radius: 4px; border: 1px solid var(--brand); object-fit: cover; margin-right: 4px;}
-        .shop-logo-top { width: 60px; height: 60px; object-fit: cover; border-radius: 12px; border: 2px solid var(--brand); margin-bottom: 4px; }
+        .shop-logo-top { width: 90px; height: 90px; object-fit: cover; border-radius: 12px; border: 2px solid var(--brand); margin-bottom: 10px; }
         
         #landscape-warning { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #2b2b2b; color: white; z-index: 999; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; box-sizing: border-box; }
         @media screen and (orientation: portrait) { #landscape-warning { display: flex; } #app { display: none; } }
@@ -96,7 +90,6 @@
         .kpi-box { background: rgba(255,255,255,0.1); padding: 5px; border-radius: 8px; margin: 4px 0; width: 100%; border: 1px solid rgba(255,255,255,0.2); }
         .kpi-box p { margin: 1px 0 !important; }
 
-        /* 🟢 สไตล์สำหรับหน้าระบบเลือกด่าน 🟢 */
         .level-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; width: 100%; max-width: 700px; padding: 10px; max-height: 75vh; overflow-y: auto;}
         .level-card { background: rgba(255,255,255,0.1); border: 2px solid var(--brand); border-radius: 8px; padding: 6px; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; justify-content: space-between; text-align: center;}
         .level-card:hover { background: rgba(255,255,255,0.2); transform: scale(1.05); }
@@ -116,7 +109,7 @@
     <div class="header">
         <span id="level-display" style="color: #ffd54f;">Level 1</span>
         <span style="display: flex; align-items: center;">
-            <img id="header-player-img" src="" alt="Player" class="hidden player-img-header">
+            <img id="header-player-img" src="IMG_4511.jpeg" alt="Player" class="hidden player-img-header">
             พนักงาน: <span id="display-player-name" style="color: #fff; margin-left: 3px;">-</span>
         </span>
         <span>คะแนนรวม: <span id="total-score" style="color: #4caf50;">0</span></span>
@@ -183,19 +176,11 @@
     <h1 style="color: #fff;">Gimbocha KDS</h1>
     <p>ระบบฝึกตรรกะหน้าบาร์ (Workflow)</p>
     
-    <div class="selfie-wrapper" id="selfie-wrapper">
-        <span class="selfie-icon">📷</span>
-        <video id="selfie-video" autoplay playsinline></video>
-    </div>
-    <img id="selfie-preview" src="" alt="Selfie Preview">
-    
-    <button class="btn-primary btn-capture" id="btn-capture" onclick="takeSelfie()">กดถ่ายรูปเซลฟี่</button>
-    <input type="text" id="player-name-input" class="input-name" placeholder="ใส่ชื่อของคุณที่นี่..." autocomplete="off">
+    <input type="text" id="player-name-input" class="input-name" placeholder="ใส่ชื่อพนักงานที่นี่..." autocomplete="off">
     
     <div class="button-group">
-        <button class="btn-primary" id="btn-start" onclick="initGame()" disabled style="opacity: 0.5;">ตอกบัตรเข้างาน</button>
+        <button class="btn-primary" id="btn-start" onclick="initGame()">ตอกบัตรเข้างาน</button>
     </div>
-    <canvas id="selfie-canvas" style="display: none;"></canvas>
 </div>
 
 <div id="overlay-level-select" class="overlay hidden">
@@ -282,7 +267,7 @@
     let currentLevel = 0; let totalScore = 0; let levelScore = 0; 
     let spawnQueue = []; let activeOrders = []; 
     let timeToNextSpawn = 0; let blendedStock = 8; let singleBrewSlots = 0; let globalTimer;
-    let playerName = ""; let selfieDataURL = ""; let streamReference = null; 
+    let playerName = ""; 
     let levelWaitTimes = [];
     let isPlayerBusy = false; let isRefilling = false;
 
@@ -294,35 +279,12 @@
         }
     }
     initSingleSlots();
-    
-    async function startCamera() {
-        try {
-            const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user", width: 100, height: 100 }, audio: false });
-            document.getElementById('selfie-video').srcObject = stream;
-            streamReference = stream; 
-        } catch (err) {
-            document.getElementById('selfie-wrapper').innerHTML = "<div style='color:#ff9800; font-size:8px; padding:5px;'>โปรดอนุญาตกล้อง</div>";
-        }
-    }
-    
-    function takeSelfie() {
-        const video = document.getElementById('selfie-video'); const canvas = document.getElementById('selfie-canvas');
-        if(!streamReference || video.readyState !== 4) return;
-        canvas.width = 100; canvas.height = 100;
-        canvas.getContext('2d').drawImage(video, -100, 0, 100, 100);
-        selfieDataURL = canvas.toDataURL('image/jpeg', 0.4); 
-        document.getElementById('selfie-wrapper').style.display = 'none'; video.srcObject = null;
-        streamReference.getTracks().forEach(track => track.stop()); 
-        document.getElementById('selfie-preview').src = selfieDataURL; document.getElementById('selfie-preview').style.display = 'block';
-        document.getElementById('btn-capture').classList.add('hidden'); 
-        document.getElementById('btn-start').disabled = false; document.getElementById('btn-start').style.opacity = '1';
-    }
 
-    // 🟢 เปลี่ยนจากเข้าเกมเลย เป็นเปิดหน้าเลือกด่านแทน 🟢
     function initGame() {
         playerName = document.getElementById('player-name-input').value.trim();
-        if(!playerName || !selfieDataURL) { alert("❌ โปรดถ่ายรูปและใส่ชื่อให้ครบครับ!"); return; }
-        document.getElementById('header-player-img').src = selfieDataURL;
+        if(!playerName) { alert("❌ โปรดใส่ชื่อพนักงานก่อนเข้างานครับ!"); return; }
+        
+        document.getElementById('header-player-img').src = "IMG_4511.jpeg";
         document.getElementById('header-player-img').classList.remove('hidden');
         document.getElementById('display-player-name').innerText = playerName;
         document.getElementById('overlay-start').classList.add('hidden');
@@ -330,7 +292,6 @@
         showLevelSelection();
     }
 
-    // 🟢 ระบบสร้างหน้าเลือกด่านและดึงข้อมูลแชมป์ 🟢
     async function showLevelSelection() {
         document.getElementById('overlay-level-clear').classList.add('hidden');
         const overlay = document.getElementById('overlay-level-select');
@@ -348,7 +309,6 @@
             const response = await fetch(GOOGLE_APP_SCRIPT_URL);
             const globalLb = await response.json();
             
-            // หาคนเก่งสุดของแต่ละด่าน (คะแนนสูงสุด หรือถ้าเท่ากันเอาเวลาที่น้อยกว่า)
             globalLb.forEach(entry => {
                 let lvl = entry.level;
                 if(lvl >= 1 && lvl <= 10) {
@@ -367,13 +327,13 @@
 
         loadingMsg.style.display = 'none';
 
-        // วาดปุ่มด่าน 1-10
         levels.forEach((lvlData, idx) => {
             let lvlNum = idx + 1;
             let topP = topPlayers[lvlNum];
             
             let topHtml = `<span style="color:#aaa;">ยังไม่มีแชมป์</span>`;
             if (topP) {
+                // ถ้ามีรูปเก่าค้างในระบบก็ดึงมาโชว์ ถ้าไม่มีให้ใช้โลโก้ร้านแทน
                 let imgSrc = (topP.selfie && topP.selfie.length > 100) ? topP.selfie : "IMG_4511.jpeg";
                 topHtml = `
                     <img src="${imgSrc}" onerror="this.src='IMG_4511.jpeg'">
@@ -665,6 +625,7 @@
                 document.getElementById('action-buttons').classList.add('hidden');
                 clearOverlay.classList.remove('hidden');
                 
+                // เซฟและโหลด Leaderboard (ส่งค่าเป็น Empty String แทนรูป)
                 autoSaveAndFetchLeaderboard(avgWaitRealMin, currentLevel + 1);
             }, 1000);
         }
@@ -676,7 +637,7 @@
         document.getElementById('leaderboard-list').innerHTML = "<div style='text-align:center; padding: 15px; color:#888; font-size:10px;'>⏳ กำลังเชื่อมต่อเซิร์ฟเวอร์...</div>";
         document.getElementById('lb-title').innerText = `🏆 สถิติคนชงไว (ด่าน ${lvlNum})`;
 
-        const payload = { name: playerName, score: levelScore, levelReached: lvlNum, selfie: selfieDataURL, avgWaitTime: myAvgWaitRealMin };
+        const payload = { name: playerName, score: levelScore, levelReached: lvlNum, selfie: "", avgWaitTime: myAvgWaitRealMin };
         const formData = new URLSearchParams(); formData.append('data', JSON.stringify(payload));
 
         fetch(GOOGLE_APP_SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: formData.toString() })
