@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Gimbocha KDS - Realistic Pacing</title>
+    <title>Gimbocha KDS - Pro Manager Mode</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root { --brand: #8c5b3e; --bg: #1a1a1a; --hot: #e65100; --single: #c62828; --blended: #2e7d32; --dessert: #fbc02d; --success: #4caf50; --danger: #f44336; --wip: #e3f2fd; }
@@ -14,7 +14,7 @@
         .game-container { display: flex; flex-direction: column; flex-grow: 1; overflow: hidden; }
         .order-panel-wrapper { display: flex; flex: 1; overflow: hidden; border-bottom: 2px solid #ccc; }
         
-        /* โซนออเดอร์ใหญ่ 75% */
+        /* โซนออเดอร์ขยายใหญ่ 75% */
         .order-panel { flex: 1; padding: 4px 6px; background: #eceff1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
         .order-header { font-size: 11px; font-weight: bold; color: #333; margin-bottom: 3px; display: flex; justify-content: space-between; align-items: center;}
         
@@ -24,15 +24,11 @@
         #tickets-container::-webkit-scrollbar-thumb { background: #bbb; border-radius: 3px; }
 
         .ticket { background: white; border: 2px solid #ddd; padding: 4px; border-radius: 6px; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); min-width: 135px; max-width: 135px; flex-shrink: 0; display: flex; flex-direction: column; max-height: 100%; overflow-y: auto; position: relative; transition: 0.3s; animation: popInOrder 0.3s forwards; }
-        
-        /* WIP Limit (5 บิลแรก) */
         .ticket.wip-active { border-color: #2196f3; box-shadow: 0 0 8px rgba(33, 150, 243, 0.4); background: #fafcff; }
         .ticket.ready { background: #e8f5e9; border-color: var(--success) !important; box-shadow: none;}
-        .ticket.ready h3 { color: var(--success) !important; border-bottom-color: var(--success); }
         .ready-stamp { background: var(--success); color: white; text-align: center; font-size: 9px; font-weight: bold; padding: 2px; border-radius: 4px; margin-bottom: 3px; }
 
         .ticket h3 { margin: 0 0 2px 0; color: #111; display: flex; justify-content: space-between; font-size: 10px; border-bottom: 1px dashed #ccc; padding-bottom: 2px;}
-        .ticket-timer-bg { width: 100%; height: 3px; background: #eee; border-radius: 2px; margin-bottom: 3px; overflow: hidden; }
         .ticket-timer-fill { height: 100%; background: var(--success); width: 100%; transition: width 1s linear, background-color 0.5s; }
         
         .order-item { display: flex; align-items: center; margin-bottom: 1px; font-size: 8.5px; font-weight: 500; line-height: 1.1; }
@@ -42,114 +38,58 @@
         .badge { display: inline-block; padding: 1px 2px; border-radius: 2px; font-size: 6.5px; color: white; margin-right: 3px; font-weight: bold; min-width: 20px; text-align: center; }
         .bg-single { background: var(--single); } .bg-blended { background: var(--blended); } .bg-hot { background: transparent; font-size: 9px; padding: 0; min-width: 16px; } .bg-dessert { background: var(--dessert); color: #333; }
 
-        .serve-panel { width: 55px; background: #d7ccc8; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 4px; border-left: 2px solid var(--brand); box-shadow: -2px 0 10px rgba(0,0,0,0.1); z-index: 10; }
-        .serve-btn { width: 100%; height: 80%; background: var(--success); color: white; border: none; border-radius: 6px; font-weight: bold; font-size: 10px; cursor: pointer; box-shadow: 0 3px 0 #2e7d32; transition: 0.1s; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        .serve-btn:active { transform: translateY(3px); box-shadow: 0 0 0 #2e7d32; }
+        .serve-panel { width: 60px; background: #d7ccc8; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 4px; border-left: 2px solid var(--brand); box-shadow: -2px 0 10px rgba(0,0,0,0.1); z-index: 10; }
+        .serve-btn { width: 100%; height: 70%; background: var(--success); color: white; border: none; border-radius: 6px; font-weight: bold; font-size: 10px; cursor: pointer; box-shadow: 0 3px 0 #2e7d32; transition: 0.1s; display: flex; flex-direction: column; justify-content: center; align-items: center; }
         .serve-btn.disabled { background: #9e9e9e; box-shadow: 0 3px 0 #616161; cursor: not-allowed; opacity: 0.7;}
-        
-        /* บีบแผงควบคุมให้เหลือแค่ 1/4 ของจอ */
-        .station-panel-wrapper { display: flex; flex-direction: column; flex: 0 0 23vh; background: #fff;}
-        
-        .station-panel { flex: 1; padding: 2px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; position: relative;}
-        #busy-overlay { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.7); z-index: 20; justify-content: center; align-items: center; font-weight: bold; color: var(--danger); font-size: 10px; text-shadow: 1px 1px white; border-radius: 4px;}
+        .dish-counter { font-size: 8px; font-weight: bold; margin-top: 5px; color: #333; text-align: center;}
 
-        /* ย่อส่วนประกอบใน Station */
+        /* บีบแผงควบคุมเหลือ 1/4 (25vh) */
+        .station-panel-wrapper { display: flex; flex-direction: column; flex: 0 0 25vh; background: #fff;}
+        .station-panel { flex: 1; padding: 2px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 2px; position: relative;}
+        
         .station { background: #f9f9f9; border: 1px solid #ddd; padding: 2px; border-radius: 3px; text-align: center; display: flex; flex-direction: column; justify-content: flex-start; position: relative;}
-        .station-header { border-bottom: 1px solid #eee; padding-bottom: 1px; margin-bottom: 1px; }
         .station h4 { margin: 0 0 1px 0; font-size: 8px; }
         .station p { font-size: 6px; margin: 0; color: #666; }
 
-        /* 🟢 ปรับขนาดลูกน้องให้ใหญ่ขึ้น กดยาก! 🟢 */
-        .helper-dropzone { min-height: 28px; background: rgba(0,0,0,0.03); border: 1px dashed #ccc; border-radius: 4px; display: flex; gap: 2px; padding: 2px; justify-content: center; align-items: center; margin: 1px 0; flex-wrap: wrap;}
+        .helper-dropzone { min-height: 18px; background: rgba(0,0,0,0.03); border: 1px dashed #ccc; border-radius: 3px; display: flex; gap: 1px; padding: 1px; justify-content: center; align-items: center; margin: 1px 0; flex-wrap: wrap;}
         .helper-dropzone.drag-over { background: rgba(33, 150, 243, 0.2); border-color: #2196f3; }
         
-        .helper-token { width: 24px; height: 24px; background: #fff; border: 1.5px solid #2196f3; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 13px; cursor: grab; touch-action: none; box-shadow: 0 2px 4px rgba(0,0,0,0.3); transition: transform 0.1s;}
-        .helper-token:active { cursor: grabbing; transform: scale(1.1); }
-        .helper-token.dragging { position: fixed; pointer-events: none; opacity: 0.9; transform: scale(1.3); z-index: 9999; box-shadow: 0 5px 15px rgba(0,0,0,0.5);}
+        .helper-token { width: 16px; height: 16px; background: #fff; border: 1px solid #2196f3; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 9px; cursor: grab; touch-action: none; box-shadow: 0 1px 3px rgba(0,0,0,0.2); transition: transform 0.1s;}
+        .helper-token.dragging { position: fixed; pointer-events: none; opacity: 0.9; transform: scale(1.3); z-index: 9999; }
 
-        /* ย่อปุ่ม Action */
-        .btn-action { width: 100%; padding: 2px; border: none; border-radius: 3px; font-family: inherit; font-size: 7.5px; font-weight: bold; cursor: pointer; color: white; transition: 0.1s; margin-top: 1px; position: relative;}
-        .btn-action:disabled { background: #ccc !important; cursor: not-allowed; transform: none;}
-        .btn-action:active:not(:disabled) { transform: scale(0.92); }
+        .btn-action { width: 100%; padding: 2px; border: none; border-radius: 3px; font-family: inherit; font-size: 7.5px; font-weight: bold; cursor: pointer; color: white; transition: 0.1s; margin-top: 1px;}
+        .btn-action:disabled { background: #ccc !important; }
         
-        .machine-slots { display: flex; flex-direction: column; gap: 1px; margin-top: 1px; margin-bottom: auto;}
+        .machine-slots { display: flex; flex-direction: column; gap: 1px; margin-top: 1px;}
         .slot-bar { width: 100%; height: 4px; background: #eee; border-radius: 2px; overflow: hidden; position: relative; }
         .slot-fill { height: 100%; width: 0%; transition: width linear; }
-        .slot-text { position: absolute; width: 100%; text-align: center; font-size: 4px; color: white; line-height: 4px; font-weight: bold; top: 0; text-shadow: 0px 0px 1px rgba(0,0,0,0.8); }
+        .slot-text { position: absolute; width: 100%; text-align: center; font-size: 4px; color: white; line-height: 4px; font-weight: bold; top: 0; }
         
-        /* ย่อเกจความคืบหน้า */
         .progress-bar { width: 100%; height: 3px; background: #eee; border-radius: 1px; margin-top: 1px; overflow: hidden; display: none; }
         .progress-fill { width: 0%; height: 100%; transition: width linear; }
         
         .helper-prog-bar { width: 100%; height: 3px; background: #e3f2fd; border-radius: 1px; margin-top: 1px; overflow: hidden; display: none; border: 1px solid #90caf9;}
         .helper-prog-fill { width: 0%; height: 100%; background: #2196f3; transition: width linear; }
 
-        .stock-indicator { font-size: 7.5px; font-weight: bold; color: var(--blended); margin: 1px 0; }
-        
         .score-popup { position: absolute; font-weight: bold; font-size: 11px; padding: 2px 4px; border-radius: 4px; background: rgba(255, 255, 255, 0.95); box-shadow: 0 2px 5px rgba(0,0,0,0.3); border: 1.5px solid; animation: floatUp 1.2s forwards; pointer-events: none; z-index: 9999; white-space: nowrap; left: 50%; top: -10px; text-align: center; }
         @keyframes floatUp { 0% { opacity: 0; transform: translate(-50%, 5px) scale(0.8); } 20% { opacity: 1; transform: translate(-50%, 0px) scale(1.1); } 100% { opacity: 0; transform: translate(-50%, -30px) scale(1); } }
+        
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 100; text-align: center; padding: 10px; box-sizing: border-box;}
+        .tutorial-box { background: white; color: #333; padding: 15px; border-radius: 12px; max-width: 450px; text-align: left; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+        .tutorial-box h2 { color: var(--brand); margin: 0 0 10px 0; font-size: 16px; text-align: center;}
+        .tutorial-box p { font-size: 12px; margin-bottom: 10px; line-height: 1.4; }
+        .tutorial-box b { color: var(--danger); }
         .hidden { display: none !important; }
-        
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 100; text-align: center; padding: 5px 10px; box-sizing: border-box;}
-        .overlay h1 { font-size: 18px !important; margin: 0 0 2px 0; text-shadow: 1px 1px var(--brand); }
-        .overlay p { font-size: 11px !important; margin: 2px 0; color: #ddd; }
-        .btn-primary { background: var(--brand); color: white; padding: 8px 14px; border: none; border-radius: 6px; font-size: 12px; font-family: inherit; cursor: pointer; margin: 5px; font-weight: bold; transition: 0.2s; }
-        .btn-danger { background: var(--danger); }
-        
-        .split-layout { display: flex; flex-direction: row; align-items: stretch; justify-content: center; width: 100%; max-width: 650px; gap: 10px; height: 100%; max-height: 250px; }
-        .split-left { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative;}
-        .split-right { flex: 1; display: flex; flex-direction: column; justify-content: center; overflow: hidden;}
-        
-        .input-name { padding: 8px; width: 80%; max-width: 220px; margin: 5px 0; border-radius: 6px; border: 2px solid var(--brand); text-align: center; font-family: inherit; font-size: 13px; outline: none; }
-        
-        .leaderboard-container { background: #fff; color: #333; width: 100%; border-radius: 8px; padding: 6px; margin: 0; text-align: left; overflow-y: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.5); flex-grow: 1; display: flex; flex-direction: column;}
-        .leaderboard-title { font-size: 10px; font-weight: bold; border-bottom: 2px solid var(--brand); margin-bottom: 3px; padding-bottom: 2px; flex-shrink: 0;}
-        #leaderboard-list { overflow-y: auto; flex-grow: 1; }
-        .leaderboard-row { display: flex; justify-content: space-between; align-items: center; padding: 3px 0; border-bottom: 1px solid #eee; font-size: 9px; gap: 5px;}
-        .leaderboard-row:last-child { border-bottom: none; }
-        .lb-rank { font-weight: bold; width: 15px; text-align: center;}
-        
-        .player-img-header { width: 20px; height: 20px; border-radius: 50%; border: 1px solid #fff; object-fit: cover; margin-right: 5px;}
-        .shop-logo-top { width: 70px; height: 70px; object-fit: cover; border-radius: 12px; border: 2px solid var(--brand); margin-bottom: 8px; }
-        
-        #landscape-warning { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #2b2b2b; color: white; z-index: 999; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; box-sizing: border-box; }
-        @media screen and (orientation: portrait) { #landscape-warning { display: flex; } #app { display: none; } }
-        
-        .kpi-box { background: rgba(255,255,255,0.1); padding: 5px; border-radius: 8px; margin: 4px 0; width: 100%; border: 1px solid rgba(255,255,255,0.2); }
-        .kpi-box p { margin: 1px 0 !important; }
-
-        .level-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; width: 100%; max-width: 650px; padding: 10px; max-height: 70vh; overflow-y: auto;}
-        .level-card { background: rgba(255,255,255,0.1); border: 2px solid var(--brand); border-radius: 8px; padding: 8px; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; justify-content: space-between; text-align: center;}
-        .level-card:hover { background: rgba(255,255,255,0.2); transform: scale(1.05); }
-        .level-card h3 { margin: 0 0 2px 0; color: #fff; font-size: 14px;}
-        .level-card .order-count { font-size: 10px; color: #ffd54f; margin-bottom: 4px; font-weight: bold;}
-        
-        .stat-box { background: rgba(0,0,0,0.5); border-radius: 4px; padding: 4px; font-size: 9px; margin-top: 4px; border-left: 2px solid var(--success);}
-        .stat-box.champion { border-left: 2px solid #ffd54f; }
-
-        /* Modal Tutorial */
-        .tutorial-box { background: white; color: #333; padding: 15px; border-radius: 12px; max-width: 450px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
-        .tutorial-box h2 { color: var(--brand); margin: 0 0 10px 0; font-size: 16px;}
-        .tutorial-box p { font-size: 12px !important; color: #555; text-align: left; line-height: 1.5; margin-bottom: 10px; }
-        .tutorial-box ul { font-size: 11px; text-align: left; color: #555; padding-left: 20px; margin-bottom: 15px; line-height: 1.4;}
-        .tutorial-box li { margin-bottom: 5px; }
+        #busy-overlay { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.7); z-index: 20; justify-content: center; align-items: center; font-weight: bold; color: var(--danger); font-size: 10px; border-radius: 4px;}
     </style>
 </head>
 <body>
 
-<div id="landscape-warning">
-    <h1 style="color: var(--brand); margin-bottom: 10px;">📱 หมุนจอเป็นแนวนอนด้วยครับ</h1>
-</div>
-
 <div id="app">
     <div class="header">
         <span id="level-display" style="color: #ffd54f;">Level 1</span>
-        <span style="display: flex; align-items: center;">
-            <img id="header-player-img" src="IMG_4511.jpeg" class="hidden player-img-header" onerror="this.style.display='none'">
-            <span id="display-player-name" style="color: #fff; margin-left: 3px;">-</span>
-        </span>
+        <span id="display-player-name" style="color: #fff;">-</span>
         <div style="text-align: right; line-height: 1.1;">
-            <div style="font-size: 9px; color: #bbb;">ด่านนี้: <span id="current-level-score" style="color: #fff; font-weight: bold;">0</span></div>
             <div style="font-size: 12px;">รวม: <span id="total-score" style="color: #4caf50;">0</span></div>
         </div>
     </div>
@@ -158,80 +98,61 @@
         <div class="order-panel-wrapper">
             <div class="order-panel">
                 <div class="order-header">
-                    <span>🧾 คิวออเดอร์ 
-                        <span id="order-count-badge" style="background: #333; color: white; padding: 2px 6px; border-radius: 4px; font-size: 8px; margin-left: 5px;">รอเข้าคิว: 0</span>
-                        <span style="font-size: 9px; color:#2196f3; margin-left:5px; font-weight:bold;">(WIP โฟกัส 5 บิล)</span>
-                    </span>
-                    <span id="active-count-badge" style="background: var(--danger); color: white; padding: 2px 6px; border-radius: 6px; font-size: 8px;">บนจอ: 0 บิล</span>
+                    <span>🧾 คิวออเดอร์ <span id="order-count-badge" style="background: #333; color: white; padding: 1px 4px; border-radius: 4px; font-size: 8px;">0</span></span>
+                    <span id="active-count-badge" style="background: var(--danger); color: white; padding: 1px 4px; border-radius: 4px; font-size: 8px;">0</span>
                 </div>
                 <div id="tickets-container"></div>
-                <p id="no-order-msg" class="hidden" style="color: var(--success); font-weight: bold; text-align: center; font-size: 11px; width: 100%; margin-top: 10px;">✅ เคลียร์คิวหมดแล้ว!</p>
+                <p id="no-order-msg" class="hidden" style="color: var(--success); font-weight: bold; text-align: center; font-size: 10px; margin-top: 10px;">✅ เคลียร์คิวหมดแล้ว!</p>
             </div>
             
             <div class="serve-panel">
-                <p style="margin: 0 0 2px 0; font-size: 7px; font-weight: bold; color: #555;">จัดเสิร์ฟ</p>
                 <button class="serve-btn disabled" id="btn-serve-tray" onclick="serveOrders()">
-                    <span style="font-size: 14px; margin-bottom: 1px;">🛎️</span> เสิร์ฟ
-                    <span style="background: rgba(0,0,0,0.2); border-radius: 4px; padding: 1px 4px; margin-top: 2px; font-size: 7px;"><span id="ready-count">0</span>/4</span>
+                    <span style="font-size: 14px;">🛎️</span> เสิร์ฟ
+                    <span id="ready-count" style="font-size: 8px;">0</span>/4
                 </button>
+                <div class="dish-counter">🍽️ จาน: <span id="dish-count">15</span>/15</div>
             </div>
         </div>
 
         <div class="station-panel-wrapper">
             <div class="station-panel">
-                <div id="busy-overlay">⏳ คุณกำลังติดสอนชา/จัดขนม...</div>
+                <div id="busy-overlay">⏳ คุณกำลังยุ่งอยู่...</div>
                 
-                <div class="station" style="border-color: var(--hot);" id="station-hot">
-                    <div class="station-header">
-                        <h4 style="color: var(--hot);">🫖 1. Hot Tea</h4>
-                        <div class="helper-dropzone" data-station="hot"></div>
-                        <p style="font-size: 5.5px; margin: 1px 0;">(ชงเอง 7วิ / ลูกน้อง 9วิ)</p>
-                    </div>
-                    <div style="position:relative; margin-top:auto;">
-                        <button class="btn-action bg-hot" style="background: #e65100;" id="btn-hot-serve" onclick="serveHotTea()">สอนชง (7วิ)</button>
-                        <div class="progress-bar" id="prog-hot-serve"><div class="progress-fill" style="background: #e65100;" id="fill-hot-serve"></div></div>
-                        <div class="helper-prog-bar" id="helper-prog-hot"><div class="helper-prog-fill" id="helper-fill-hot"></div></div>
-                    </div>
+                <div class="station" style="border-color: var(--hot);">
+                    <div class="station-header"><h4>🫖 Hot Tea</h4><div class="helper-dropzone" data-station="hot"></div></div>
+                    <button class="btn-action bg-hot" id="btn-hot-serve" onclick="serveHotTea()">สอนชง (7วิ)</button>
+                    <div class="progress-bar" id="prog-hot-serve"><div class="progress-fill" style="background: #e65100;" id="fill-hot-serve"></div></div>
+                    <div class="helper-prog-bar" id="helper-prog-hot"><div class="helper-prog-fill" id="helper-fill-hot"></div></div>
                 </div>
 
-                <div class="station" style="border-color: var(--single);" id="station-single">
-                    <div class="station-header">
-                        <h4 style="color: var(--single);">🍵 2. Single</h4>
-                        <div class="helper-dropzone" data-station="single"></div>
-                        <p style="font-size: 5.5px; margin: 1px 0;">(ชงเอง 8วิ / ลูกน้อง 10วิ)</p>
-                    </div>
+                <div class="station" style="border-color: var(--single);">
+                    <div class="station-header"><h4>🍵 Single</h4><div class="helper-dropzone" data-station="single"></div></div>
                     <div class="machine-slots" id="single-slots"></div>
-                    <div style="position:relative; margin-top:auto;">
-                        <button class="btn-action bg-single" id="btn-single" onclick="brewSingleTea()">ชงเอง (8วิ)</button>
-                    </div>
+                    <button class="btn-action bg-single" id="btn-single" onclick="brewSingleTea()">ชงเอง (8วิ)</button>
                 </div>
 
-                <div class="station" style="border-color: var(--blended);" id="station-blended">
-                    <div class="station-header">
-                        <h4 style="color: var(--blended);">🧋 3. Blended</h4>
-                        <div class="helper-dropzone" data-station="blended"></div>
-                        <p style="font-size: 5.5px; margin: 1px 0;">(ลูกน้องต้มเอง 12วิ)</p>
-                    </div>
-                    <div style="margin-top:auto; position:relative;">
-                        <div class="stock-indicator">สต็อค: <span id="blended-stock" style="font-size: 8px;">8</span>/8</div>
-                        <button class="btn-action bg-blended" id="btn-blend-pour" onclick="pourBlended()">เทเสิร์ฟ</button>
-                        <button class="btn-action" style="background: #ff9800; font-size: 7px; opacity: 0.8;" id="btn-blend-refill" onclick="refillGallon()">บอสต้มเพิ่ม (10วิ)</button>
-                        <div class="progress-bar" id="prog-refill"><div class="progress-fill" style="background: #ff9800;" id="fill-refill"></div></div>
-                        <div class="helper-prog-bar" id="helper-prog-blended"><div class="helper-prog-fill" id="helper-fill-blended"></div></div>
-                    </div>
+                <div class="station" style="border-color: var(--blended);">
+                    <div class="station-header"><h4>🧋 Blended</h4><div class="helper-dropzone" data-station="blended"></div></div>
+                    <div class="stock-indicator">🛢️: <span id="blended-stock">8</span>/8</div>
+                    <button class="btn-action bg-blended" id="btn-blend-pour" onclick="pourBlended()">เทเสิร์ฟ (1วิ)</button>
+                    <button class="btn-action" style="background: #ff9800; font-size: 6.5px;" onclick="refillGallon()">บอสต้ม (ล็อค 4วิ)</button>
+                    <div class="progress-bar" id="prog-refill"><div class="progress-fill" style="background: #ff9800;" id="fill-refill"></div></div>
+                    <div class="helper-prog-bar" id="helper-prog-blended"><div class="helper-prog-fill" id="helper-fill-blended"></div></div>
                 </div>
 
-                <div class="station" style="border-color: var(--dessert);" id="station-dessert">
-                    <div class="station-header">
-                        <h4 style="color: var(--dessert);">🍰 4. Dessert</h4>
-                        <div class="helper-dropzone" data-station="dessert"></div>
-                        <p style="font-size: 5.5px; margin: 1px 0;">(จัดเอง 2วิ / ลูกน้อง 4วิ)</p>
-                    </div>
-                    <div style="position:relative; margin-top:auto;">
-                        <button class="btn-action bg-dessert" id="btn-dessert" onclick="doTask('dessert', 2000, 'btn-dessert')">จัดจาน (2 วิ)</button>
-                        <div class="progress-bar" id="prog-dessert"><div class="progress-fill bg-dessert" id="fill-dessert"></div></div>
-                        <div class="helper-prog-bar" id="helper-prog-dessert"><div class="helper-prog-fill" id="helper-fill-dessert"></div></div>
-                    </div>
+                <div class="station" style="border-color: var(--dessert);">
+                    <div class="station-header"><h4>🍰 Dessert</h4><div class="helper-dropzone" data-station="dessert"></div></div>
+                    <button class="btn-action bg-dessert" id="btn-dessert" onclick="doTask('dessert', 2000, 'btn-dessert')">จัดจาน (2วิ)</button>
+                    <div class="progress-bar" id="prog-dessert"><div class="progress-fill bg-dessert" id="fill-dessert"></div></div>
+                    <div class="helper-prog-bar" id="helper-prog-dessert"><div class="helper-prog-fill" id="helper-fill-dessert"></div></div>
+                </div>
+
+                <div class="station" style="border-color: #0288d1;">
+                    <div class="station-header"><h4>🧼 Sink</h4><div class="helper-dropzone" data-station="sink"></div></div>
+                    <p style="font-size: 5px;">ล้างจานทั้งหมด</p>
+                    <button class="btn-action" style="background: #0288d1;" id="btn-wash" onclick="washDishes()">ล้างเอง (10วิ)</button>
+                    <div class="progress-bar" id="prog-wash"><div class="progress-fill" style="background: #0288d1;" id="fill-wash"></div></div>
+                    <div class="helper-prog-bar" id="helper-prog-sink"><div class="helper-prog-fill" id="helper-fill-sink"></div></div>
                 </div>
             </div>
         </div>
@@ -239,333 +160,315 @@
 </div>
 
 <div id="overlay-start" class="overlay">
-    <img src="IMG_4511.jpeg" alt="Gimbocha Logo" class="shop-logo-top" onerror="this.style.display='none'">
-    <h1 style="color: #fff;">Gimbocha KDS</h1>
-    <p>ระบบบัญชีผู้จัดการบาร์ (Hardcore Mode)</p>
-    
-    <input type="tel" id="player-phone-input" class="input-name" placeholder="เบอร์โทรศัพท์ (ใช้จำสถิติ)" autocomplete="off" style="margin-bottom: 2px;">
-    <input type="text" id="player-name-input" class="input-name" placeholder="ชื่อพนักงาน" autocomplete="off" style="margin-top: 2px;">
-    
-    <div class="button-group">
-        <button class="btn-primary" onclick="initGame()">เข้าสู่ระบบ / สมัครใหม่</button>
-    </div>
+    <img src="IMG_4511.jpeg" alt="Logo" style="width:70px; border-radius:10px; margin-bottom:10px;">
+    <h1>Gimbocha KDS</h1>
+    <input type="tel" id="player-phone-input" class="input-name" placeholder="เบอร์โทรศัพท์">
+    <input type="text" id="player-name-input" class="input-name" placeholder="ชื่อพนักงาน">
+    <button class="btn-primary" onclick="initGame()">เข้างาน</button>
 </div>
 
 <div id="overlay-level-select" class="overlay hidden">
-    <h1 style="color: #ffd54f; margin: 0 0 5px 0;">เลือกระดับการฝึกซ้อม</h1>
-    <p id="loading-leaderboard-msg" style="color: #ddd;">⏳ กำลังดึงข้อมูลสถิติร้าน...</p>
-    <div id="level-grid" class="level-grid"></div>
-</div>
-
-<div id="overlay-level-clear" class="overlay hidden">
-    <div class="split-layout">
-        <div class="split-left">
-            <h1 id="clear-title" style="color: var(--success); font-size: 16px !important; margin: 0 0 2px 0;">ด่านเคลียร์!</h1>
-            <p style="margin: 0; color: #fff; font-size: 10px;">คะแนนด่านนี้: <span id="level-score-display" style="color: #ffd54f; font-size: 14px; font-weight: bold;">0</span></p>
-            
-            <div class="kpi-box">
-                <p style="font-size: 9px; color: #ddd;">⏱️ เวลาในด่านนี้: <span id="avg-time-game" style="color: #fff; font-weight: bold;">0</span> วิ/บิล</p>
-                <p style="font-size: 11px; color: #ffd54f; margin-top: 2px !important;">⏳ เวลาจริงของคุณ: <span id="avg-time-real" style="font-weight: bold; font-size: 13px;">0</span> นาที/บิล</p>
-                <p style="font-size: 8px; color: #aaa;">(เกณฑ์ผ่าน: ห้ามเกิน 15 นาที)</p>
-                <hr style="border: 0; border-top: 1px dashed rgba(255,255,255,0.2); margin: 4px 0;">
-                <p style="font-size: 9px; color: #4caf50;">🌍 ค่าเฉลี่ยร้าน <span id="lbl-level-avg" style="color:#fff;">(ด่านนี้)</span>: <span id="global-avg-time" style="font-weight: bold; color: #fff;">...</span> นาที</p>
-                <p id="kpi-compare-status" style="font-size: 9px; font-weight: bold; margin-top: 2px !important;"></p>
-            </div>
-
-            <div class="button-group hidden" id="action-buttons">
-                <button class="btn-primary btn-danger" onclick="backToLevelSelect()">กลับไปเลือกด่าน</button>
-                <button class="btn-primary" onclick="startNextLevel()" id="btn-continue">ลุยด่านต่อไป!</button>
-            </div>
-            <div id="save-status-msg" style="font-size: 9px; margin-top: 4px;"></div>
-        </div>
-
-        <div class="split-right">
-            <div class="leaderboard-container">
-                <div class="leaderboard-title" id="lb-title">🏆 สถิติคนชงไว (ด่านนี้)</div>
-                <div id="leaderboard-list"></div>
-            </div>
-        </div>
-    </div>
+    <h1>เลือกระดับ</h1>
+    <div id="level-grid" class="level-grid" style="display:grid; grid-template-columns: repeat(2, 1fr); gap:10px;"></div>
 </div>
 
 <div id="tutorial-modal" class="overlay hidden">
     <div class="tutorial-box">
-        <h2 id="tut-title">คำแนะนำ</h2>
+        <h2 id="tut-title"></h2>
         <div id="tut-body"></div>
-        <button class="btn-primary" onclick="closeTutorial()" style="width:100%;">เข้าใจแล้ว ลุยเลย!</button>
+        <button class="btn-primary" onclick="closeTutorial()" style="width:100%;">เริ่มงาน!</button>
     </div>
+</div>
+
+<div id="overlay-level-clear" class="overlay hidden">
+    <h1 style="color:var(--success)">ด่านเคลียร์!</h1>
+    <p>คะแนน: <span id="level-score-display">0</span></p>
+    <button class="btn-primary" onclick="backToLevelSelect()">กลับหน้าหลัก</button>
+    <button class="btn-primary" id="btn-continue" onclick="startNextLevel()">ด่านต่อไป</button>
 </div>
 
 <script>
     const GOOGLE_APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwGijAooQNr14plPD5XqrkVURldGvJ3ylNB8iPOzC0OCxEZTKS6qa8UlqqQ3oluO8Oo/exec";
-
+    
     const menuDB = {
-        hot: ["อัสสัมวาวี", "ชามะลิหิมะโปรย", "ชาเขียวหวงชาน", "หลงจิ่ง 2025", "เถี่ยกวนอิน", "จางผิงสุ่ยเซียน", "ต้าหงเผา", "สุ่ยเซียนอบถ่าน"],
-        single: ["ชาขาวเก็บ 8 ปี", "ชามะลิหิมะโปรย", "ชาแดงวาวี", "ตานฉงเกล็ดหิมะ", "มี่หลันเซียง", "สุ่ยเซียน", "เจิ้งซานควันสน"],
-        blended: ["Cinnamon Mint", "Dark Pomegranate", "8 Flowers", "Kandy!", "Lavender Lemon", "Rock Oolong", "Elder Flower"],
-        dessert: ["Blueberry Tart", "Burnt Cheese Cake", "Japanese Cheese Cake", "Lemon Custard", "Orange & Choc Cake", "Dark Choc Tart", "Smoked Salmon Choux", "Strawberry Panna cotta"]
+        hot: ["อัสสัมวาวี", "ชามะลิหิมะโปรย", "ชาเขียวหวงชาน"],
+        single: ["ชาขาว 8 ปี", "ชาแดงวาวี", "ตานฉง"],
+        blended: ["Cinnamon Mint", "Dark Pomegranate", "8 Flowers"],
+        dessert: ["Blueberry Tart", "Cheese Cake", "Japanese Cake"]
     };
 
-    const levelsConfig = [
-        { orders: 5, itemsMin: 1, itemsMax: 2 },   
-        { orders: 7, itemsMin: 1, itemsMax: 3 },   
-        { orders: 9, itemsMin: 2, itemsMax: 3 },   
-        { orders: 11, itemsMin: 2, itemsMax: 4 },  
-        { orders: 13, itemsMin: 2, itemsMax: 4 },  
-        { orders: 15, itemsMin: 3, itemsMax: 4 },  
-        { orders: 17, itemsMin: 3, itemsMax: 5 },  
-        { orders: 20, itemsMin: 3, itemsMax: 5 },  
-        { orders: 22, itemsMin: 4, itemsMax: 6 },  
-        { orders: 25, itemsMin: 4, itemsMax: 6 }   
-    ];
-
-    function seededRandom(seed) {
-        let x = Math.sin(seed) * 10000;
-        return x - Math.floor(x);
-    }
-
-    function getRandomMenuType(seed) {
-        let rand = seededRandom(seed) * 100;
-        if (rand < 6) return 'hot';
-        if (rand < 24) return 'single'; 
-        if (rand < 76) return 'blended'; 
-        return 'dessert';
-    }
-
-    let levels = [];
-    function generateStandardLevels() {
-        levelsConfig.forEach((config, idx) => {
-            let levelOrders = [];
-            for(let i = 0; i < config.orders; i++) {
-                let seed1 = idx * 100 + i + 1234;
-                let numItems = config.itemsMin + Math.floor(seededRandom(seed1) * (config.itemsMax - config.itemsMin + 1));
-                let items = [];
-                
-                let calcTime = 30; 
-                let countSingle = 0, countHot = 0, countBlended = 0, countDessert = 0;
-
-                for(let j=0; j < numItems; j++) {
-                    let seed2 = idx * 1000 + i * 10 + j + 5678;
-                    const type = getRandomMenuType(seed2);
-                    const nameIdx = Math.floor(seededRandom(seed2 + 1) * menuDB[type].length);
-                    items.push({ type: type, name: menuDB[type][nameIdx], done: false, inProgress: false });
-                    
-                    if(type === 'single') countSingle++;
-                    if(type === 'hot') countHot++;
-                    if(type === 'blended') countBlended++;
-                    if(type === 'dessert') countDessert++;
-                }
-
-                calcTime += (countSingle * 12) + (countHot * 10) + (countBlended * 5) + (countDessert * 5);
-                calcTime += (idx * 2);
-
-                levelOrders.push({ id: `${idx+1}0${i+1}`, timeLimit: calcTime, timeLeft: calcTime, items: items, status: 'pending' });
-            }
-            levels.push({ title: `Level ${idx+1}`, orders: levelOrders, totalOrders: config.orders, spawnBaseRate: Math.max(1, 4 - Math.floor(idx/2)) });
-        });
-    }
-    generateStandardLevels();
-
-    let currentLevel = 0; let totalScore = 0; let levelScore = 0; 
-    let spawnQueue = []; let activeOrders = []; 
-    let timeToNextSpawn = 0; let blendedStock = 8; let globalTimer;
-    let playerName = ""; let playerPhone = "";
-    let levelWaitTimes = [];
-    
-    let isPlayerBusy = false; let isRefilling = false;
-    
-    // 🟢 ระบบจัดการลูกน้อง 1 คน (Hardcore Mode) 🟢
-    let totalHelpers = 0;
-    let helperAssignments = []; 
-    let activeHelpers = { hot: 0, single: 0, blended: 0, dessert: 0 }; 
-    let helperTimer;
-    
-    let brewSlots = [false, false, false, false];
-    function getFreeSlot() { return brewSlots.findIndex(s => s === false); }
-
-    const normalizePhone = (p) => String(p).replace(/\D/g, '').replace(/^0+/, '');
-
-    window.onload = () => {
-        let savedPhone = localStorage.getItem('gimbocha_phone');
-        let savedName = localStorage.getItem('gimbocha_name');
-        if(savedPhone) document.getElementById('player-phone-input').value = savedPhone;
-        if(savedName) document.getElementById('player-name-input').value = savedName;
-    };
-
-    function initSingleSlots() {
-        const container = document.getElementById('single-slots');
-        container.innerHTML = "";
-        for(let i=1; i<=4; i++) {
-            container.innerHTML += `<div class="slot-bar"><div class="slot-fill" id="slot-fill-${i}"></div><div class="slot-text" id="slot-text-${i}">ว่าง</div></div>`;
-        }
-    }
-    initSingleSlots();
-
-    function updateSingleSlotsUI() {
-        for(let i=0; i<4; i++) {
-            let text = document.getElementById(`slot-text-${i+1}`);
-            let fill = document.getElementById(`slot-fill-${i+1}`);
-            if (brewSlots[i]) {
-                text.innerText = "ชง...";
-                fill.style.background = "var(--single)"; 
-            } else {
-                text.innerText = "ว่าง";
-                fill.style.width = "0%";
-                fill.style.transition = "none";
-            }
-        }
-    }
+    let currentLevel = 0, totalScore = 0, levelScore = 0;
+    let spawnQueue = [], activeOrders = [], brewSlots = [false,false,false,false];
+    let timeToNextSpawn = 0, blendedStock = 8, dishes = 15, globalTimer, helperTimer;
+    let isPlayerBusy = false, isRefilling = false, isWashing = false, totalHelpers = 0;
+    let helperAssignments = [], activeHelpers = { hot:0, single:0, blended:0, dessert:0, sink:0 };
 
     function initGame() {
-        playerPhone = document.getElementById('player-phone-input').value.trim();
-        playerName = document.getElementById('player-name-input').value.trim();
-        
-        if(!playerPhone || !playerName) { alert("❌ โปรดใส่เบอร์โทรและชื่อให้ครบครับ!"); return; }
-        
-        localStorage.setItem('gimbocha_phone', playerPhone);
-        localStorage.setItem('gimbocha_name', playerName);
-        
-        document.getElementById('display-player-name').innerText = playerName;
+        const phone = document.getElementById('player-phone-input').value;
+        const name = document.getElementById('player-name-input').value;
+        if(!phone || !name) return alert("กรุณากรอกข้อมูล");
+        localStorage.setItem('gimbocha_phone', phone);
+        localStorage.setItem('gimbocha_name', name);
+        document.getElementById('display-player-name').innerText = name;
         document.getElementById('overlay-start').classList.add('hidden');
-        
         showLevelSelection();
     }
 
-    async function showLevelSelection() {
-        document.getElementById('overlay-level-clear').classList.add('hidden');
-        const overlay = document.getElementById('overlay-level-select');
-        const grid = document.getElementById('level-grid');
-        const loadingMsg = document.getElementById('loading-leaderboard-msg');
-        
-        overlay.classList.remove('hidden');
-        grid.innerHTML = "";
-        loadingMsg.style.display = 'block';
-
-        let topPlayers = {};
-        let myStats = {};
-        for(let i=1; i<=10; i++) { topPlayers[i] = null; myStats[i] = null; }
-        let cleanMyPhone = normalizePhone(playerPhone);
-
-        try {
-            const response = await fetch(GOOGLE_APP_SCRIPT_URL);
-            const globalLb = await response.json();
-            globalLb.forEach(entry => {
-                let lvl = entry.level;
-                if(lvl >= 1 && lvl <= 10) {
-                    if(!topPlayers[lvl]) { topPlayers[lvl] = entry; } 
-                    else { if (entry.score > topPlayers[lvl].score || (entry.score === topPlayers[lvl].score && entry.avgWait < topPlayers[lvl].avgWait)) { topPlayers[lvl] = entry; } }
-                    if(normalizePhone(entry.phone) === cleanMyPhone) { myStats[lvl] = entry; }
-                }
-            });
-        } catch (error) { console.error("ดึงข้อมูลไม่สำเร็จ"); }
-
-        loadingMsg.style.display = 'none';
-
-        levels.forEach((lvlData, idx) => {
-            let lvlNum = idx + 1;
-            let topP = topPlayers[lvlNum];
-            let myP = myStats[lvlNum];
-            
-            let topHtml = `<div class="stat-box champion" style="color:#aaa;">ยังไม่มีแชมป์</div>`;
-            if (topP) { topHtml = `<div class="stat-box champion"><span style="color:#ffd54f;">👑 ${topP.name}</span><br>${topP.score}pts | ${topP.avgWait}m</div>`; }
-            let myHtml = `<div class="stat-box" style="color:#aaa;">สถิติคุณ: ยังไม่เคยเล่น</div>`;
-            if (myP) { myHtml = `<div class="stat-box"><span style="color:#4caf50;">👤 สถิติคุณ</span><br>${myP.score}pts | ${myP.avgWait}m</div>`; }
-
-            let card = document.createElement('div');
-            card.className = 'level-card';
-            card.onclick = () => selectLevel(idx);
-            card.innerHTML = `<h3>ด่าน ${lvlNum}</h3><div class="order-count">จำนวน ${lvlData.totalOrders} บิล</div><div style="text-align: left; width: 100%;">${topHtml}${myHtml}</div>`;
-            grid.appendChild(card);
-        });
+    function showLevelSelection() {
+        document.getElementById('overlay-level-select').classList.remove('hidden');
+        const grid = document.getElementById('level-grid'); grid.innerHTML = '';
+        for(let i=1; i<=10; i++) {
+            let btn = document.createElement('button');
+            btn.className = 'btn-primary'; btn.innerText = `Level ${i}`;
+            btn.onclick = () => { currentLevel = i-1; document.getElementById('overlay-level-select').classList.add('hidden'); startLevel(); };
+            grid.appendChild(btn);
+        }
     }
 
-    function selectLevel(idx) { currentLevel = idx; document.getElementById('overlay-level-select').classList.add('hidden'); startLevel(); }
-    function backToLevelSelect() { document.getElementById('overlay-level-clear').classList.add('hidden'); showLevelSelection(); }
-    function startNextLevel() { document.getElementById('overlay-level-clear').classList.add('hidden'); currentLevel++; startLevel(); }
-
-    let dragObj = { id: null, el: null };
-
-    // 🟢 ให้ลูกน้องแค่ 1 คน เริ่มต้นที่ขนม 🟢
-    function setupHelpersForLevel() {
-        totalHelpers = 0;
-        if (currentLevel >= 2) totalHelpers = 1; // ด่าน 3 เป็นต้นไปให้แค่ 1 คน
+    function startLevel() {
+        spawnQueue = []; activeOrders = []; dishes = 15; blendedStock = 8;
+        levelScore = 0; brewSlots.fill(false); updateSingleSlotsUI();
+        totalHelpers = currentLevel >= 6 ? 2 : (currentLevel >= 2 ? 1 : 0);
+        helperAssignments = Array(totalHelpers).fill('dessert');
         
-        helperAssignments = Array(totalHelpers).fill('dessert'); // เริ่มต้นที่ Dessert
-        activeHelpers = { hot: 0, single: 0, blended: 0, dessert: 0 };
-
-        renderHelpers();
-    }
-
-    function renderHelpers() {
-        document.querySelectorAll('.helper-dropzone').forEach(dz => dz.innerHTML = '');
-        document.querySelectorAll('body > .helper-token').forEach(el => el.remove()); 
-
-        helperAssignments.forEach((station, idx) => {
-            let token = document.createElement('div');
-            token.className = 'helper-token';
-            token.innerText = '🧑‍🍳';
-            token.dataset.id = idx;
-            
-            token.onpointerdown = (e) => {
-                e.preventDefault();
-                dragObj.id = token.dataset.id;
-                dragObj.el = token;
-                token.classList.add('dragging');
-                document.body.appendChild(token);
-                moveAt(e.pageX, e.pageY);
-
-                document.querySelectorAll('.helper-dropzone').forEach(dz => dz.classList.add('drag-over'));
-            };
-
-            let targetDz = document.querySelector(`.helper-dropzone[data-station="${station}"]`);
-            if(targetDz) targetDz.appendChild(token);
-        });
-    }
-
-    function moveAt(pageX, pageY) {
-        if(!dragObj.el) return;
-        dragObj.el.style.left = pageX - dragObj.el.offsetWidth / 2 + 'px';
-        dragObj.el.style.top = pageY - dragObj.el.offsetHeight / 2 + 'px';
-    }
-
-    document.addEventListener('pointermove', (e) => {
-        if(dragObj.el) moveAt(e.pageX, e.pageY);
-    });
-
-    document.addEventListener('pointerup', (e) => {
-        if(!dragObj.el) return;
-        
-        document.querySelectorAll('.helper-dropzone').forEach(dz => dz.classList.remove('drag-over'));
-        
-        let token = dragObj.el;
-        token.classList.remove('dragging');
-        token.style.display = 'none'; 
-        let elemBelow = document.elementFromPoint(e.clientX, e.clientY);
-        token.style.display = 'flex';
-
-        let dropzone = elemBelow ? elemBelow.closest('.helper-dropzone') : null;
-        if (dropzone) {
-            let newStation = dropzone.dataset.station;
-            helperAssignments[dragObj.id] = newStation;
+        // Generate Orders with Dynamic Timer
+        for(let i=0; i < (5 + currentLevel*2); i++) {
+            let numItems = 1 + Math.floor(Math.random() * (currentLevel >= 5 ? 4 : 2));
+            let items = []; let time = 35;
+            for(let j=0; j<numItems; j++) {
+                let types = ['hot','single','blended','dessert'];
+                let type = types[Math.floor(Math.random()*4)];
+                items.push({ type, name: menuDB[type][0], done: false, inProgress: false });
+                time += (type === 'single' ? 12 : (type === 'hot' ? 10 : 6));
+            }
+            spawnQueue.push({ id: i+1, timeLimit: time, timeLeft: time, items, status: 'pending', spawnTime: 0 });
         }
 
-        token.remove(); 
-        dragObj.el = null;
-        dragObj.id = null;
-        renderHelpers();
-    });
-
-    function getAssignedCount(station) {
-        return helperAssignments.filter(s => s === station).length;
+        document.getElementById('tickets-container').innerHTML = '';
+        document.getElementById('overlay-level-clear').classList.add('hidden');
+        
+        if (currentLevel === 0) {
+            showTutorial("👋 ยินดีต้อนรับ Barista ใหม่!", "<ul><li><b>WIP Limit:</b> คุณทำได้แค่ 5 บิลแรกเท่านั้น</li><li><b>จาน:</b> คุณมีจาน 15 ใบ <b>ถ้าจานหมดจะเสิร์ฟไม่ได้!</b> ต้องไปล้างที่ Sink 10 วิ</li><li><b>ล็อกตัว:</b> ชง Single ล็อก 1.5 วิ, ต้มชาล็อก 4 วิ, เทชาล็อก 1 วิ</li></ul>");
+        } else if (totalHelpers > 0) {
+            showTutorial("🧑‍🍳 มีผู้ช่วยแล้ว!", `<p>ด่านนี้คุณมีผู้ช่วย ${totalHelpers} คน</p><ul><li><b>ลาก & วาง:</b> ลากลูกน้องไปวางที่สเตชั่นต่างๆ</li><li>ลูกน้องล้างจานและต้มชาแทนคุณได้!</li></ul>`);
+        } else {
+            beginLevelTimers();
+        }
     }
 
-    let isGamePaused = false;
+    function beginLevelTimers() {
+        clearInterval(globalTimer);
+        globalTimer = setInterval(() => {
+            if (spawnQueue.length > 0 && timeToNextSpawn-- <= 0) {
+                let order = spawnQueue.shift();
+                order.spawnTime = Date.now();
+                activeOrders.push(order);
+                appendTicket(order);
+                timeToNextSpawn = Math.max(5, 12 - currentLevel);
+            }
+            activeOrders.forEach(o => o.timeLeft--);
+            updateTimersUI();
+            checkLevelCompletion();
+        }, 1000);
 
-    function showTutorial(title, bodyHtml) {
+        clearInterval(helperTimer);
+        helperTimer = setInterval(aiHelperLogic, 500);
+        renderHelpers();
+        updateUI();
+    }
+
+    function aiHelperLogic() {
+        ['hot', 'single', 'blended', 'dessert', 'sink'].forEach(st => {
+            let assigned = helperAssignments.filter(s => s === st).length;
+            if (assigned > activeHelpers[st]) {
+                if (st === 'sink' && dishes < 15 && !isWashing) {
+                    startWash('helper');
+                } else if (st === 'blended' && blendedStock <= 2 && !isRefilling) {
+                    startRefill('helper');
+                } else {
+                    let claim = findJob(st);
+                    if (claim) startJob(claim, st, 'helper');
+                }
+            }
+        });
+    }
+
+    function appendTicket(order) {
+        const container = document.getElementById('tickets-container');
+        const div = document.createElement('div'); div.className = 'ticket'; div.id = `ticket-${order.id}`;
+        let itemsHtml = order.items.map((it, idx) => `<div class="order-item" id="item-${order.id}-${idx}"><span class="badge bg-${it.type}">${it.type.toUpperCase()}</span>${it.name}</div>`).join('');
+        div.innerHTML = `<h3>#${order.id} <span id="time-${order.id}">${order.timeLeft}s</span></h3><div class="ticket-timer-bg"><div class="ticket-timer-fill" id="fill-${order.id}"></div></div><div id="stamp-${order.id}"></div>${itemsHtml}`;
+        container.appendChild(div);
+        updateWIP();
+    }
+
+    function updateWIP() {
+        let pending = activeOrders.filter(o => o.status !== 'ready');
+        activeOrders.forEach(o => document.getElementById(`ticket-${o.id}`)?.classList.remove('wip-active'));
+        pending.slice(0, 5).forEach(o => document.getElementById(`ticket-${o.id}`)?.classList.add('wip-active'));
+    }
+
+    function findJob(type) {
+        let wip = activeOrders.filter(o => o.status !== 'ready').slice(0, 5);
+        for (let o of wip) {
+            for (let i=0; i<o.items.length; i++) {
+                if (o.items[i].type === type && !o.items[i].done && !o.items[i].inProgress) return { oId: o.id, idx: i };
+            }
+        }
+        return null;
+    }
+
+    function startJob(claim, type, worker) {
+        let order = activeOrders.find(o => o.id === claim.oId);
+        order.items[claim.idx].inProgress = true;
+        document.getElementById(`item-${claim.oId}-${claim.idx}`).classList.add(worker === 'boss' ? 'in-progress' : 'in-progress-helper');
+        
+        let dur = type === 'single' ? 8000 : (type === 'hot' ? 7000 : (type === 'dessert' ? 2000 : 1000));
+        if (worker === 'helper') { dur += 2000; activeHelpers[type]++; } else { isPlayerBusy = true; updateUI(); }
+
+        setTimeout(() => {
+            order.items[claim.idx].done = true;
+            if (worker === 'helper') activeHelpers[type]--; else isPlayerBusy = false;
+            if (type === 'blended') blendedStock--;
+            checkOrderReady(order);
+            updateUI();
+        }, dur);
+    }
+
+    function brewSingleTea() {
+        let slot = getFreeSlot(); if (slot === -1 || isPlayerBusy) return;
+        let claim = findJob('single');
+        if (!claim) return showFloatingScore("❌ ไม่มีออเดอร์", "btn-single", true);
+        
+        isPlayerBusy = true; brewSlots[slot] = true; updateUI(); updateSingleSlotsUI();
+        setTimeout(() => { isPlayerBusy = false; updateUI(); }, 1500); // Lock boss 1.5s
+        
+        let fill = document.getElementById(`slot-fill-${slot+1}`);
+        fill.style.width = '100%'; fill.style.transition = 'width 8s linear';
+        setTimeout(() => {
+            let o = activeOrders.find(x => x.id === claim.oId);
+            o.items[claim.idx].done = true;
+            brewSlots[slot] = false; updateSingleSlotsUI();
+            checkOrderReady(o);
+        }, 8000);
+    }
+
+    function serveHotTea() {
+        if (isPlayerBusy) return;
+        let claim = findJob('hot'); if (!claim) return showFloatingScore("❌ ไม่มีออเดอร์", "btn-hot-serve", true);
+        startJob(claim, 'hot', 'boss');
+        document.getElementById('prog-hot-serve').style.display = 'block';
+        document.getElementById('fill-hot-serve').style.width = '100%';
+        document.getElementById('fill-hot-serve').style.transition = 'width 7s linear';
+        setTimeout(() => document.getElementById('prog-hot-serve').style.display = 'none', 7000);
+    }
+
+    function pourBlended() {
+        if (isPlayerBusy || blendedStock <= 0) return;
+        let claim = findJob('blended'); if (!claim) return;
+        startJob(claim, 'blended', 'boss');
+        // Lock 1s visual here
+    }
+
+    function refillGallon() {
+        if (isPlayerBusy || blendedStock > 2) return;
+        startRefill('boss');
+    }
+
+    function startRefill(worker) {
+        isRefilling = true;
+        let dur = worker === 'boss' ? 10000 : 12000;
+        if (worker === 'boss') { isPlayerBusy = true; setTimeout(() => { isPlayerBusy = false; updateUI(); }, 4000); }
+        else activeHelpers.blended++;
+
+        document.getElementById(worker === 'boss' ? 'prog-refill' : 'helper-prog-blended').style.display = 'block';
+        setTimeout(() => {
+            blendedStock = 8; isRefilling = false;
+            if (worker === 'helper') activeHelpers.blended--;
+            document.querySelectorAll('.progress-bar, .helper-prog-bar').forEach(b => b.style.display = 'none');
+            updateUI();
+        }, dur);
+    }
+
+    function washDishes() {
+        if (isPlayerBusy || dishes === 15) return;
+        startWash('boss');
+    }
+
+    function startWash(worker) {
+        isWashing = true;
+        let dur = 10000;
+        if (worker === 'boss') isPlayerBusy = true; else activeHelpers.sink++;
+        
+        let prog = worker === 'boss' ? 'prog-wash' : 'helper-prog-sink';
+        let fill = worker === 'boss' ? 'fill-wash' : 'helper-fill-sink';
+        document.getElementById(prog).style.display = 'block';
+        document.getElementById(fill).style.width = '100%';
+        document.getElementById(fill).style.transition = `width ${dur}ms linear`;
+
+        setTimeout(() => {
+            dishes = 15; isWashing = false; isPlayerBusy = false;
+            if (worker === 'helper') activeHelpers.sink--;
+            document.getElementById(prog).style.display = 'none';
+            document.getElementById(fill).style.width = '0%';
+            updateUI();
+        }, dur);
+    }
+
+    function serveOrders() {
+        if (dishes <= 0) return showFloatingScore("🧼 จานหมด! ล้างก่อน", "btn-serve-tray", true);
+        let ready = activeOrders.filter(o => o.status === 'ready');
+        if (ready.length === 0) return;
+        
+        let o = ready[0];
+        dishes--;
+        levelScore += 100 + Math.max(0, o.timeLeft * 2);
+        activeOrders = activeOrders.filter(x => x.id !== o.id);
+        document.getElementById(`ticket-${o.id}`).remove();
+        showFloatingScore("✅ เสิร์ฟแล้ว!", "btn-serve-tray");
+        updateUI();
+    }
+
+    function checkOrderReady(o) {
+        if (o.items.every(i => i.done)) {
+            o.status = 'ready';
+            document.getElementById(`stamp-${o.id}`).innerHTML = '<div class="ready-stamp">READY</div>';
+            document.getElementById(`ticket-${o.id}`).classList.add('ready');
+        }
+    }
+
+    function updateUI() {
+        document.getElementById('total-score').innerText = totalScore + levelScore;
+        document.getElementById('dish-count').innerText = dishes;
+        document.getElementById('blended-stock').innerText = blendedStock;
+        document.getElementById('btn-serve-tray').classList.toggle('disabled', dishes <= 0 || !activeOrders.some(o => o.status === 'ready'));
+        document.getElementById('busy-overlay').style.display = isPlayerBusy ? 'flex' : 'none';
+        document.getElementById('order-count-badge').innerText = spawnQueue.length;
+        document.getElementById('active-count-badge').innerText = activeOrders.length;
+        updateWIP();
+    }
+
+    function updateTimersUI() {
+        activeOrders.forEach(o => {
+            let fill = document.getElementById(`fill-${o.id}`);
+            let txt = document.getElementById(`time-${o.id}`);
+            if (fill) fill.style.width = (o.timeLeft / o.timeLimit * 100) + '%';
+            if (txt) txt.innerText = o.timeLeft + 's';
+        });
+    }
+
+    function showFloatingScore(text, id, isBad) {
+        const btn = document.getElementById(id);
+        const p = document.createElement('div'); p.className = 'score-popup';
+        p.innerText = text; p.style.color = isBad ? 'red' : 'green';
+        btn.appendChild(p); setTimeout(() => p.remove(), 1200);
+    }
+
+    function showTutorial(title, body) {
         isGamePaused = true;
-        document.getElementById('tut-title').innerHTML = title;
-        document.getElementById('tut-body').innerHTML = bodyHtml;
         document.getElementById('tutorial-modal').classList.remove('hidden');
+        document.getElementById('tut-title').innerText = title;
+        document.getElementById('tut-body').innerHTML = body;
     }
 
     function closeTutorial() {
@@ -574,483 +477,74 @@
         beginLevelTimers();
     }
 
-    function startLevel() {
-        document.getElementById('level-display').innerText = levels[currentLevel].title;
-        document.getElementById('no-order-msg').classList.add('hidden');
-        
-        spawnQueue = JSON.parse(JSON.stringify(levels[currentLevel].orders));
-        activeOrders = []; timeToNextSpawn = 0; blendedStock = 8; 
-        brewSlots = [false, false, false, false]; updateSingleSlotsUI();
-        levelScore = 0; levelWaitTimes = [];
-        
-        isPlayerBusy = false; isRefilling = false;
-        
-        setupHelpersForLevel();
-        updateUI(); document.getElementById('tickets-container').innerHTML = ""; 
-        clearInterval(globalTimer); clearInterval(helperTimer);
-
-        if (currentLevel === 0) {
-            showTutorial("🚨 กฎการคุมบาร์เบื้องต้น", "<ul><li><b>WIP Limit (5 บิล):</b> ทำออเดอร์ได้เฉพาะ <b>5 บิลแรกสุด</b> เท่านั้น (กรอบสีฟ้า)</li><li><b>ห้ามลัดคิว:</b> ทำบิลนอกโควต้า โดนหักคะแนน ❌-5</li><li><b>Single Iced (ชงไว):</b> บอสชงเองใช้เวลา <b>8 วิ</b></li><li><b>ชาร้อน:</b> ใช้เวลาสอนชง 7 วินาที (ระวังโดนล็อกตัว!)</li><li><b>บิลมาทีละคิว:</b> บิลใหม่จะเด้งมาเรื่อยๆ (เหมือนลูกค้าเดินเข้าร้าน)</li></ul>");
-        } else if (currentLevel === 2) {
-            showTutorial("🎉 ปลดล็อกผู้ช่วย 1 คน!", "<p>ร้านเริ่มยุ่ง เรามีลูกน้องมาช่วย 1 คน!</p><ul><li><b>ลูกน้องจะโผล่มาที่สเตชั่น ขนม (Dessert) เป็นหลัก</b></li><li><b>ลาก & วาง:</b> ใช้นิ้วลาก 🧑‍🍳 ไปปล่อยสเตชั่นอื่นเพื่อย้ายงานได้ตลอดเวลา!</li><li>ลูกน้อง <b>ทำได้ทุกสเตชั่น!</b> (ชง Single ก็ได้, ต้มชาก็เป็น แต่ช้ากว่าคุณ 2 วิ)</li></ul>");
-        } else if (currentLevel === 4) {
-            showTutorial("🔥 กิจการรุ่งเรือง!", "<p>คิวเริ่มล้นร้านแล้ว!</p><ul><li>บิลจะเริ่มยาวขึ้นเรื่อยๆ</li><li>อย่าลืมโยกลูกน้องคนเดียวของคุณไปอุดรอยรั่วให้ถูกที่ถูกเวลานะครับ!</li></ul>");
-        } else if (currentLevel === 6) {
-            showTutorial("👑 ผู้จัดการระดับพระกาฬ!", "<p>เข้าสู่ช่วงวัดใจ!</p><ul><li><b>จะไม่มีคนมาช่วยเพิ่มแล้ว!</b> คุณต้องลุยกับลูกน้องคนเดิมไปจนจบเกม</li><li>คุมสติ และบริหาร 4 หัวชง Single Iced ให้คุ้มค่าที่สุด!</li></ul>");
-        } else {
-            beginLevelTimers();
-        }
-    }
-
-    function beginLevelTimers() {
-        globalTimer = setInterval(() => {
-            if(isGamePaused) return;
-
-            if (spawnQueue.length > 0) {
-                timeToNextSpawn--;
-                if (timeToNextSpawn <= 0) {
-                    let newOrder = spawnQueue.shift(); 
-                    newOrder.spawnTime = Date.now(); 
-                    activeOrders.push(newOrder); 
-                    appendTicketToDOM(newOrder); 
-                    
-                    // ปล่อยบิลทีละ 1 ใบ ด่านแรกๆ 12-14 วิ -> ด่านท้ายๆ จะเหลือแค่ 5-7 วิ
-let minWait = Math.max(5, 12 - currentLevel); // ลดเวลาลงเรื่อยๆ แต่ห้ามต่ำกว่า 5 วิ
-timeToNextSpawn = minWait + Math.floor(Math.random() * 3); // สุ่มบวกเวลาเพิ่ม 0-2 วิ
-                }
-            }
-            activeOrders.forEach(order => { order.timeLeft--; });
-            updateTimersUI(); checkLevelCompletion();
-        }, 1000);
-
-        helperTimer = setInterval(() => {
-            if(isGamePaused) return;
-
-            let pendingWIP = activeOrders.filter(o => o.status !== 'ready').slice(0, 5); 
-            if (pendingWIP.length === 0) return;
-
-            let singleHelpers = getAssignedCount('single');
-            if (singleHelpers > activeHelpers.single) {
-                let slotIdx = getFreeSlot();
-                if (slotIdx > -1) {
-                    let claim = findAndClaimItemHelper('single', pendingWIP);
-                    if (claim) {
-                        activeHelpers.single++; brewSlots[slotIdx] = true; updateSingleSlotsUI();
-                        showFloatingScore("🧑‍🍳 ชง Single!", 'station-single');
-                        let fill = document.getElementById(`slot-fill-${slotIdx+1}`);
-                        fill.style.transition = 'none'; fill.style.width = '0%';
-                        setTimeout(() => { fill.style.transition = `width 10000ms linear`; fill.style.width = '100%'; }, 50);
-                        setTimeout(() => { 
-                            completeItem(claim.orderId, claim.itemIndex); 
-                            brewSlots[slotIdx] = false; updateSingleSlotsUI();
-                            activeHelpers.single--; 
-                        }, 10000);
-                    }
-                }
-            }
-
-            let blendedHelpers = getAssignedCount('blended');
-            if (blendedHelpers > activeHelpers.blended) {
-                let needBlended = false;
-                pendingWIP.forEach(o => o.items.forEach(i => { if (i.type === 'blended' && !i.done && !i.inProgress) needBlended = true; }));
-                
-                if (needBlended && blendedStock <= 2 && !isRefilling) {
-                    isRefilling = true; activeHelpers.blended++; updateUI();
-                    showFloatingScore("🧑‍🍳 ลูกน้องต้มชา!", 'station-blended');
-                    let prog = document.getElementById('helper-prog-blended');
-                    let fill = document.getElementById('helper-fill-blended');
-                    prog.style.display = 'block'; fill.style.transition = 'none'; fill.style.width = '0%';
-                    setTimeout(() => { fill.style.transition = `width 12000ms linear`; fill.style.width = '100%'; }, 50);
-                    setTimeout(() => { isRefilling = false; blendedStock = 8; activeHelpers.blended--; prog.style.display = 'none'; updateUI(); }, 12000);
-                } 
-                else if (blendedStock > 0) {
-                    let claim = findAndClaimItemHelper('blended', pendingWIP);
-                    if (claim) {
-                        activeHelpers.blended++; blendedStock--; updateUI();
-                        let prog = document.getElementById('helper-prog-blended');
-                        let fill = document.getElementById('helper-fill-blended');
-                        prog.style.display = 'block'; fill.style.transition = 'none'; fill.style.width = '0%';
-                        setTimeout(() => { fill.style.transition = `width 2000ms linear`; fill.style.width = '100%'; }, 50); 
-                        setTimeout(() => { completeItem(claim.orderId, claim.itemIndex); activeHelpers.blended--; prog.style.display = 'none'; updateUI(); }, 2000);
-                    }
-                }
-            }
-
-            let hotHelpers = getAssignedCount('hot');
-            if (hotHelpers > activeHelpers.hot) {
-                let claim = findAndClaimItemHelper('hot', pendingWIP);
-                if (claim) {
-                    activeHelpers.hot++; updateUI();
-                    let prog = document.getElementById('helper-prog-hot');
-                    let fill = document.getElementById('helper-fill-hot');
-                    prog.style.display = 'block'; fill.style.transition = 'none'; fill.style.width = '0%';
-                    setTimeout(() => { fill.style.transition = `width 9000ms linear`; fill.style.width = '100%'; }, 50); 
-                    setTimeout(() => { completeItem(claim.orderId, claim.itemIndex); activeHelpers.hot--; prog.style.display = 'none'; updateUI(); }, 9000);
-                }
-            }
-
-            let dessertHelpers = getAssignedCount('dessert');
-            if (dessertHelpers > activeHelpers.dessert) {
-                let claim = findAndClaimItemHelper('dessert', pendingWIP);
-                if (claim) {
-                    activeHelpers.dessert++; updateUI();
-                    let prog = document.getElementById('helper-prog-dessert');
-                    let fill = document.getElementById('helper-fill-dessert');
-                    prog.style.display = 'block'; fill.style.transition = 'none'; fill.style.width = '0%';
-                    setTimeout(() => { fill.style.transition = `width 4000ms linear`; fill.style.width = '100%'; }, 50); 
-                    setTimeout(() => { completeItem(claim.orderId, claim.itemIndex); activeHelpers.dessert--; prog.style.display = 'none'; updateUI(); }, 4000);
-                }
-            }
-
-        }, 500); 
-    }
-
-    function findAndClaimItemHelper(type, wipOrders) {
-        for (let order of wipOrders) {
-            for (let i = 0; i < order.items.length; i++) {
-                let item = order.items[i];
-                if (item.type === type && !item.done && !item.inProgress) {
-                    item.inProgress = true;
-                    let itemEl = document.getElementById(`item-${order.id}-${i}`);
-                    if(itemEl) itemEl.classList.add('in-progress-helper');
-                    return { orderId: order.id, itemIndex: i };
-                }
-            }
-        }
-        return null;
-    }
-
-    function appendTicketToDOM(order) {
-        const container = document.getElementById('tickets-container');
-        const div = document.createElement('div'); div.className = 'ticket'; div.id = `ticket-${order.id}`;
-        let html = `<h3>คิว #${order.id} <span class="timer-text" style="color:#666">⏱ ${order.timeLeft}s</span></h3>
-            <div class="ticket-timer-bg"><div class="ticket-timer-fill" style="width: 100%; background-color: var(--success);"></div></div><div id="stamp-${order.id}"></div>`;
-        order.items.forEach((item, index) => {
-            let badgeText = ""; let badgeClass = `bg-${item.type}`;
-            if (item.type === 'hot') { badgeText = "🫖"; } else if (item.type === 'single') { badgeText = "SIN"; }
-            else if (item.type === 'blended') { badgeText = "BLE"; } else if (item.type === 'dessert') { badgeText = "DES"; }
-            html += `<div class="order-item" id="item-${order.id}-${index}"><span class="badge ${badgeClass}">${badgeText}</span>${item.name}</div>`;
-        });
-        div.innerHTML = html; container.appendChild(div);
-        document.getElementById('order-count-badge').innerText = `รอพ่น: ${spawnQueue.length}`;
-        document.getElementById('active-count-badge').innerText = `บนจอ: ${activeOrders.length}`;
-        updateWIPHighlight();
-    }
-
-    function updateWIPHighlight() {
-        let pendingOrders = activeOrders.filter(o => o.status !== 'ready');
-        activeOrders.forEach(o => { let el = document.getElementById(`ticket-${o.id}`); if(el) el.classList.remove('wip-active'); });
-        for(let i=0; i<Math.min(5, pendingOrders.length); i++) {
-            let el = document.getElementById(`ticket-${pendingOrders[i].id}`);
-            if(el) el.classList.add('wip-active');
-        }
-    }
-
-    function updateTimersUI() {
-        activeOrders.forEach(order => {
-            const ticketEl = document.getElementById(`ticket-${order.id}`);
-            if (!ticketEl) return;
-            const timeSpan = ticketEl.querySelector('.timer-text'); const fillBar = ticketEl.querySelector('.ticket-timer-fill');
-            if (timeSpan && fillBar) {
-                const percent = (order.timeLeft / order.timeLimit) * 100;
-                timeSpan.innerText = `⏱ ${order.timeLeft}s`; 
-                let barColor = "var(--success)";
-                if (order.timeLeft <= 0) { barColor = "var(--danger)"; timeSpan.style.color = "var(--danger)"; if (order.status !== 'ready') ticketEl.style.borderColor = "var(--danger)"; } 
-                else if (percent <= 30) { barColor = "#ff9800"; timeSpan.style.color = "#666"; }
-                fillBar.style.width = `${Math.max(0, percent)}%`; fillBar.style.backgroundColor = barColor;
-            }
-        });
-        let readyCount = activeOrders.filter(o => o.status === 'ready').length;
-        document.getElementById('ready-count').innerText = readyCount;
-        const serveBtn = document.getElementById('btn-serve-tray');
-        if (readyCount > 0) serveBtn.classList.remove('disabled'); else serveBtn.classList.add('disabled');
-        updateWIPHighlight();
-    }
-
-    function findAndClaimItemPlayer(type) {
-        let pendingOrders = activeOrders.filter(o => o.status !== 'ready');
-        let wipOrders = pendingOrders.slice(0, 5);
-
-        for (let order of wipOrders) {
-            for (let i = 0; i < order.items.length; i++) {
-                let item = order.items[i];
-                if (item.type === type && !item.done && !item.inProgress) {
-                    item.inProgress = true;
-                    let itemEl = document.getElementById(`item-${order.id}-${i}`);
-                    if(itemEl) itemEl.classList.add('in-progress');
-                    return { orderId: order.id, itemIndex: i, isWIP: true };
-                }
-            }
-        }
-        
-        let outOfBoundsOrders = pendingOrders.slice(5);
-        for (let order of outOfBoundsOrders) {
-            for (let i = 0; i < order.items.length; i++) {
-                let item = order.items[i];
-                if (item.type === type && !item.done && !item.inProgress) return { isWIP: false }; 
-            }
-        }
-        return null; 
-    }
-
-    function completeItem(orderId, itemIndex) {
-        let order = activeOrders.find(o => o.id === orderId);
-        if (!order) return;
-        let item = order.items[itemIndex];
-        if (item) {
-            item.done = true; item.inProgress = false;
-            levelScore += 20; totalScore += 20;
-            let itemEl = document.getElementById(`item-${order.id}-${itemIndex}`); 
-            if(itemEl) { itemEl.classList.remove('in-progress'); itemEl.classList.remove('in-progress-helper'); itemEl.classList.add('done'); }
-        }
-        
-        if (order.status !== 'ready' && order.items.every(itm => itm.done)) {
-            order.status = 'ready'; 
-            let ticketEl = document.getElementById(`ticket-${order.id}`); if(ticketEl) { ticketEl.classList.add('ready'); ticketEl.classList.remove('wip-active'); }
-            let stampEl = document.getElementById(`stamp-${order.id}`); if(stampEl) stampEl.innerHTML = `<div class="ready-stamp">✅ รอเสิร์ฟ!</div>`;
-        }
-        updateUI(); updateTimersUI();
-    }
-
-    function serveOrders() {
-        let readyOrders = activeOrders.filter(o => o.status === 'ready');
-        if (readyOrders.length === 0) return; 
-        let toServe = readyOrders.slice(0, 4); 
-        toServe.forEach(order => {
-            let waitTimeSec = (Date.now() - order.spawnTime) / 1000;
-            levelWaitTimes.push(waitTimeSec);
-
-            let speedBonus = order.timeLeft > 0 ? order.timeLeft * 10 : 0; 
-            levelScore += (50 + speedBonus); totalScore += (50 + speedBonus);
-            
-            showFloatingScore(`+${50 + speedBonus}`, `ticket-${order.id}`);
-            let ticketEl = document.getElementById(`ticket-${order.id}`);
-            if(ticketEl) { ticketEl.style.transform = "scale(0)"; ticketEl.style.opacity = "0"; setTimeout(() => ticketEl.remove(), 200); }
-            let idx = activeOrders.findIndex(o => o.id === order.id); if (idx > -1) activeOrders.splice(idx, 1);
-        });
-        document.getElementById('active-count-badge').innerText = `บนจอ: ${activeOrders.length}`;
-        updateUI(); updateTimersUI(); checkLevelCompletion();
-    }
-
-    function handlePlayerActionClick(type, btnId) {
-        let claim = findAndClaimItemPlayer(type);
-        if (!claim) { 
-            showFloatingScore("❌ ไม่มีออเดอร์!", btnId, true); 
-            levelScore = Math.max(0, levelScore - 5); totalScore = Math.max(0, totalScore - 5);
-            updateUI(); return false; 
-        }
-        if (!claim.isWIP) {
-            showFloatingScore("❌ ลัดคิว! ทำ 5 บิลแรกก่อน", btnId, true); 
-            levelScore = Math.max(0, levelScore - 5); totalScore = Math.max(0, totalScore - 5);
-            updateUI(); return false; 
-        }
-        return claim; 
-    }
-
-    function serveHotTea() {
-        if (isPlayerBusy) return;
-        let claim = handlePlayerActionClick('hot', 'btn-hot-serve');
-        if(!claim) return;
-
-        showFloatingScore("⭐ สอนชงเอง! +10", 'btn-hot-serve'); levelScore += 10; totalScore += 10; 
-        isPlayerBusy = true; updateUI();
-        const progBar = document.getElementById('prog-hot-serve'), fill = document.getElementById('fill-hot-serve');
-        progBar.style.display = 'block'; fill.style.transition = 'none'; fill.style.width = '0%';
-        setTimeout(() => { fill.style.transition = `width 7000ms linear`; fill.style.width = '100%'; }, 50);
-        setTimeout(() => { isPlayerBusy = false; progBar.style.display = 'none'; updateUI(); completeItem(claim.orderId, claim.itemIndex); }, 7000);
-    }
-
-    function brewSingleTea() {
-        if (isPlayerBusy) return; 
-        let slotIdx = getFreeSlot();
-        if(slotIdx === -1) return;
-
-        let claim = handlePlayerActionClick('single', 'btn-single');
-        if(!claim) return;
-
-        showFloatingScore("⭐ ชงเอง! +10", 'btn-single'); levelScore += 10; totalScore += 10;
-        brewSlots[slotIdx] = true; updateSingleSlotsUI();
-        const fill = document.getElementById(`slot-fill-${slotIdx+1}`);
-        fill.style.transition = 'none'; fill.style.width = '0%'; 
-        setTimeout(() => { fill.style.transition = `width 8000ms linear`; fill.style.width = '100%'; }, 50); 
-        
-        setTimeout(() => { brewSlots[slotIdx] = false; updateSingleSlotsUI(); completeItem(claim.orderId, claim.itemIndex); }, 8000);
-        updateUI();
-    }
-
-    function doTask(type, duration, btnId) {
-        if (isPlayerBusy) return;
-        let claim = handlePlayerActionClick(type, btnId);
-        if(!claim) return;
-
-        showFloatingScore("⭐ ลุยเอง! +10", btnId); levelScore += 10; totalScore += 10; 
-        isPlayerBusy = true; updateUI();
-        const progBar = document.getElementById(`prog-${type}`), fill = document.getElementById(`fill-${type}`);
-        progBar.style.display = 'block'; fill.style.transition = 'none'; fill.style.width = '0%';
-        setTimeout(() => { fill.style.transition = `width ${duration}ms linear`; fill.style.width = '100%'; }, 50);
-        setTimeout(() => { isPlayerBusy = false; progBar.style.display = 'none'; updateUI(); completeItem(claim.orderId, claim.itemIndex); }, duration);
-    }
-
-    function pourBlended() { 
-        if (isPlayerBusy) return;
-        let claim = handlePlayerActionClick('blended', 'btn-blend-pour');
-        if(!claim) return;
-        if (blendedStock <= 0) { 
-            showFloatingScore("❌ แกลลอนหมด!", 'btn-blend-pour', true); 
-            let order = activeOrders.find(o => o.id === claim.orderId);
-            if(order) order.items[claim.itemIndex].inProgress = false;
-            return; 
-        } 
-        showFloatingScore("⭐ เทน้ำ! +5", 'btn-blend-pour'); levelScore += 5; totalScore += 5; 
-        blendedStock--; updateUI(); completeItem(claim.orderId, claim.itemIndex); 
-    }
-
-    function refillGallon() {
-        if (isPlayerBusy || isRefilling) return;
-        if (blendedStock > 2) { showFloatingScore("❌ รอให้เหลือ <= 2 ก่อน", 'btn-blend-refill', true); return; }
-        
-        showFloatingScore("⭐ ต้มชา! +10", 'btn-blend-refill'); levelScore += 10; totalScore += 10; 
-        isRefilling = true; updateUI();
-        const progBar = document.getElementById('prog-refill'), fill = document.getElementById('fill-refill');
-        progBar.style.display = 'block'; fill.style.transition = 'none'; fill.style.width = '0%';
-        setTimeout(() => { fill.style.transition = `width 10000ms linear`; fill.style.width = '100%'; }, 50); 
-        setTimeout(() => { isRefilling = false; progBar.style.display = 'none'; blendedStock = 8; updateUI(); }, 10000);
-    }
-
-    function updateUI() {
-        document.getElementById('total-score').innerText = totalScore; 
-        document.getElementById('current-level-score').innerText = levelScore;
-        
-        document.getElementById('blended-stock').innerText = blendedStock; 
-        document.getElementById('blended-stock').style.color = blendedStock <= 2 ? 'var(--hot)' : 'var(--blended)';
-        
-        const overlay = document.getElementById('busy-overlay');
-        if (isPlayerBusy) { overlay.style.display = 'flex'; } else { overlay.style.display = 'none'; }
-
-        const btnHotServe = document.getElementById('btn-hot-serve');
-        if (isPlayerBusy) { btnHotServe.disabled = true; btnHotServe.style.opacity = '0.5'; } 
-        else { btnHotServe.disabled = false; btnHotServe.style.opacity = '1'; }
-
-        const btnRefill = document.getElementById('btn-blend-refill'); 
-        if (blendedStock > 2 || isRefilling || isPlayerBusy) { btnRefill.disabled = true; btnRefill.style.opacity = '0.5'; } 
-        else { btnRefill.disabled = false; btnRefill.style.opacity = '1'; }
-        
-        const btnDessert = document.getElementById('btn-dessert');
-        if (isPlayerBusy) { btnDessert.disabled = true; btnDessert.style.opacity = '0.5'; } 
-        else { btnDessert.disabled = false; btnDessert.style.opacity = '1'; }
-
-        const btnSingle = document.getElementById('btn-single');
-        if (getFreeSlot() === -1 || isPlayerBusy) { btnSingle.disabled = true; } else { btnSingle.disabled = false; }
-    }
-
     function checkLevelCompletion() {
-        const serveBtn = document.getElementById('btn-serve-tray');
-        if (activeOrders.length === 0 && spawnQueue.length === 0) {
-            document.getElementById('no-order-msg').classList.remove('hidden');
-            serveBtn.classList.add('disabled'); clearInterval(globalTimer); clearInterval(helperTimer);
-            
-            setTimeout(() => {
-                let sumWait = levelWaitTimes.reduce((a, b) => a + b, 0);
-                let avgWaitGameSec = levelWaitTimes.length > 0 ? (sumWait / levelWaitTimes.length) : 0;
-                let avgWaitRealMin = parseFloat((avgWaitGameSec * 0.25).toFixed(1)); 
-                
-                document.getElementById('avg-time-game').innerText = avgWaitGameSec.toFixed(1);
-                document.getElementById('avg-time-real').innerText = avgWaitRealMin;
-                document.getElementById('level-score-display').innerText = levelScore;
-                
-                const clearOverlay = document.getElementById('overlay-level-clear');
-                document.getElementById('action-buttons').classList.add('hidden');
-                clearOverlay.classList.remove('hidden');
-                
-                let completedLevelNum = currentLevel + 1;
-                autoSaveAndFetchLeaderboard(avgWaitRealMin, completedLevelNum);
-            }, 1000);
+        if (spawnQueue.length === 0 && activeOrders.length === 0) {
+            clearInterval(globalTimer);
+            document.getElementById('overlay-level-clear').classList.remove('hidden');
+            document.getElementById('level-score-display').innerText = levelScore;
+            totalScore += levelScore;
         }
     }
 
-    function autoSaveAndFetchLeaderboard(myAvgWaitRealMin, lvlNum) {
-        document.getElementById('kpi-compare-status').innerText = "⏳ กำลังบันทึกผลและดึงข้อมูลร้าน...";
-        document.getElementById('global-avg-time').innerText = "...";
-        document.getElementById('leaderboard-list').innerHTML = "<div style='text-align:center; padding: 15px; color:#888; font-size:10px;'>⏳ กำลังเชื่อมต่อเซิร์ฟเวอร์...</div>";
-        document.getElementById('lb-title').innerText = `🏆 สถิติคนชงไว (ด่าน ${lvlNum})`;
-        document.getElementById('save-status-msg').innerText = "กำลังเซฟข้อมูลอัตโนมัติ...";
+    // Drag & Drop Logic
+    let dragObj = null;
+    document.addEventListener('pointerdown', e => {
+        if (e.target.classList.contains('helper-token')) {
+            dragObj = e.target;
+            dragObj.classList.add('dragging');
+            dragObj.setPointerCapture(e.pointerId);
+        }
+    });
 
-        const payload = { phone: playerPhone, name: playerName, score: levelScore, levelReached: lvlNum, avgWaitTime: myAvgWaitRealMin };
-        const formData = new URLSearchParams(); formData.append('data', JSON.stringify(payload));
+    document.addEventListener('pointermove', e => {
+        if (dragObj) {
+            dragObj.style.left = (e.clientX - 8) + 'px';
+            dragObj.style.top = (e.clientY - 8) + 'px';
+        }
+    });
 
-        fetch(GOOGLE_APP_SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: formData.toString() })
-        .then(() => { 
-            document.getElementById('save-status-msg').innerText = "✅ เซฟข้อมูลแล้ว!";
-            fetchAndRenderLevelLeaderboard(lvlNum, myAvgWaitRealMin); 
-        })
-        .catch(err => { 
-            document.getElementById('save-status-msg').innerText = "⚠️ ออฟไลน์ (ไม่ถูกบันทึก)";
-            fetchAndRenderLevelLeaderboard(lvlNum, myAvgWaitRealMin); 
+    document.addEventListener('pointerup', e => {
+        if (dragObj) {
+            dragObj.classList.remove('dragging');
+            dragObj.style.display = 'none';
+            let target = document.elementFromPoint(e.clientX, e.clientY)?.closest('.helper-dropzone');
+            dragObj.style.display = 'flex';
+            if (target) {
+                helperAssignments[dragObj.dataset.id] = target.dataset.station;
+                renderHelpers();
+            } else {
+                renderHelpers();
+            }
+            dragObj = null;
+        }
+    });
+
+    function renderHelpers() {
+        document.querySelectorAll('.helper-dropzone').forEach(dz => dz.innerHTML = '');
+        document.querySelectorAll('body > .helper-token').forEach(el => el.remove());
+        helperAssignments.forEach((st, i) => {
+            let t = document.createElement('div');
+            t.className = 'helper-token'; t.innerText = '🧑‍🍳';
+            t.dataset.id = i; t.dataset.station = st;
+            document.querySelector(`.helper-dropzone[data-station="${st}"]`).appendChild(t);
         });
     }
 
-    async function fetchAndRenderLevelLeaderboard(lvlNum, myAvgWaitMin) {
-        const listDiv = document.getElementById('leaderboard-list');
-        try {
-            const response = await fetch(GOOGLE_APP_SCRIPT_URL);
-            const globalLb = await response.json();
-            listDiv.innerHTML = "";
-            let levelData = globalLb.filter(entry => entry.level === lvlNum);
-            
-            if(levelData.length === 0) {
-                listDiv.innerHTML = "<div style='text-align:center; padding: 15px; color:#888; font-size:10px;'>คุณคือคนแรกที่จบด่านนี้!</div>"; 
-                document.getElementById('global-avg-time').innerText = "-";
-            } else {
-                let globalValidWaits = levelData.filter(entry => entry.avgWait > 0);
-                if(globalValidWaits.length > 0) {
-                    let totalGlobalWait = globalValidWaits.reduce((sum, entry) => sum + entry.avgWait, 0);
-                    let globalAvgWait = (totalGlobalWait / globalValidWaits.length).toFixed(1);
-                    document.getElementById('global-avg-time').innerText = globalAvgWait;
-                    
-                    let compareStatus = document.getElementById('kpi-compare-status');
-                    if(myAvgWaitMin <= globalAvgWait) {
-                        compareStatus.innerText = `🔥 เร็วกว่าค่าเฉลี่ยด่านนี้ ${(globalAvgWait - myAvgWaitMin).toFixed(1)} นาที!`;
-                        compareStatus.style.color = "var(--success)";
-                    } else {
-                        compareStatus.innerText = `🐢 ช้ากว่าค่าเฉลี่ยด่านนี้ ${(myAvgWaitMin - globalAvgWait).toFixed(1)} นาที`;
-                        compareStatus.style.color = "var(--danger)";
-                    }
-                }
-                levelData.sort((a, b) => { if (b.score !== a.score) return b.score - a.score; return a.avgWait - b.avgWait; });
-                levelData.slice(0, 5).forEach((entry, index) => {
-                    let cleanMyPhone = normalizePhone(playerPhone);
-                    let isMe = (normalizePhone(entry.phone) === cleanMyPhone);
-                    
-                    let rowHtml = `
-                        <div class="leaderboard-row" style="${isMe ? 'background:rgba(76,175,80,0.2); border-radius:4px; padding:2px;' : ''}">
-                            <span class="lb-rank">${index + 1}.</span>
-                            <span style="flex:1; display:flex; align-items:center;">
-                                <img src="IMG_4511.jpeg" style="width:16px; height:16px; min-width:16px; border-radius:4px; object-fit:cover; margin-right:4px;" onerror="this.style.display='none'">
-                                ${entry.name} <span style="font-size:7px; color:#888; margin-left:3px;">| ⏱️ ${entry.avgWait}m</span>
-                            </span>
-                            <span style="font-weight:bold;">${entry.score} pts</span>
-                        </div>`;
-                    listDiv.innerHTML += rowHtml;
-                });
-            }
-            
-            document.getElementById('action-buttons').classList.remove('hidden');
-            if(lvlNum < levels.length) { document.getElementById('btn-continue').classList.remove('hidden'); } 
-            else { document.getElementById('btn-continue').classList.add('hidden'); }
-        } catch (error) { 
-            listDiv.innerHTML = "<div style='text-align:center; padding: 15px; color: var(--danger); font-size:10px;'>❌ เชื่อมต่อไม่ได้ (ออฟไลน์)</div>"; 
-            document.getElementById('action-buttons').classList.remove('hidden');
-        }
+    function doTask(type, dur, id) {
+        if (isPlayerBusy) return;
+        let claim = findJob(type); if (!claim) return;
+        startJob(claim, type, 'boss');
     }
 
-    function showFloatingScore(text, targetId, isPenalty = false) {
-        const target = document.getElementById(targetId); if(!target) return;
-        const floatEl = document.createElement('div'); floatEl.className = 'score-popup'; floatEl.innerText = text; 
-        if(isPenalty) { floatEl.style.color = 'var(--danger)'; floatEl.style.borderColor = 'var(--danger)'; } 
-        else { floatEl.style.color = 'var(--success)'; floatEl.style.borderColor = 'var(--success)'; }
-        const randX = Math.floor(Math.random() * 40) - 20; floatEl.style.left = `calc(50% + ${randX}px)`; floatEl.style.top = '10%'; 
-        target.appendChild(floatEl); setTimeout(() => floatEl.remove(), 1200);
+    function updateSingleSlotsUI() {
+        for(let i=1; i<=4; i++) {
+            let f = document.getElementById(`slot-fill-${i}`);
+            if (!brewSlots[i-1]) { f.style.width = '0'; f.style.transition = 'none'; }
+        }
     }
+    
+    function getFreeSlot() { return brewSlots.indexOf(false); }
+
 </script>
 
 </body>
