@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Gimbocha KDS - Master System</title>
+    <title>Gimbocha KDS - Pro Barista Simulator</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         :root { --brand: #8c5b3e; --bg: #1a1a1a; --hot: #e65100; --single: #c62828; --blended: #2e7d32; --dessert: #fbc02d; --success: #4caf50; --danger: #f44336; }
@@ -62,7 +62,6 @@
         @keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-20px); } }
         .hidden { display: none !important; }
         
-        /* Overlays */
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 100; text-align: center; padding: 5px 10px; box-sizing: border-box;}
         .overlay h1 { font-size: 18px !important; margin: 0 0 2px 0; text-shadow: 1px 1px var(--brand); }
         .overlay p { font-size: 11px !important; margin: 2px 0; color: #ddd; }
@@ -83,8 +82,7 @@
         .lb-rank { font-weight: bold; width: 15px; text-align: center;}
         
         .player-img-header { width: 22px; height: 22px; border-radius: 50%; border: 1px solid #fff; object-fit: cover; margin-right: 5px;}
-        .player-img-lb { width: 18px; height: 18px; border-radius: 4px; border: 1px solid var(--brand); object-fit: cover; margin-right: 4px;}
-        .shop-logo-top { width: 90px; height: 90px; object-fit: cover; border-radius: 12px; border: 2px solid var(--brand); margin-bottom: 10px; }
+        .shop-logo-top { width: 70px; height: 70px; object-fit: cover; border-radius: 12px; border: 2px solid var(--brand); margin-bottom: 8px; }
         
         #landscape-warning { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #2b2b2b; color: white; z-index: 999; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; box-sizing: border-box; }
         @media screen and (orientation: portrait) { #landscape-warning { display: flex; } #app { display: none; } }
@@ -92,7 +90,6 @@
         .kpi-box { background: rgba(255,255,255,0.1); padding: 5px; border-radius: 8px; margin: 4px 0; width: 100%; border: 1px solid rgba(255,255,255,0.2); }
         .kpi-box p { margin: 1px 0 !important; }
 
-        /* จัดตารางหน้าเลือกด่าน */
         .level-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; width: 100%; max-width: 650px; padding: 10px; max-height: 70vh; overflow-y: auto;}
         .level-card { background: rgba(255,255,255,0.1); border: 2px solid var(--brand); border-radius: 8px; padding: 8px; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; justify-content: space-between; text-align: center;}
         .level-card:hover { background: rgba(255,255,255,0.2); transform: scale(1.05); }
@@ -144,13 +141,21 @@
 
         <div class="station-panel">
             <div id="busy-overlay">⏳ ติดสอนชา/จัดขนม...</div>
+            
             <div class="station" style="border-color: var(--hot);">
-                <div><h4 style="color: var(--hot);">🫖 1. Hot Tea</h4><p>สอนชง (5 วิ)</p></div>
+                <div>
+                    <h4 style="color: var(--hot);">🫖 1. Hot Tea</h4>
+                    <p style="font-size: 8px; margin: 1px 0;">สต็อคชุดชา: <span id="hot-stock" style="font-size: 11px;">0</span>/3</p>
+                </div>
                 <div style="position:relative;">
-                    <button class="btn-action bg-hot" style="background: #e65100;" id="btn-hot" onclick="doTask('hot', 5000, 'btn-hot')">สอนชงชาร้อน</button>
-                    <div class="progress-bar" id="prog-hot"><div class="progress-fill" style="background: #e65100;" id="fill-hot"></div></div>
+                    <button class="btn-action bg-hot" style="background: #e65100; margin-bottom: 2px; padding: 3px;" id="btn-hot-serve" onclick="serveHotTea()">เสิร์ฟ+สอน (5วิ)</button>
+                    <div class="progress-bar" id="prog-hot-serve" style="margin-bottom: 3px;"><div class="progress-fill" style="background: #e65100;" id="fill-hot-serve"></div></div>
+                    
+                    <button class="btn-action" style="background: #ffcc80; color: #d84315; font-size: 8px; padding: 3px;" id="btn-hot-prep" onclick="prepareHotTea()">จัดชุดชา (2วิ)</button>
+                    <div class="progress-bar" id="prog-hot-prep"><div class="progress-fill" style="background: #ffcc80;" id="fill-hot-prep"></div></div>
                 </div>
             </div>
+
             <div class="station" style="border-color: var(--single);">
                 <div><h4 style="color: var(--single);">🍵 2. Single Iced</h4><p>ชงสด (10 วิ)</p></div>
                 <div class="machine-slots" id="single-slots"></div>
@@ -158,6 +163,7 @@
                     <button class="btn-action bg-single" id="btn-single" onclick="brewSingleTea()">กดชง 1 แก้ว</button>
                 </div>
             </div>
+
             <div class="station" style="border-color: var(--blended);">
                 <div><h4 style="color: var(--blended);">🧋 3. Blended</h4><p>ต้มชา (10 วิ)</p></div>
                 <div class="stock-indicator">สต็อค: <span id="blended-stock" style="font-size: 11px;">8</span>/8</div>
@@ -167,6 +173,7 @@
                     <div class="progress-bar" id="prog-refill"><div class="progress-fill" style="background: #ff9800;" id="fill-refill"></div></div>
                 </div>
             </div>
+
             <div class="station" style="border-color: var(--dessert);">
                 <div><h4 style="color: var(--dessert);">🍰 4. Dessert</h4><p>จัดจาน (2 วิ)</p></div>
                 <div style="position:relative;">
@@ -229,7 +236,6 @@
 </div>
 
 <script>
-    // 🔴 URL ใหม่ล่าสุดที่บอสส่งมา
     const GOOGLE_APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwGijAooQNr14plPD5XqrkVURldGvJ3ylNB8iPOzC0OCxEZTKS6qa8UlqqQ3oluO8Oo/exec";
 
     const menuDB = {
@@ -252,18 +258,25 @@
         { orders: 25, itemsMin: 4, itemsMax: 6, baseTime: 85 }   
     ];
 
+    function seededRandom(seed) {
+        let x = Math.sin(seed) * 10000;
+        return x - Math.floor(x);
+    }
+
     let levels = [];
     function generateStandardLevels() {
         levelsConfig.forEach((config, idx) => {
             let levelOrders = [];
             for(let i = 0; i < config.orders; i++) {
-                let numItems = config.itemsMin + ((idx * 3 + i * 7) % (config.itemsMax - config.itemsMin + 1));
+                let seed1 = idx * 100 + i + 1234;
+                let numItems = config.itemsMin + Math.floor(seededRandom(seed1) * (config.itemsMax - config.itemsMin + 1));
                 let items = [];
                 for(let j=0; j < numItems; j++) {
+                    let seed2 = idx * 1000 + i * 10 + j + 5678;
                     const categories = Object.keys(menuDB);
-                    const typeIdx = (idx * 2 + i * 5 + j * 11) % categories.length;
+                    const typeIdx = Math.floor(seededRandom(seed2) * categories.length);
                     const type = categories[typeIdx];
-                    const nameIdx = (idx * 7 + i * 13 + j * 17) % menuDB[type].length;
+                    const nameIdx = Math.floor(seededRandom(seed2 + 1) * menuDB[type].length);
                     items.push({ type: type, name: menuDB[type][nameIdx], done: false, inProgress: false });
                 }
                 levelOrders.push({ id: `${idx+1}0${i+1}`, timeLimit: config.baseTime, timeLeft: config.baseTime, items: items, status: 'pending' });
@@ -278,9 +291,13 @@
     let timeToNextSpawn = 0; let blendedStock = 8; let singleBrewSlots = 0; let globalTimer;
     let playerName = ""; let playerPhone = "";
     let levelWaitTimes = [];
-    let isPlayerBusy = false; let isRefilling = false;
+    
+    // ตัวแปรใหม่สำหรับคุมสถานะบาร์
+    let isPlayerBusy = false; 
+    let isRefilling = false;
+    let hotStock = 0;        // สต็อคชุดชาร้อน
+    let isHotPrepping = false; // กำลังจัดชุดชาหรือไม่
 
-    // ฟังก์ชันฟอกเบอร์โทร ลบ 0 ตัวหน้าและตัวอักษรที่ไม่ใช่ตัวเลขออกให้หมด
     const normalizePhone = (p) => String(p).replace(/\D/g, '').replace(/^0+/, '');
 
     window.onload = () => {
@@ -420,7 +437,10 @@
         spawnQueue = JSON.parse(JSON.stringify(levels[currentLevel].orders));
         activeOrders = []; timeToNextSpawn = 0; blendedStock = 8; singleBrewSlots = 0;
         levelScore = 0; levelWaitTimes = [];
+        
+        // รีเซ็ตสถานะหน้าบาร์ให้สะอาดตอนเริ่มด่าน
         isPlayerBusy = false; isRefilling = false;
+        hotStock = 0; isHotPrepping = false;
         
         updateUI(); document.getElementById('tickets-container').innerHTML = ""; 
 
@@ -515,10 +535,13 @@
             }
         }
         
+        let needHotPrep = (needHot && hotStock === 0 && !isHotPrepping);
         let highest = "";
+        
         if (needSingle) highest = 'single';
         else if (needRefill) highest = 'refill';
-        else if (needHot) highest = 'hot';
+        else if (needHotPrep) highest = 'hot-prep';
+        else if (needHot && hotStock > 0) highest = 'hot-serve';
         else if (needDessert) highest = 'dessert';
         else if (needPour) highest = 'pour';
 
@@ -564,10 +587,65 @@
         updateUI(); updateTimersUI(); checkLevelCompletion();
     }
 
+    // 🟢 ระบบจัดชุดชาร้อน (ไม่ล็อกตัวพนักงาน)
+    function prepareHotTea() {
+        if (isPlayerBusy || isHotPrepping || hotStock >= 3) return;
+        
+        if (checkPriority('hot-prep')) { 
+            showFloatingScore("⭐ เตรียมของดี! +5", 'btn-hot-prep'); 
+            levelScore += 5; totalScore += 5; 
+        }
+
+        isHotPrepping = true; updateUI();
+        const progBar = document.getElementById('prog-hot-prep'), fill = document.getElementById('fill-hot-prep');
+        progBar.style.display = 'block'; fill.style.transition = 'none'; fill.style.width = '0%';
+        
+        setTimeout(() => { fill.style.transition = `width 2000ms linear`; fill.style.width = '100%'; }, 50);
+        setTimeout(() => { 
+            isHotPrepping = false; 
+            progBar.style.display = 'none'; 
+            hotStock++; 
+            updateUI(); 
+        }, 2000);
+    }
+
+    // 🟢 ระบบสอนชงชาร้อน (ล็อกตัวพนักงาน 5 วิ)
+    function serveHotTea() {
+        if (isPlayerBusy || hotStock <= 0) return;
+        
+        let claim = findAndClaimItem('hot');
+        if (!claim) { 
+            showFloatingScore("❌ กดมั่ว! -5", 'btn-hot-serve', true); 
+            levelScore = Math.max(0, levelScore - 5); totalScore = Math.max(0, totalScore - 5);
+            updateUI(); return; 
+        }
+
+        if (checkPriority('hot-serve')) { 
+            showFloatingScore("⭐ ลำดับเป๊ะ! +10", 'btn-hot-serve'); 
+            levelScore += 10; totalScore += 10; 
+        }
+
+        hotStock--;
+        isPlayerBusy = true; updateUI();
+        
+        const progBar = document.getElementById('prog-hot-serve'), fill = document.getElementById('fill-hot-serve');
+        progBar.style.display = 'block'; fill.style.transition = 'none'; fill.style.width = '0%';
+        
+        setTimeout(() => { fill.style.transition = `width 5000ms linear`; fill.style.width = '100%'; }, 50);
+        setTimeout(() => { 
+            isPlayerBusy = false; progBar.style.display = 'none'; updateUI();
+            completeItem(claim.orderId, claim.itemIndex); 
+        }, 5000);
+    }
+
     function brewSingleTea() {
         if (isPlayerBusy || singleBrewSlots >= 4) return; 
         let claim = findAndClaimItem('single');
-        if (!claim) { showFloatingScore("❌ ไม่มีออเดอร์!", 'btn-single'); return; }
+        if (!claim) { 
+            showFloatingScore("❌ กดมั่ว! -5", 'btn-single', true); 
+            levelScore = Math.max(0, levelScore - 5); totalScore = Math.max(0, totalScore - 5);
+            updateUI(); return; 
+        }
 
         if (checkPriority('single')) { showFloatingScore("⭐ ลำดับเป๊ะ! +10", 'btn-single'); levelScore += 10; totalScore += 10; }
 
@@ -586,8 +664,12 @@
 
     function doTask(type, duration, btnId) {
         if (isPlayerBusy) return;
-        let claim = findAndClaimItem(type);
-        if (!claim) { showFloatingScore("❌ ไม่มีออเดอร์!", btnId); return; }
+        let claim = findAndClaimItem(type); // ตอนนี้เหลือแค่ของขนม (dessert) ที่ใช้ฟังก์ชันนี้
+        if (!claim) { 
+            showFloatingScore("❌ กดมั่ว! -5", btnId, true); 
+            levelScore = Math.max(0, levelScore - 5); totalScore = Math.max(0, totalScore - 5);
+            updateUI(); return; 
+        }
 
         if (checkPriority(type)) { showFloatingScore("⭐ ลำดับเป๊ะ! +10", btnId); levelScore += 10; totalScore += 10; }
 
@@ -606,10 +688,14 @@
     function pourBlended() { 
         if (isPlayerBusy) return;
         let claim = findAndClaimItem('blended');
-        if (!claim) { showFloatingScore("❌ ไม่มีออเดอร์!", 'btn-blend-pour'); return; }
+        if (!claim) { 
+            showFloatingScore("❌ กดมั่ว! -5", 'btn-blend-pour', true); 
+            levelScore = Math.max(0, levelScore - 5); totalScore = Math.max(0, totalScore - 5);
+            updateUI(); return; 
+        }
         
         if (blendedStock <= 0) { 
-            showFloatingScore("❌ แกลลอนหมด!", 'btn-blend-pour'); 
+            showFloatingScore("❌ แกลลอนหมด!", 'btn-blend-pour', true); 
             let order = activeOrders.find(o => o.id === claim.orderId);
             if(order) order.items[claim.itemIndex].inProgress = false;
             return; 
@@ -622,7 +708,7 @@
 
     function refillGallon() {
         if (isPlayerBusy || isRefilling) return;
-        if (blendedStock > 2) { showFloatingScore("❌ รอให้เหลือ <= 2 ก่อน", 'btn-blend-refill'); return; }
+        if (blendedStock > 2) { showFloatingScore("❌ รอให้เหลือ <= 2 ก่อน", 'btn-blend-refill', true); return; }
         
         if (checkPriority('refill')) { showFloatingScore("⭐ เตรียมของดี! +10", 'btn-blend-refill'); levelScore += 10; totalScore += 10; }
 
@@ -636,12 +722,33 @@
     function updateUI() {
         document.getElementById('total-score').innerText = totalScore; 
         document.getElementById('current-level-score').innerText = levelScore;
+        
         document.getElementById('blended-stock').innerText = blendedStock; 
         document.getElementById('blended-stock').style.color = blendedStock <= 2 ? 'var(--hot)' : 'var(--blended)';
+
+        // อัปเดตการแสดงผลสต็อคชาร้อน
+        document.getElementById('hot-stock').innerText = hotStock; 
+        document.getElementById('hot-stock').style.color = hotStock === 0 ? 'var(--danger)' : 'var(--hot)';
         
         const overlay = document.getElementById('busy-overlay');
         if (isPlayerBusy) { overlay.style.display = 'flex'; } else { overlay.style.display = 'none'; }
 
+        // ควบคุมปุ่มชาร้อน
+        const btnHotPrep = document.getElementById('btn-hot-prep');
+        if (hotStock >= 3 || isHotPrepping || isPlayerBusy) { 
+            btnHotPrep.disabled = true; btnHotPrep.style.opacity = '0.5'; btnHotPrep.style.cursor = 'not-allowed'; 
+        } else { 
+            btnHotPrep.disabled = false; btnHotPrep.style.opacity = '1'; btnHotPrep.style.cursor = 'pointer'; 
+        }
+
+        const btnHotServe = document.getElementById('btn-hot-serve');
+        if (hotStock <= 0 || isPlayerBusy) { 
+            btnHotServe.disabled = true; btnHotServe.style.opacity = '0.5'; btnHotServe.style.cursor = 'not-allowed'; 
+        } else { 
+            btnHotServe.disabled = false; btnHotServe.style.opacity = '1'; btnHotServe.style.cursor = 'pointer'; 
+        }
+
+        // ควบคุมปุ่มแกลลอนชา
         const btnRefill = document.getElementById('btn-blend-refill'); 
         if (blendedStock > 2 || isRefilling || isPlayerBusy) { 
             btnRefill.disabled = true; btnRefill.style.opacity = '0.5'; btnRefill.style.cursor = 'not-allowed'; 
@@ -649,6 +756,7 @@
             btnRefill.disabled = false; btnRefill.style.opacity = '1'; btnRefill.style.cursor = 'pointer'; 
         }
         
+        // ควบคุมหัวชง Single
         const btnSingle = document.getElementById('btn-single');
         if (singleBrewSlots >= 4 || isPlayerBusy) { btnSingle.disabled = true; } else { btnSingle.disabled = false; }
     }
@@ -685,7 +793,6 @@
         document.getElementById('lb-title').innerText = `🏆 สถิติคนชงไว (ด่าน ${lvlNum})`;
         document.getElementById('save-status-msg').innerText = "กำลังเซฟข้อมูลอัตโนมัติ...";
 
-        // สร้าง Payload ล่าสุดที่ลบ selfie ออกแล้ว และใส่เบอร์โทร
         const payload = { phone: playerPhone, name: playerName, score: levelScore, levelReached: lvlNum, avgWaitTime: myAvgWaitRealMin };
         const formData = new URLSearchParams(); formData.append('data', JSON.stringify(payload));
 
@@ -744,7 +851,6 @@
                 });
             }
             
-            // เปิดปุ่มให้กดไปด่านต่อไปได้
             document.getElementById('action-buttons').classList.remove('hidden');
             if(lvlNum < levels.length) {
                 document.getElementById('btn-continue').classList.remove('hidden');
@@ -757,9 +863,10 @@
         }
     }
 
-    function showFloatingScore(text, targetId) {
+    function showFloatingScore(text, targetId, isPenalty = false) {
         const target = document.getElementById(targetId); if(!target) return;
         const floatEl = document.createElement('div'); floatEl.className = 'score-popup'; floatEl.innerText = text; 
+        if(isPenalty) floatEl.style.color = 'var(--danger)'; 
         const randX = Math.floor(Math.random() * 40) - 20; 
         floatEl.style.left = `calc(50% + ${randX}px)`; 
         floatEl.style.top = '10%'; 
