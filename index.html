@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Gimbocha KDS - Ultimate Manager Simulator</title>
+    <title>Gimbocha KDS - Drag & Drop Manager</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root { --brand: #8c5b3e; --bg: #1a1a1a; --hot: #e65100; --single: #c62828; --blended: #2e7d32; --dessert: #fbc02d; --success: #4caf50; --danger: #f44336; --wip: #e3f2fd; }
@@ -34,7 +34,7 @@
         
         .order-item { display: flex; align-items: center; margin-bottom: 2px; font-size: 9px; font-weight: 500; line-height: 1.1; }
         .order-item.in-progress { color: #f57c00; font-weight: bold; }
-        .order-item.in-progress-helper { color: #2196f3; font-weight: bold; } /* สีบอกว่าลูกน้องกำลังทำ */
+        .order-item.in-progress-helper { color: #2196f3; font-weight: bold; } 
         .order-item.done { text-decoration: line-through; color: #aaa; opacity: 0.5; font-weight: normal; }
         .badge { display: inline-block; padding: 2px; border-radius: 3px; font-size: 7px; color: white; margin-right: 4px; font-weight: bold; min-width: 22px; text-align: center; }
         .bg-single { background: var(--single); } .bg-blended { background: var(--blended); } .bg-hot { background: transparent; font-size: 10px; padding: 0; min-width: 18px; } .bg-dessert { background: var(--dessert); color: #333; }
@@ -44,8 +44,8 @@
         .serve-btn:active { transform: translateY(4px); box-shadow: 0 0 0 #2e7d32; }
         .serve-btn.disabled { background: #9e9e9e; box-shadow: 0 4px 0 #616161; cursor: not-allowed; opacity: 0.7;}
         
-        .station-panel-wrapper { display: flex; flex-direction: column; flex: 0 0 35%; background: #fff;}
-        .helper-status-bar { background: #e3f2fd; border-bottom: 2px solid #2196f3; padding: 4px 10px; font-size: 11px; font-weight: bold; color: #1565c0; display: flex; justify-content: space-between; align-items: center; }
+        .station-panel-wrapper { display: flex; flex-direction: column; flex: 0 0 38%; background: #fff;}
+        .helper-status-bar { background: #e3f2fd; border-bottom: 2px solid #2196f3; padding: 4px 10px; font-size: 11px; font-weight: bold; color: #1565c0; display: flex; justify-content: flex-start; align-items: center; gap: 10px;}
         
         .station-panel { flex: 1; padding: 4px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; position: relative;}
         #busy-overlay { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.7); z-index: 20; justify-content: center; align-items: center; font-weight: bold; color: var(--danger); font-size: 12px; text-shadow: 1px 1px white; border-radius: 4px;}
@@ -55,12 +55,13 @@
         .station h4 { margin: 0 0 2px 0; font-size: 9px; }
         .station p { font-size: 7px; margin: 0; color: #666; }
 
-        /* 🧑‍🍳 ระบบปุ่มจัดสรรลูกน้อง 🧑‍🍳 */
-        .helper-controls { display: flex; justify-content: center; align-items: center; background: #fff; border-radius: 4px; padding: 2px; margin-top: 2px; border: 1px solid #90caf9;}
-        .btn-helper-mod { background: #e3f2fd; border: 1px solid #2196f3; color: #2196f3; width: 22px; height: 22px; border-radius: 4px; font-weight: bold; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: 0.1s;}
-        .btn-helper-mod:active { background: #2196f3; color: #fff;}
-        .btn-helper-mod:disabled { background: #eee; border-color: #ccc; color: #aaa; cursor: not-allowed; }
-        .helper-text { font-size: 10px; font-weight: bold; color: #1565c0; width: 35px; text-align: center;}
+        /* 🧑‍🍳 ระบบ Drag & Drop ลูกน้อง 🧑‍🍳 */
+        .helper-dropzone { min-height: 26px; background: rgba(0,0,0,0.03); border: 1px dashed #ccc; border-radius: 4px; display: flex; gap: 2px; padding: 2px; justify-content: center; align-items: center; margin: 2px 0; flex-wrap: wrap;}
+        .helper-dropzone.drag-over { background: rgba(33, 150, 243, 0.2); border-color: #2196f3; }
+        
+        .helper-token { width: 22px; height: 22px; background: #fff; border: 2px solid #2196f3; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 12px; cursor: grab; touch-action: none; box-shadow: 0 2px 5px rgba(0,0,0,0.2); transition: transform 0.1s;}
+        .helper-token:active { cursor: grabbing; transform: scale(1.1); }
+        .helper-token.dragging { position: fixed; pointer-events: none; opacity: 0.9; transform: scale(1.3); z-index: 9999; box-shadow: 0 5px 15px rgba(0,0,0,0.5);}
 
         .btn-action { width: 100%; padding: 4px; border: none; border-radius: 4px; font-family: inherit; font-size: 9px; font-weight: bold; cursor: pointer; color: white; transition: 0.1s; margin-top: 2px; position: relative;}
         .btn-action:disabled { background: #ccc !important; cursor: not-allowed; transform: none;}
@@ -116,16 +117,15 @@
         .level-card { background: rgba(255,255,255,0.1); border: 2px solid var(--brand); border-radius: 8px; padding: 8px; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; justify-content: space-between; text-align: center;}
         .level-card:hover { background: rgba(255,255,255,0.2); transform: scale(1.05); }
         .level-card h3 { margin: 0 0 2px 0; color: #fff; font-size: 14px;}
-        .level-card .order-count { font-size: 10px; color: #ffd54f; margin-bottom: 4px; font-weight: bold;}
         
         .stat-box { background: rgba(0,0,0,0.5); border-radius: 4px; padding: 4px; font-size: 9px; margin-top: 4px; border-left: 2px solid var(--success);}
         .stat-box.champion { border-left: 2px solid #ffd54f; }
 
         /* Modal Tutorial */
-        .tutorial-box { background: white; color: #333; padding: 15px; border-radius: 12px; max-width: 400px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+        .tutorial-box { background: white; color: #333; padding: 15px; border-radius: 12px; max-width: 450px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
         .tutorial-box h2 { color: var(--brand); margin: 0 0 10px 0; }
-        .tutorial-box p { font-size: 13px !important; color: #555; text-align: left; line-height: 1.5; margin-bottom: 15px; }
-        .tutorial-box ul { font-size: 12px; text-align: left; color: #555; padding-left: 20px; margin-bottom: 15px;}
+        .tutorial-box p { font-size: 13px !important; color: #555; text-align: left; line-height: 1.5; margin-bottom: 10px; }
+        .tutorial-box ul { font-size: 12px; text-align: left; color: #555; padding-left: 20px; margin-bottom: 15px; line-height: 1.4;}
         .tutorial-box li { margin-bottom: 5px; }
     </style>
 </head>
@@ -154,7 +154,7 @@
                 <div class="order-header">
                     <span>🧾 คิวออเดอร์ 
                         <span id="order-count-badge" style="background: #333; color: white; padding: 2px 6px; border-radius: 6px; font-size: 9px; margin-left: 5px;">รอเข้าคิว: 0</span>
-                        <span style="font-size: 10px; color:#2196f3; margin-left:5px; font-weight:bold;">(WIP 5 บิล)</span>
+                        <span style="font-size: 10px; color:#2196f3; margin-left:5px; font-weight:bold;">(WIP โฟกัส 5 บิล)</span>
                     </span>
                     <span id="active-count-badge" style="background: var(--danger); color: white; padding: 2px 6px; border-radius: 8px; font-size: 9px;">บนจอ: 0 บิล</span>
                 </div>
@@ -173,8 +173,9 @@
 
         <div class="station-panel-wrapper">
             <div class="helper-status-bar" id="global-helper-status" style="display:none;">
-                <span>👨‍💼 จัดสรรลูกน้อง:</span>
-                <span id="helper-count-text">ว่าง 0 / 0 คน</span>
+                <span>👨‍💼 ลากผู้ช่วยไปวาง:</span>
+                <div class="helper-dropzone" data-station="pool" id="helper-pool" style="flex:1; margin-left: 10px; border-color: #fff; background: transparent; justify-content: flex-start; min-height: 24px;">
+                    </div>
             </div>
 
             <div class="station-panel">
@@ -183,43 +184,36 @@
                 <div class="station" style="border-color: var(--hot);" id="station-hot">
                     <div class="station-header">
                         <h4 style="color: var(--hot);">🫖 1. Hot Tea</h4>
-                        <div class="helper-controls" id="hc-hot" style="display:none;">
-                            <button class="btn-helper-mod" onclick="modifyHelper('hot', -1)" id="btn-hm-hot-">-</button>
-                            <span class="helper-text">🧑‍🍳 <span id="count-hot">0</span></span>
-                            <button class="btn-helper-mod" onclick="modifyHelper('hot', 1)" id="btn-hm-hot+">+</button>
-                        </div>
+                        <div class="helper-dropzone" data-station="hot"></div>
                         <p style="font-size: 8px; margin: 1px 0;">สต็อคชุดชา: <span id="hot-stock" style="font-size: 11px;">0</span>/3</p>
                     </div>
                     <div style="position:relative; margin-top:auto;">
                         <button class="btn-action bg-hot" style="background: #e65100; margin-bottom: 2px; padding: 3px;" id="btn-hot-serve" onclick="serveHotTea()">สอน+เสิร์ฟ (5วิ)</button>
                         <div class="progress-bar" id="prog-hot-serve" style="margin-bottom: 3px;"><div class="progress-fill" style="background: #e65100;" id="fill-hot-serve"></div></div>
                         
-                        <button class="btn-action" style="background: #ffcc80; color: #d84315; font-size: 8px; padding: 3px;" id="btn-hot-prep" onclick="prepareHotTea()">จัดชุดชาล่วงหน้า (2วิ)</button>
+                        <button class="btn-action" style="background: #ffcc80; color: #d84315; font-size: 8px; padding: 3px;" id="btn-hot-prep" onclick="prepareHotTea()">จัดชุดชา (2วิ)</button>
                         <div class="progress-bar" id="prog-hot-prep"><div class="progress-fill" style="background: #ffcc80;" id="fill-hot-prep"></div></div>
                         
                         <div class="helper-prog-bar" id="helper-prog-hot"><div class="helper-prog-fill" id="helper-fill-hot"></div></div>
                     </div>
                 </div>
 
-                <div class="station" style="border-color: var(--single); background: #fff0f0;" id="station-single">
+                <div class="station" style="border-color: var(--single);" id="station-single">
                     <div class="station-header">
-                        <h4 style="color: var(--single);">🍵 2. Single</h4><p>ชงสด (10 วิ)</p>
-                        <div style="font-size: 8px; color: var(--danger); font-weight: bold; margin-top:4px;">❌ ห้ามลูกน้องทำ</div>
+                        <h4 style="color: var(--single);">🍵 2. Single</h4>
+                        <div class="helper-dropzone" data-station="single"></div>
+                        <p style="font-size: 7px; margin: 1px 0;">(ชงเอง 8วิ / ลูกน้อง 10วิ)</p>
                     </div>
                     <div class="machine-slots" id="single-slots"></div>
                     <div style="position:relative; margin-top:auto;">
-                        <button class="btn-action bg-single" id="btn-single" onclick="brewSingleTea()">ชงเอง (10วิ)</button>
+                        <button class="btn-action bg-single" id="btn-single" onclick="brewSingleTea()">ชงเอง (8วิ)</button>
                     </div>
                 </div>
 
                 <div class="station" style="border-color: var(--blended);" id="station-blended">
                     <div class="station-header">
                         <h4 style="color: var(--blended);">🧋 3. Blended</h4>
-                        <div class="helper-controls" id="hc-blended" style="display:none;">
-                            <button class="btn-helper-mod" onclick="modifyHelper('blended', -1)" id="btn-hm-blended-">-</button>
-                            <span class="helper-text">🧑‍🍳 <span id="count-blended">0</span></span>
-                            <button class="btn-helper-mod" onclick="modifyHelper('blended', 1)" id="btn-hm-blended+">+</button>
-                        </div>
+                        <div class="helper-dropzone" data-station="blended"></div>
                     </div>
                     <div style="margin-top:auto; position:relative;">
                         <div class="stock-indicator">สต็อค: <span id="blended-stock" style="font-size: 11px;">8</span>/8</div>
@@ -234,11 +228,7 @@
                 <div class="station" style="border-color: var(--dessert);" id="station-dessert">
                     <div class="station-header">
                         <h4 style="color: var(--dessert);">🍰 4. Dessert</h4>
-                        <div class="helper-controls" id="hc-dessert" style="display:none;">
-                            <button class="btn-helper-mod" onclick="modifyHelper('dessert', -1)" id="btn-hm-dessert-">-</button>
-                            <span class="helper-text">🧑‍🍳 <span id="count-dessert">0</span></span>
-                            <button class="btn-helper-mod" onclick="modifyHelper('dessert', 1)" id="btn-hm-dessert+">+</button>
-                        </div>
+                        <div class="helper-dropzone" data-station="dessert"></div>
                     </div>
                     <div style="position:relative; margin-top:auto;">
                         <button class="btn-action bg-dessert" id="btn-dessert" onclick="doTask('dessert', 2000, 'btn-dessert')">จัดจาน (2 วิ)</button>
@@ -306,7 +296,7 @@
     <div class="tutorial-box">
         <h2 id="tut-title">คำแนะนำ</h2>
         <div id="tut-body"></div>
-        <button class="btn-primary" onclick="closeTutorial()">เข้าใจแล้ว ลุยเลย!</button>
+        <button class="btn-primary" onclick="closeTutorial()" style="width:100%;">เข้าใจแล้ว ลุยเลย!</button>
     </div>
 </div>
 
@@ -338,12 +328,11 @@
         return x - Math.floor(x);
     }
 
-    // 🟢 ระบบสุ่มเมนูอิงตามสัดส่วนการขายจริง 🟢
     function getRandomMenuType(seed) {
         let rand = seededRandom(seed) * 100;
         if (rand < 6) return 'hot';
-        if (rand < 24) return 'single'; // 6 + 18
-        if (rand < 76) return 'blended'; // 24 + 52
+        if (rand < 24) return 'single'; 
+        if (rand < 76) return 'blended'; 
         return 'dessert';
     }
 
@@ -356,8 +345,7 @@
                 let numItems = config.itemsMin + Math.floor(seededRandom(seed1) * (config.itemsMax - config.itemsMin + 1));
                 let items = [];
                 
-                // ⏱️ ระบบคำนวณเวลา Dynamic Timer ⏱️
-                let calcTime = 30; // เวลาพื้นฐาน
+                let calcTime = 30; 
                 let countSingle = 0, countHot = 0, countBlended = 0, countDessert = 0;
 
                 for(let j=0; j < numItems; j++) {
@@ -372,9 +360,8 @@
                     if(type === 'dessert') countDessert++;
                 }
 
-                // บวกเวลาตามความยากของแต่ละเมนู
+                // ⏱️ Dynamic Timer (อิงตามเมนูในบิล)
                 calcTime += (countSingle * 12) + (countHot * 10) + (countBlended * 5) + (countDessert * 5);
-                // บวกโบนัสเวลาเผื่อตอนคนเยอะ
                 calcTime += (idx * 2);
 
                 levelOrders.push({ id: `${idx+1}0${i+1}`, timeLimit: calcTime, timeLeft: calcTime, items: items, status: 'pending' });
@@ -393,10 +380,10 @@
     let isPlayerBusy = false; let isRefilling = false;
     let hotStock = 0; let isHotPrepping = false;
     
-    // 🟢 ระบบจัดการลูกน้อง (Manual Assingment) 🟢
+    // 🟢 ระบบจัดการลูกน้องด้วย Drag & Drop 🟢
     let totalHelpers = 0;
-    let assignedHelpers = { hot: 0, blended: 0, dessert: 0 };
-    let activeHelpers = { hot: 0, blended: 0, dessert: 0 }; // ลูกน้องที่กำลังลงมือทำจริงๆ
+    let helperAssignments = []; // เก็บสถานะว่าลูกน้องแต่ละคนอยู่ station ไหน
+    let activeHelpers = { hot: 0, single: 0, blended: 0, dessert: 0 }; 
     let helperTimer;
     
     let brewSlots = [false, false, false, false];
@@ -502,20 +489,8 @@
     function backToLevelSelect() { document.getElementById('overlay-level-clear').classList.add('hidden'); showLevelSelection(); }
     function startNextLevel() { document.getElementById('overlay-level-clear').classList.add('hidden'); currentLevel++; startLevel(); }
 
-    // 🟢 ฟังก์ชันเพิ่ม/ลดลูกน้องประจำสเตชั่น 🟢
-    function getHelpersAvailable() {
-        return totalHelpers - (assignedHelpers.hot + assignedHelpers.blended + assignedHelpers.dessert);
-    }
-
-    function modifyHelper(station, amount) {
-        if (amount > 0 && getHelpersAvailable() > 0) {
-            assignedHelpers[station]++;
-        } else if (amount < 0 && assignedHelpers[station] > 0) {
-            // ถอดลูกน้องออก
-            assignedHelpers[station]--;
-        }
-        updateUI();
-    }
+    // 🟢 ระบบ Render ลูกน้องลากวาง 🟢
+    let dragObj = { id: null, el: null };
 
     function setupHelpersForLevel() {
         totalHelpers = 0;
@@ -523,20 +498,81 @@
         if (currentLevel >= 4) totalHelpers = 2; // ด่าน 5
         if (currentLevel >= 6) totalHelpers = 3; // ด่าน 7
         
-        assignedHelpers = { hot: 0, blended: 0, dessert: 0 };
-        activeHelpers = { hot: 0, blended: 0, dessert: 0 };
+        helperAssignments = Array(totalHelpers).fill('pool');
+        activeHelpers = { hot: 0, single: 0, blended: 0, dessert: 0 };
 
         if(totalHelpers > 0) {
             document.getElementById('global-helper-status').style.display = 'flex';
-            document.getElementById('hc-hot').style.display = 'flex';
-            document.getElementById('hc-blended').style.display = 'flex';
-            document.getElementById('hc-dessert').style.display = 'flex';
         } else {
             document.getElementById('global-helper-status').style.display = 'none';
-            document.getElementById('hc-hot').style.display = 'none';
-            document.getElementById('hc-blended').style.display = 'none';
-            document.getElementById('hc-dessert').style.display = 'none';
         }
+        renderHelpers();
+    }
+
+    function renderHelpers() {
+        // ล้างโซนทั้งหมด
+        document.querySelectorAll('.helper-dropzone').forEach(dz => dz.innerHTML = '');
+
+        helperAssignments.forEach((station, idx) => {
+            let token = document.createElement('div');
+            token.className = 'helper-token';
+            token.innerText = '🧑‍🍳';
+            token.dataset.id = idx;
+            
+            // ตั้งค่า Drag Events สำหรับมือถือและ PC
+            token.onpointerdown = (e) => {
+                e.preventDefault();
+                dragObj.id = token.dataset.id;
+                dragObj.el = token;
+                token.classList.add('dragging');
+                document.body.appendChild(token);
+                moveAt(e.pageX, e.pageY);
+
+                // Highlight dropzones
+                document.querySelectorAll('.helper-dropzone').forEach(dz => dz.classList.add('drag-over'));
+            };
+
+            let targetDz = document.querySelector(`.helper-dropzone[data-station="${station}"]`);
+            if(targetDz) targetDz.appendChild(token);
+        });
+    }
+
+    function moveAt(pageX, pageY) {
+        if(!dragObj.el) return;
+        dragObj.el.style.left = pageX - dragObj.el.offsetWidth / 2 + 'px';
+        dragObj.el.style.top = pageY - dragObj.el.offsetHeight / 2 + 'px';
+    }
+
+    document.addEventListener('pointermove', (e) => {
+        if(dragObj.el) moveAt(e.pageX, e.pageY);
+    });
+
+    document.addEventListener('pointerup', (e) => {
+        if(!dragObj.el) return;
+        
+        document.querySelectorAll('.helper-dropzone').forEach(dz => dz.classList.remove('drag-over'));
+        
+        let token = dragObj.el;
+        token.classList.remove('dragging');
+        token.style.display = 'none'; 
+        let elemBelow = document.elementFromPoint(e.clientX, e.clientY);
+        token.style.display = 'flex';
+
+        let dropzone = elemBelow ? elemBelow.closest('.helper-dropzone') : null;
+        if (dropzone) {
+            let newStation = dropzone.dataset.station;
+            helperAssignments[dragObj.id] = newStation;
+        }
+
+        token.removeAttribute('style');
+        dragObj.el = null;
+        dragObj.id = null;
+        renderHelpers();
+    });
+
+    // นับจำนวนลูกน้องที่ประจำในแต่ละสเตชั่น
+    function getAssignedCount(station) {
+        return helperAssignments.filter(s => s === station).length;
     }
 
     let isGamePaused = false;
@@ -570,15 +606,14 @@
         updateUI(); document.getElementById('tickets-container').innerHTML = ""; 
         clearInterval(globalTimer); clearInterval(helperTimer);
 
-        // ตรวจสอบว่าต้องโชว์ Tutorial ไหม
         if (currentLevel === 0) {
-            showTutorial("🚨 กฎการคุมบาร์ (Manager Mode)", "<ul><li><b>WIP Limit (5 บิล):</b> คุณและลูกน้องจะทำออเดอร์ได้เฉพาะ <b>5 บิลแรกสุด</b> เท่านั้น (กรอบสีฟ้า)</li><li><b>ห้ามลัดคิว:</b> ถ้าทำบิลที่ 6 ขึ้นไป จะโดนหักคะแนน ❌-5</li><li><b>ชาร้อน 2 ขั้นตอน:</b> ต้องกด <i>'จัดชุด'</i> ก่อน แล้วค่อยกด <i>'เสิร์ฟ'</i></li><li><b>ชา Single Iced:</b> ชงนาน 10 วิ รีบกดก่อนเลย!</li></ul>");
+            showTutorial("🚨 กฎการคุมบาร์เบื้องต้น", "<ul><li><b>WIP Limit (5 บิล):</b> ทำออเดอร์ได้เฉพาะ <b>5 บิลแรกสุด</b> เท่านั้น (กรอบสีฟ้า)</li><li><b>ห้ามลัดคิว:</b> ทำบิลนอกโควต้า โดนหักคะแนน ❌-5</li><li><b>Single Iced (ชงไว):</b> บอสชงเองใช้เวลา <b>8 วิ</b></li><li><b>เวลาแบบ Dynamic:</b> บิลไหนสั่งเยอะ จะได้เวลาทำเยอะขึ้น! ใจเย็นๆ แล้วลุย!</li></ul>");
         } else if (currentLevel === 2) {
-            showTutorial("🎉 ปลดล็อกผู้ช่วย 1 คน!", "<p>ยอดเยี่ยม! ตอนนี้คุณมีผู้ช่วย 1 คนแล้ว</p><ul><li>กดปุ่ม <b>[+]</b> ที่สเตชั่น ชาร้อน, ต้มชา, หรือขนม เพื่อส่งเขาไปประจำการ</li><li>เขาจะทำงานใน 5 บิลแรกให้ <b>อัตโนมัติ</b> (แต่จะทำงานช้ากว่าคุณ 2 วินาทีนะ)</li><li><b>ข้อควรระวัง:</b> ลูกน้องชง Single Iced ไม่ได้! คุณต้องคุมเอง</li></ul>");
+            showTutorial("🎉 ปลดล็อกผู้ช่วย 1 คน!", "<p>ร้านเริ่มยุ่ง เรามีลูกน้องมาช่วย 1 คน!</p><ul><li><b>ลาก & วาง:</b> ใช้นิ้วลาก 🧑‍🍳 ไปปล่อยในช่องสเตชั่นที่ต้องการให้ช่วย</li><li>ลูกน้องจะทำงานให้อัตโนมัติ (แต่ช้ากว่าคุณ 2 วินาที)</li><li>ลูกน้อง <b>ทำได้ทุกสเตชั่น!</b> (ชง Single ก็ได้, ต้มชาก็เป็น)</li></ul>");
         } else if (currentLevel === 4) {
-            showTutorial("🔥 กิจการรุ่งเรือง! (ได้ผู้ช่วยคนที่ 2)", "<p>ลูกค้าเริ่มล้นร้านแล้ว! เราส่งพนักงานมาเพิ่มให้คุณอีก 1 คน</p><ul><li>จัดสรรกำลังคนดีๆ สเตชั่นไหนคิวล้น ก็โยกคนไปช่วยได้เลย!</li><li>อย่าลืมว่าถ้าแกลลอนชาหมด คุณต้องเป็นคนกด <b>'ต้มชา'</b> เองนะ ลูกน้องทำไม่เป็น!</li></ul>");
+            showTutorial("🔥 กิจการรุ่งเรือง! (ผู้ช่วย 2 คน)", "<p>คิวล้นร้านแล้ว! จัดกำลังคน 2 คนให้ดี</p><ul><li>โยกลูกน้องไปอุดจุดที่คอขวด (เช่น Single หรือ Blended)</li><li>ระวังอย่าให้ลูกน้องว่างงาน ลากไปช่วยสเตชั่นอื่นด่วน!</li></ul>");
         } else if (currentLevel === 6) {
-            showTutorial("👑 ยอดฝีมือระดับพระกาฬ! (ได้ผู้ช่วยคนที่ 3)", "<p>ร้านแตกแน่! แต่คุณมีผู้ช่วยถึง 3 คนแล้ว</p><ul><li>โยกคนให้ไว สั่งงานให้แม่น</li><li>คุมหัวชง Single Iced ทั้ง 4 หัวให้คุ้มค่าที่สุด!</li></ul>");
+            showTutorial("👑 ยอดฝีมือระดับพระกาฬ! (ผู้ช่วย 3 คน)", "<p>นี่คือบททดสอบความเป็น Manager ของจริง!</p><ul><li>โยกคนให้ไว สั่งงานให้แม่น</li><li>คุมหัวชง Single Iced ทั้ง 4 หัวให้คุ้มค่าที่สุด!</li></ul>");
         } else {
             beginLevelTimers();
         }
@@ -608,63 +643,77 @@
             updateTimersUI(); checkLevelCompletion();
         }, 1000);
 
-        // 🤖 สมองกลลูกน้อง (แยกตามสเตชั่นที่ถูก Assign) 🤖
+        // 🤖 สมองกลลูกน้องอัจฉริยะ (AI Helper Loop) 🤖
         helperTimer = setInterval(() => {
             if(isGamePaused) return;
 
-            let pendingWIP = activeOrders.filter(o => o.status !== 'ready').slice(0, 5); // WIP 5 บิล
+            let pendingWIP = activeOrders.filter(o => o.status !== 'ready').slice(0, 5); 
             if (pendingWIP.length === 0) return;
 
-            // --- 1. ตรวจสอบสเตชั่นขนม (Dessert) ---
-            if (assignedHelpers.dessert > activeHelpers.dessert) {
-                let claim = findAndClaimItemHelper('dessert', pendingWIP);
-                if (claim) {
-                    activeHelpers.dessert++; updateUI();
-                    let prog = document.getElementById('helper-prog-dessert');
-                    let fill = document.getElementById('helper-fill-dessert');
-                    prog.style.display = 'block'; fill.style.transition = 'none'; fill.style.width = '0%';
-                    setTimeout(() => { fill.style.transition = `width 4000ms linear`; fill.style.width = '100%'; }, 50);
-                    setTimeout(() => { 
-                        completeItem(claim.orderId, claim.itemIndex); 
-                        activeHelpers.dessert--; prog.style.display = 'none'; updateUI(); 
-                    }, 4000);
+            // --- 1. ตรวจสอบลูกน้องที่อยู่สเตชั่น Single ---
+            let singleHelpers = getAssignedCount('single');
+            if (singleHelpers > activeHelpers.single) {
+                let slotIdx = getFreeSlot();
+                if (slotIdx > -1) {
+                    let claim = findAndClaimItemHelper('single', pendingWIP);
+                    if (claim) {
+                        activeHelpers.single++; brewSlots[slotIdx] = true; updateSingleSlotsUI();
+                        showFloatingScore("🧑‍🍳 ชง Single!", 'station-single');
+                        let fill = document.getElementById(`slot-fill-${slotIdx+1}`);
+                        fill.style.transition = 'none'; fill.style.width = '0%';
+                        setTimeout(() => { fill.style.transition = `width 10000ms linear`; fill.style.width = '100%'; }, 50); // ลูกน้อง 10 วิ
+                        setTimeout(() => { 
+                            completeItem(claim.orderId, claim.itemIndex); 
+                            brewSlots[slotIdx] = false; updateSingleSlotsUI();
+                            activeHelpers.single--; 
+                        }, 10000);
+                    }
                 }
             }
 
-            // --- 2. ตรวจสอบสเตชั่น Blended (เทชา) ---
-            if (assignedHelpers.blended > activeHelpers.blended && blendedStock > 0) {
-                let claim = findAndClaimItemHelper('blended', pendingWIP);
-                if (claim) {
-                    activeHelpers.blended++; blendedStock--; updateUI();
+            // --- 2. ตรวจสอบลูกน้องที่อยู่สเตชั่น Blended ---
+            let blendedHelpers = getAssignedCount('blended');
+            if (blendedHelpers > activeHelpers.blended) {
+                // เช็คว่าชาหมดไหม (ลูกน้องต้มเองได้ ใช้เวลา 12 วิ)
+                let needBlended = false;
+                pendingWIP.forEach(o => o.items.forEach(i => { if (i.type === 'blended' && !i.done && !i.inProgress) needBlended = true; }));
+                
+                if (needBlended && blendedStock <= 2 && !isRefilling) {
+                    isRefilling = true; activeHelpers.blended++; updateUI();
+                    showFloatingScore("🧑‍🍳 ลูกน้องต้มชา!", 'station-blended');
                     let prog = document.getElementById('helper-prog-blended');
                     let fill = document.getElementById('helper-fill-blended');
                     prog.style.display = 'block'; fill.style.transition = 'none'; fill.style.width = '0%';
-                    setTimeout(() => { fill.style.transition = `width 2000ms linear`; fill.style.width = '100%'; }, 50);
-                    setTimeout(() => { 
-                        completeItem(claim.orderId, claim.itemIndex); 
-                        activeHelpers.blended--; prog.style.display = 'none'; updateUI(); 
-                    }, 2000);
+                    setTimeout(() => { fill.style.transition = `width 12000ms linear`; fill.style.width = '100%'; }, 50);
+                    setTimeout(() => { isRefilling = false; blendedStock = 8; activeHelpers.blended--; prog.style.display = 'none'; updateUI(); }, 12000);
+                } 
+                else if (blendedStock > 0) {
+                    let claim = findAndClaimItemHelper('blended', pendingWIP);
+                    if (claim) {
+                        activeHelpers.blended++; blendedStock--; updateUI();
+                        let prog = document.getElementById('helper-prog-blended');
+                        let fill = document.getElementById('helper-fill-blended');
+                        prog.style.display = 'block'; fill.style.transition = 'none'; fill.style.width = '0%';
+                        setTimeout(() => { fill.style.transition = `width 2000ms linear`; fill.style.width = '100%'; }, 50); // ลูกน้องเท 2 วิ
+                        setTimeout(() => { completeItem(claim.orderId, claim.itemIndex); activeHelpers.blended--; prog.style.display = 'none'; updateUI(); }, 2000);
+                    }
                 }
             }
 
-            // --- 3. ตรวจสอบสเตชั่นชาร้อน (Hot Tea) ---
-            if (assignedHelpers.hot > activeHelpers.hot) {
-                // กวาดดูว่าต้องทำอะไร (เตรียมชุด หรือ เสิร์ฟ)
+            // --- 3. ตรวจสอบลูกน้องที่อยู่สเตชั่นชาร้อน ---
+            let hotHelpers = getAssignedCount('hot');
+            if (hotHelpers > activeHelpers.hot) {
                 let needHot = 0;
                 pendingWIP.forEach(o => o.items.forEach(i => { if (i.type === 'hot' && !i.done && !i.inProgress) needHot++; }));
 
-                // ลูกน้องฉลาดพอที่จะจัดชุดชาล่วงหน้าให้ ถ้ายังไม่ถึงลิมิต
                 if (needHot > hotStock && hotStock < 3 && !isHotPrepping) {
                     isHotPrepping = true; activeHelpers.hot++; updateUI();
                     let prog = document.getElementById('helper-prog-hot');
                     let fill = document.getElementById('helper-fill-hot');
                     prog.style.display = 'block'; fill.style.transition = 'none'; fill.style.width = '0%';
-                    setTimeout(() => { fill.style.transition = `width 4000ms linear`; fill.style.width = '100%'; }, 50); // ลูกน้องเตรียมชา 4 วิ
-                    setTimeout(() => { 
-                        isHotPrepping = false; hotStock++; activeHelpers.hot--; prog.style.display = 'none'; updateUI(); 
-                    }, 4000);
+                    setTimeout(() => { fill.style.transition = `width 4000ms linear`; fill.style.width = '100%'; }, 50); // ลูกน้องจัดชุด 4 วิ
+                    setTimeout(() => { isHotPrepping = false; hotStock++; activeHelpers.hot--; prog.style.display = 'none'; updateUI(); }, 4000);
                 } 
-                // ถ้ามีสต็อคพร้อมเสิร์ฟ ก็จัดการสอนและเสิร์ฟ
                 else if (hotStock > 0) {
                     let claim = findAndClaimItemHelper('hot', pendingWIP);
                     if (claim) {
@@ -672,19 +721,29 @@
                         let prog = document.getElementById('helper-prog-hot');
                         let fill = document.getElementById('helper-fill-hot');
                         prog.style.display = 'block'; fill.style.transition = 'none'; fill.style.width = '0%';
-                        setTimeout(() => { fill.style.transition = `width 7000ms linear`; fill.style.width = '100%'; }, 50); // ลูกน้องสอนชา 7 วิ
-                        setTimeout(() => { 
-                            completeItem(claim.orderId, claim.itemIndex); 
-                            activeHelpers.hot--; prog.style.display = 'none'; updateUI(); 
-                        }, 7000);
+                        setTimeout(() => { fill.style.transition = `width 7000ms linear`; fill.style.width = '100%'; }, 50); // ลูกน้องสอน 7 วิ
+                        setTimeout(() => { completeItem(claim.orderId, claim.itemIndex); activeHelpers.hot--; prog.style.display = 'none'; updateUI(); }, 7000);
                     }
                 }
             }
 
-        }, 500); // AI ประเมินทุกครึ่งวิ
+            // --- 4. ตรวจสอบลูกน้องที่อยู่สเตชั่นขนม ---
+            let dessertHelpers = getAssignedCount('dessert');
+            if (dessertHelpers > activeHelpers.dessert) {
+                let claim = findAndClaimItemHelper('dessert', pendingWIP);
+                if (claim) {
+                    activeHelpers.dessert++; updateUI();
+                    let prog = document.getElementById('helper-prog-dessert');
+                    let fill = document.getElementById('helper-fill-dessert');
+                    prog.style.display = 'block'; fill.style.transition = 'none'; fill.style.width = '0%';
+                    setTimeout(() => { fill.style.transition = `width 4000ms linear`; fill.style.width = '100%'; }, 50); // ลูกน้อง 4 วิ
+                    setTimeout(() => { completeItem(claim.orderId, claim.itemIndex); activeHelpers.dessert--; prog.style.display = 'none'; updateUI(); }, 4000);
+                }
+            }
+
+        }, 500); 
     }
 
-    // ฟังก์ชันให้ AI ค้นหางานเฉพาะใน WIP
     function findAndClaimItemHelper(type, wipOrders) {
         for (let order of wipOrders) {
             for (let i = 0; i < order.items.length; i++) {
@@ -717,7 +776,6 @@
         updateWIPHighlight();
     }
 
-    // 🚧 ระบบจัดกรอบแสง WIP (5 บิลแรก)
     function updateWIPHighlight() {
         let pendingOrders = activeOrders.filter(o => o.status !== 'ready');
         activeOrders.forEach(o => { let el = document.getElementById(`ticket-${o.id}`); if(el) el.classList.remove('wip-active'); });
@@ -748,7 +806,6 @@
         updateWIPHighlight();
     }
 
-    // 🟢 ผู้เล่นค้นหาออเดอร์ในขอบเขต 5 บิล 🟢
     function findAndClaimItemPlayer(type) {
         let pendingOrders = activeOrders.filter(o => o.status !== 'ready');
         let wipOrders = pendingOrders.slice(0, 5);
@@ -874,9 +931,9 @@
         brewSlots[slotIdx] = true; updateSingleSlotsUI();
         const fill = document.getElementById(`slot-fill-${slotIdx+1}`);
         fill.style.transition = 'none'; fill.style.width = '0%'; 
-        setTimeout(() => { fill.style.transition = `width 10000ms linear`; fill.style.width = '100%'; }, 50);
+        setTimeout(() => { fill.style.transition = `width 8000ms linear`; fill.style.width = '100%'; }, 50); // บอสชง 8 วิ
         
-        setTimeout(() => { brewSlots[slotIdx] = false; updateSingleSlotsUI(); completeItem(claim.orderId, claim.itemIndex); }, 10000);
+        setTimeout(() => { brewSlots[slotIdx] = false; updateSingleSlotsUI(); completeItem(claim.orderId, claim.itemIndex); }, 8000);
         updateUI();
     }
 
@@ -915,7 +972,7 @@
         isRefilling = true; updateUI();
         const progBar = document.getElementById('prog-refill'), fill = document.getElementById('fill-refill');
         progBar.style.display = 'block'; fill.style.transition = 'none'; fill.style.width = '0%';
-        setTimeout(() => { fill.style.transition = `width 10000ms linear`; fill.style.width = '100%'; }, 50);
+        setTimeout(() => { fill.style.transition = `width 10000ms linear`; fill.style.width = '100%'; }, 50); // บอสต้ม 10 วิ
         setTimeout(() => { isRefilling = false; progBar.style.display = 'none'; blendedStock = 8; updateUI(); }, 10000);
     }
 
@@ -928,23 +985,6 @@
         document.getElementById('hot-stock').innerText = hotStock; 
         document.getElementById('hot-stock').style.color = hotStock === 0 ? 'var(--danger)' : 'var(--hot)';
         
-        // อัปเดตปุ่มจัดการลูกน้อง
-        let avail = getHelpersAvailable();
-        document.getElementById('helper-count-text').innerText = `ว่าง ${avail} / ${totalHelpers} คน`;
-        document.getElementById('helper-count-text').style.color = (avail === 0) ? 'var(--danger)' : '#1565c0';
-
-        ['hot', 'blended', 'dessert'].forEach(st => {
-            let numAssigned = assignedHelpers[st];
-            let numBusy = activeHelpers[st];
-            let countSpan = document.getElementById(`count-${st}`);
-            if(countSpan) countSpan.innerText = numAssigned;
-            
-            let btnMinus = document.getElementById(`btn-hm-${st}-`);
-            let btnPlus = document.getElementById(`btn-hm-${st}+`);
-            if(btnMinus) btnMinus.disabled = (numAssigned === 0);
-            if(btnPlus) btnPlus.disabled = (avail === 0);
-        });
-
         const overlay = document.getElementById('busy-overlay');
         if (isPlayerBusy) { overlay.style.display = 'flex'; } else { overlay.style.display = 'none'; }
 
