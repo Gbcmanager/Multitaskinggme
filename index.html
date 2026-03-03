@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Gimbocha KDS - Head Barista Mode</title>
+    <title>Gimbocha KDS - AI Helper & WIP Limit</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
-        :root { --brand: #8c5b3e; --bg: #1a1a1a; --hot: #e65100; --single: #c62828; --blended: #2e7d32; --dessert: #fbc02d; --success: #4caf50; --danger: #f44336; --wip: #e3f2fd; }
+        :root { --brand: #8c5b3e; --bg: #1a1a1a; --hot: #e65100; --single: #c62828; --blended: #2e7d32; --dessert: #fbc02d; --success: #4caf50; --danger: #f44336; }
         body { font-family: 'Kanit', sans-serif; background: var(--bg); margin: 0; padding: 2svh 2vw; display: flex; justify-content: center; align-items: center; height: 100svh; width: 100vw; overflow: hidden; box-sizing: border-box; touch-action: none; }
         #app { background: #f4f4f4; width: 100%; height: 100%; display: flex; flex-direction: column; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
         .header { display: flex; justify-content: space-between; align-items: center; padding: 4px 12px; background: #111; color: #fff; font-size: 13px; font-weight: bold; flex-shrink: 0; border-bottom: 2px solid var(--brand); }
@@ -22,7 +22,7 @@
 
         .ticket { background: white; border: 2px solid #ddd; padding: 5px; border-radius: 6px; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); min-width: 140px; max-width: 140px; flex-shrink: 0; display: flex; flex-direction: column; max-height: 100%; overflow-y: auto; position: relative; transition: 0.3s; animation: popInOrder 0.3s forwards; }
         
-        /* 🚧 สไตล์สำหรับบิลที่อยู่ในโควต้า WIP (3 บิลแรก) 🚧 */
+        /* 🚧 สไตล์สำหรับบิลในโควต้า WIP Limit (5 บิลแรก) 🚧 */
         .ticket.wip-active { border-color: #2196f3; box-shadow: 0 0 8px rgba(33, 150, 243, 0.4); background: #fafcff; }
         .ticket.ready { background: #e8f5e9; border-color: var(--success) !important; box-shadow: none;}
         .ticket.ready h3 { color: var(--success) !important; border-bottom-color: var(--success); }
@@ -34,7 +34,7 @@
         
         .order-item { display: flex; align-items: center; margin-bottom: 2px; font-size: 9px; font-weight: 500; line-height: 1.1; }
         .order-item.in-progress { color: #f57c00; font-weight: bold; }
-        .order-item.in-progress-helper { color: #2196f3; font-weight: bold; } /* สีออเดอร์ที่ลูกน้องทำ */
+        .order-item.in-progress-helper { color: #2196f3; font-weight: bold; } /* สีบอกว่าลูกน้องกำลังทำ */
         .order-item.done { text-decoration: line-through; color: #aaa; opacity: 0.5; font-weight: normal; }
         .badge { display: inline-block; padding: 2px; border-radius: 3px; font-size: 7px; color: white; margin-right: 4px; font-weight: bold; min-width: 22px; text-align: center; }
         .bg-single { background: var(--single); } .bg-blended { background: var(--blended); } .bg-hot { background: transparent; font-size: 10px; padding: 0; min-width: 18px; } .bg-dessert { background: var(--dessert); color: #333; }
@@ -44,17 +44,16 @@
         .serve-btn:active { transform: translateY(4px); box-shadow: 0 0 0 #2e7d32; }
         .serve-btn.disabled { background: #9e9e9e; box-shadow: 0 4px 0 #616161; cursor: not-allowed; opacity: 0.7;}
         
-        .station-panel { flex: 0 0 30%; padding: 4px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; background: #fff; position: relative;}
+        .station-panel-wrapper { display: flex; flex-direction: column; flex: 0 0 35%; background: #fff;}
+        .helper-status-bar { background: #e3f2fd; border-bottom: 2px solid #2196f3; padding: 4px 10px; font-size: 10px; font-weight: bold; color: #1565c0; display: flex; justify-content: space-between; align-items: center; }
+        
+        .station-panel { flex: 1; padding: 4px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; position: relative;}
         #busy-overlay { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.7); z-index: 20; justify-content: center; align-items: center; font-weight: bold; color: var(--danger); font-size: 12px; text-shadow: 1px 1px white; border-radius: 4px;}
 
         .station { background: #f9f9f9; border: 1px solid #ddd; padding: 4px; border-radius: 4px; text-align: center; display: flex; flex-direction: column; justify-content: flex-start; position: relative;}
         .station-header { border-bottom: 1px solid #eee; padding-bottom: 3px; margin-bottom: 3px; }
         .station h4 { margin: 0 0 2px 0; font-size: 9px; }
         .station p { font-size: 7px; margin: 0; color: #666; }
-        
-        /* 🟢 ปุ่มย้ายลูกน้อง 🟢 */
-        .btn-assign { background: #fff; border: 1px dashed #2196f3; color: #2196f3; width: 100%; padding: 2px; font-size: 7px; border-radius: 4px; cursor: pointer; transition: 0.2s; margin-bottom: 2px; font-family: inherit;}
-        .btn-assign.active { background: #2196f3; color: #fff; border-style: solid; font-weight: bold; box-shadow: 0 2px 5px rgba(33,150,243,0.3);}
 
         .btn-action { width: 100%; padding: 4px; border: none; border-radius: 4px; font-family: inherit; font-size: 9px; font-weight: bold; cursor: pointer; color: white; transition: 0.1s; margin-top: 2px; position: relative;}
         .btn-action:disabled { background: #ccc !important; cursor: not-allowed; transform: none;}
@@ -62,16 +61,16 @@
         
         .machine-slots { display: flex; flex-direction: column; gap: 1px; margin-top: 2px; margin-bottom: auto;}
         .slot-bar { width: 100%; height: 6px; background: #eee; border-radius: 3px; overflow: hidden; position: relative; }
-        .slot-fill { height: 100%; width: 0%; background: var(--single); transition: width linear; }
-        .slot-text { position: absolute; width: 100%; text-align: center; font-size: 5px; color: white; line-height: 6px; font-weight: bold; top: 0; }
+        .slot-fill { height: 100%; width: 0%; transition: width linear; }
+        .slot-text { position: absolute; width: 100%; text-align: center; font-size: 5px; color: white; line-height: 6px; font-weight: bold; top: 0; text-shadow: 0px 0px 2px rgba(0,0,0,0.8); }
         
         .progress-bar { width: 100%; height: 4px; background: #eee; border-radius: 2px; margin-top: 2px; overflow: hidden; display: none; }
         .progress-fill { width: 0%; height: 100%; transition: width linear; }
         
-        /* 🟢 หลอดเกจของลูกน้อง 🟢 */
-        .helper-prog-bar { width: 100%; height: 6px; background: #e3f2fd; border-radius: 3px; margin-top: 4px; overflow: hidden; display: none; border: 1px solid #bbdefb;}
+        /* เกจเฉพาะของลูกน้อง AI */
+        .helper-prog-bar { width: 100%; height: 4px; background: #e3f2fd; border-radius: 2px; margin-top: 2px; overflow: hidden; display: none; border: 1px solid #90caf9;}
         .helper-prog-fill { width: 0%; height: 100%; background: #2196f3; transition: width linear; }
-        
+
         .stock-indicator { font-size: 9px; font-weight: bold; color: var(--blended); margin: 1px 0; }
         
         .score-popup { position: absolute; font-weight: bold; font-size: 13px; padding: 3px 6px; border-radius: 6px; background: rgba(255, 255, 255, 0.95); box-shadow: 0 4px 10px rgba(0,0,0,0.3); border: 2px solid; animation: floatUp 1.2s forwards; pointer-events: none; z-index: 9999; white-space: nowrap; left: 50%; top: -15px; text-align: center; }
@@ -110,6 +109,7 @@
         .level-card { background: rgba(255,255,255,0.1); border: 2px solid var(--brand); border-radius: 8px; padding: 8px; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; justify-content: space-between; text-align: center;}
         .level-card:hover { background: rgba(255,255,255,0.2); transform: scale(1.05); }
         .level-card h3 { margin: 0 0 2px 0; color: #fff; font-size: 14px;}
+        .level-card .order-count { font-size: 10px; color: #ffd54f; margin-bottom: 4px; font-weight: bold;}
         
         .stat-box { background: rgba(0,0,0,0.5); border-radius: 4px; padding: 4px; font-size: 9px; margin-top: 4px; border-left: 2px solid var(--success);}
         .stat-box.champion { border-left: 2px solid #ffd54f; }
@@ -125,7 +125,7 @@
     <div class="header">
         <span id="level-display" style="color: #ffd54f;">Level 1</span>
         <span style="display: flex; align-items: center;">
-            <img id="header-player-img" src="IMG_4511.jpeg" alt="Player" class="hidden player-img-header" onerror="this.style.display='none'">
+            <img id="header-player-img" src="IMG_4511.jpeg" class="hidden player-img-header" onerror="this.style.display='none'">
             <span id="display-player-name" style="color: #fff; margin-left: 3px;">-</span>
         </span>
         <div style="text-align: right; line-height: 1.1;">
@@ -140,7 +140,7 @@
                 <div class="order-header">
                     <span>🧾 คิวออเดอร์ 
                         <span id="order-count-badge" style="background: #333; color: white; padding: 2px 6px; border-radius: 6px; font-size: 9px; margin-left: 5px;">รอเข้าคิว: 0</span>
-                        <span style="font-size: 9px; color:#2196f3; margin-left:5px;">(โฟกัส 3 บิลแรก)</span>
+                        <span style="font-size: 9px; color:#2196f3; margin-left:5px; font-weight:bold;">(โฟกัส 5 บิลแรก)</span>
                     </span>
                     <span id="active-count-badge" style="background: var(--danger); color: white; padding: 2px 6px; border-radius: 8px; font-size: 9px;">บนจอ: 0 บิล</span>
                 </div>
@@ -157,62 +157,67 @@
             </div>
         </div>
 
-        <div class="station-panel">
-            <div id="busy-overlay">⏳ คุณกำลังติดสอนชา/จัดขนม...</div>
-            
-            <div class="station" style="border-color: var(--hot);" id="station-hot">
-                <div class="station-header">
-                    <button class="btn-assign" id="btn-assign-hot" onclick="assignHelper('hot')">🧑‍🍳 เรียกลูกน้องมานี่</button>
-                    <h4 style="color: var(--hot);">🫖 1. Hot Tea</h4>
-                    <p style="font-size: 8px; margin: 1px 0;">สต็อคชุดชา: <span id="hot-stock" style="font-size: 11px;">0</span>/3</p>
-                </div>
-                <div style="position:relative; margin-top:auto;">
-                    <button class="btn-action bg-hot" style="background: #e65100; margin-bottom: 2px; padding: 3px;" id="btn-hot-serve" onclick="serveHotTea()">สอน+เสิร์ฟ (5วิ)</button>
-                    <div class="progress-bar" id="prog-hot-serve" style="margin-bottom: 3px;"><div class="progress-fill" style="background: #e65100;" id="fill-hot-serve"></div></div>
-                    
-                    <button class="btn-action" style="background: #ffcc80; color: #d84315; font-size: 8px; padding: 3px;" id="btn-hot-prep" onclick="prepareHotTea()">จัดชุดชาล่วงหน้า (2วิ)</button>
-                    <div class="progress-bar" id="prog-hot-prep"><div class="progress-fill" style="background: #ffcc80;" id="fill-hot-prep"></div></div>
-                    
-                    <div class="helper-prog-bar" id="helper-prog-hot"><div class="helper-prog-fill" id="helper-fill-hot"></div></div>
-                </div>
+        <div class="station-panel-wrapper">
+            <div class="helper-status-bar" id="global-helper-status">
+                <span>🤖 ระบบผู้ช่วย AI (Auto-Run)</span>
+                <span id="helper-count-text">กำลังรอด่านที่ 3...</span>
             </div>
 
-            <div class="station" style="border-color: var(--single); background: #fff0f0;" id="station-single">
-                <div class="station-header">
-                    <div style="font-size: 7px; color: var(--danger); font-weight: bold; text-align: center; margin-bottom: 2px; height: 12px;">❌ ลูกน้องทำไม่ได้</div>
-                    <h4 style="color: var(--single);">🍵 2. Single</h4><p>ชงสด (10 วิ)</p>
+            <div class="station-panel">
+                <div id="busy-overlay">⏳ คุณกำลังติดสอนชา/จัดขนม...</div>
+                
+                <div class="station" style="border-color: var(--hot);" id="station-hot">
+                    <div class="station-header">
+                        <h4 style="color: var(--hot);">🫖 1. Hot Tea</h4>
+                        <p style="font-size: 8px; margin: 1px 0;">สต็อคชุดชา: <span id="hot-stock" style="font-size: 11px;">0</span>/3</p>
+                    </div>
+                    <div style="position:relative; margin-top:auto;">
+                        <button class="btn-action bg-hot" style="background: #e65100; margin-bottom: 2px; padding: 3px;" id="btn-hot-serve" onclick="serveHotTea()">สอน+เสิร์ฟ (5วิ)</button>
+                        <div class="progress-bar" id="prog-hot-serve" style="margin-bottom: 3px;"><div class="progress-fill" style="background: #e65100;" id="fill-hot-serve"></div></div>
+                        
+                        <button class="btn-action" style="background: #ffcc80; color: #d84315; font-size: 8px; padding: 3px;" id="btn-hot-prep" onclick="prepareHotTea()">จัดชุดชาล่วงหน้า (2วิ)</button>
+                        <div class="progress-bar" id="prog-hot-prep"><div class="progress-fill" style="background: #ffcc80;" id="fill-hot-prep"></div></div>
+                        
+                        <div class="helper-prog-bar" id="helper-prog-hot-prep"><div class="helper-prog-fill" id="helper-fill-hot-prep"></div></div>
+                        <div class="helper-prog-bar" id="helper-prog-hot-serve"><div class="helper-prog-fill" id="helper-fill-hot-serve"></div></div>
+                    </div>
                 </div>
-                <div class="machine-slots" id="single-slots"></div>
-                <div style="position:relative; margin-top:auto;">
-                    <button class="btn-action bg-single" id="btn-single" onclick="brewSingleTea()">กดชง 1 แก้ว</button>
-                </div>
-            </div>
 
-            <div class="station" style="border-color: var(--blended);" id="station-blended">
-                <div class="station-header">
-                    <button class="btn-assign" id="btn-assign-blended" onclick="assignHelper('blended')">🧑‍🍳 เรียกลูกน้องมานี่</button>
-                    <h4 style="color: var(--blended);">🧋 3. Blended</h4><p>ต้มชา (10 วิ)</p>
+                <div class="station" style="border-color: var(--single);" id="station-single">
+                    <div class="station-header">
+                        <h4 style="color: var(--single);">🍵 2. Single</h4><p>ชงสด (10 วิ)</p>
+                    </div>
+                    <div class="machine-slots" id="single-slots"></div>
+                    <div style="position:relative; margin-top:auto;">
+                        <button class="btn-action bg-single" id="btn-single" onclick="brewSingleTea()">ชงเอง (10วิ)</button>
+                    </div>
                 </div>
-                <div style="margin-top:auto; position:relative;">
-                    <div class="stock-indicator">สต็อค: <span id="blended-stock" style="font-size: 11px;">8</span>/8</div>
-                    <button class="btn-action bg-blended" id="btn-blend-pour" onclick="pourBlended()">เทเสิร์ฟ</button>
-                    <button class="btn-action" style="background: #ff9800; font-size: 8px; padding: 3px; opacity: 0.5;" id="btn-blend-refill" onclick="refillGallon()">บอสต้มชาเพิ่มเอง</button>
-                    <div class="progress-bar" id="prog-refill"><div class="progress-fill" style="background: #ff9800;" id="fill-refill"></div></div>
-                    
-                    <div class="helper-prog-bar" id="helper-prog-blended"><div class="helper-prog-fill" id="helper-fill-blended"></div></div>
-                </div>
-            </div>
 
-            <div class="station" style="border-color: var(--dessert);" id="station-dessert">
-                <div class="station-header">
-                    <button class="btn-assign" id="btn-assign-dessert" onclick="assignHelper('dessert')">🧑‍🍳 เรียกลูกน้องมานี่</button>
-                    <h4 style="color: var(--dessert);">🍰 4. Dessert</h4><p>จัดจาน (2 วิ)</p>
+                <div class="station" style="border-color: var(--blended);" id="station-blended">
+                    <div class="station-header">
+                        <h4 style="color: var(--blended);">🧋 3. Blended</h4><p>เท (0วิ) / ต้ม (10วิ)</p>
+                    </div>
+                    <div style="margin-top:auto; position:relative;">
+                        <div class="stock-indicator">สต็อค: <span id="blended-stock" style="font-size: 11px;">8</span>/8</div>
+                        <button class="btn-action bg-blended" id="btn-blend-pour" onclick="pourBlended()">เทเสิร์ฟ</button>
+                        <button class="btn-action" style="background: #ff9800; font-size: 8px; padding: 3px; opacity: 0.5;" id="btn-blend-refill" onclick="refillGallon()">ต้มชาเพิ่ม</button>
+                        <div class="progress-bar" id="prog-refill"><div class="progress-fill" style="background: #ff9800;" id="fill-refill"></div></div>
+                        
+                        <div class="helper-prog-bar" id="helper-prog-refill"><div class="helper-prog-fill" id="helper-fill-refill"></div></div>
+                        <div class="helper-prog-bar" id="helper-prog-pour"><div class="helper-prog-fill" id="helper-fill-pour"></div></div>
+                    </div>
                 </div>
-                <div style="position:relative; margin-top:auto;">
-                    <button class="btn-action bg-dessert" id="btn-dessert" onclick="doTask('dessert', 2000, 'btn-dessert')">เตรียมขนม</button>
-                    <div class="progress-bar" id="prog-dessert"><div class="progress-fill bg-dessert" id="fill-dessert"></div></div>
-                    
-                    <div class="helper-prog-bar" id="helper-prog-dessert"><div class="helper-prog-fill" id="helper-fill-dessert"></div></div>
+
+                <div class="station" style="border-color: var(--dessert);" id="station-dessert">
+                    <div class="station-header">
+                        <h4 style="color: var(--dessert);">🍰 4. Dessert</h4><p>จัดจาน (2 วิ)</p>
+                    </div>
+                    <div style="position:relative; margin-top:auto;">
+                        <button class="btn-action bg-dessert" id="btn-dessert" onclick="doTask('dessert', 2000, 'btn-dessert')">เตรียมขนม</button>
+                        <div class="progress-bar" id="prog-dessert"><div class="progress-fill bg-dessert" id="fill-dessert"></div></div>
+                        
+                        <div class="helper-prog-bar" id="helper-prog-dessert"><div class="helper-prog-fill" id="helper-fill-dessert"></div></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -222,7 +227,7 @@
 <div id="overlay-start" class="overlay">
     <img src="IMG_4511.jpeg" alt="Gimbocha Logo" class="shop-logo-top" onerror="this.style.display='none'">
     <h1 style="color: #fff;">Gimbocha KDS</h1>
-    <p>ระบบบัญชีผู้จัดการบาร์ (Manager Mode)</p>
+    <p>ระบบบัญชีผู้จัดการบาร์ (Auto-Helper)</p>
     
     <input type="tel" id="player-phone-input" class="input-name" placeholder="เบอร์โทรศัพท์ (ใช้จำสถิติ)" autocomplete="off" style="margin-bottom: 2px;">
     <input type="text" id="player-name-input" class="input-name" placeholder="ชื่อพนักงาน" autocomplete="off" style="margin-top: 2px;">
@@ -297,6 +302,15 @@
         return x - Math.floor(x);
     }
 
+    // 🟢 ระบบสุ่มเมนูอิงตาม Data ยอดขายจริง 🟢
+    function getRandomMenuType(seed) {
+        let rand = seededRandom(seed) * 100;
+        if (rand < 6) return 'hot';
+        if (rand < 24) return 'single'; // 6 + 18
+        if (rand < 76) return 'blended'; // 24 + 52
+        return 'dessert';
+    }
+
     let levels = [];
     function generateStandardLevels() {
         levelsConfig.forEach((config, idx) => {
@@ -307,9 +321,7 @@
                 let items = [];
                 for(let j=0; j < numItems; j++) {
                     let seed2 = idx * 1000 + i * 10 + j + 5678;
-                    const categories = Object.keys(menuDB);
-                    const typeIdx = Math.floor(seededRandom(seed2) * categories.length);
-                    const type = categories[typeIdx];
+                    const type = getRandomMenuType(seed2);
                     const nameIdx = Math.floor(seededRandom(seed2 + 1) * menuDB[type].length);
                     items.push({ type: type, name: menuDB[type][nameIdx], done: false, inProgress: false });
                 }
@@ -322,17 +334,21 @@
 
     let currentLevel = 0; let totalScore = 0; let levelScore = 0; 
     let spawnQueue = []; let activeOrders = []; 
-    let timeToNextSpawn = 0; let blendedStock = 8; let singleBrewSlots = 0; let globalTimer;
+    let timeToNextSpawn = 0; let blendedStock = 8; let globalTimer;
     let playerName = ""; let playerPhone = "";
     let levelWaitTimes = [];
     
     let isPlayerBusy = false; let isRefilling = false;
     let hotStock = 0; let isHotPrepping = false;
     
-    // 🟢 ระบบลูกน้อง (Helper System) 🟢
-    let currentHelperStation = 'none'; // 'none', 'hot', 'blended', 'dessert'
-    let isHelperBusy = false;
+    // 🟢 ระบบลูกน้อง AI ครบวงจร 🟢
+    let totalHelpers = 0;
+    let helpersBusy = 0;
     let helperTimer;
+    
+    // 🟢 ระบบจัดการหัวชง Single 🟢
+    let brewSlots = [false, false, false, false];
+    function getFreeSlot() { return brewSlots.findIndex(s => s === false); }
 
     const normalizePhone = (p) => String(p).replace(/\D/g, '').replace(/^0+/, '');
 
@@ -351,6 +367,32 @@
         }
     }
     initSingleSlots();
+
+    function updateSingleSlotsUI() {
+        for(let i=0; i<4; i++) {
+            let text = document.getElementById(`slot-text-${i+1}`);
+            let fill = document.getElementById(`slot-fill-${i+1}`);
+            if (brewSlots[i]) {
+                text.innerText = "ชง...";
+                fill.style.background = "var(--single)"; // ผู้เล่นหรือ AI ก็สีเดียวกัน
+            } else {
+                text.innerText = "ว่าง";
+                fill.style.width = "0%";
+                fill.style.transition = "none";
+            }
+        }
+    }
+
+    function setupHelpersForLevel() {
+        totalHelpers = 0;
+        if (currentLevel >= 2) totalHelpers = 1; // ด่าน 3
+        if (currentLevel >= 4) totalHelpers = 2; // ด่าน 5
+        if (currentLevel >= 6) totalHelpers = 3; // ด่าน 7
+        helpersBusy = 0;
+        
+        let statusText = totalHelpers > 0 ? `จำนวน ${totalHelpers} คน` : "กำลังรอด่านที่ 3...";
+        document.getElementById('helper-count-text').innerText = statusText;
+    }
 
     function initGame() {
         playerPhone = document.getElementById('player-phone-input').value.trim();
@@ -380,26 +422,17 @@
         let topPlayers = {};
         let myStats = {};
         for(let i=1; i<=10; i++) { topPlayers[i] = null; myStats[i] = null; }
-
         let cleanMyPhone = normalizePhone(playerPhone);
 
         try {
             const response = await fetch(GOOGLE_APP_SCRIPT_URL);
             const globalLb = await response.json();
-            
             globalLb.forEach(entry => {
                 let lvl = entry.level;
                 if(lvl >= 1 && lvl <= 10) {
-                    if(!topPlayers[lvl]) {
-                        topPlayers[lvl] = entry;
-                    } else {
-                        if (entry.score > topPlayers[lvl].score || (entry.score === topPlayers[lvl].score && entry.avgWait < topPlayers[lvl].avgWait)) {
-                            topPlayers[lvl] = entry;
-                        }
-                    }
-                    if(normalizePhone(entry.phone) === cleanMyPhone) {
-                        myStats[lvl] = entry;
-                    }
+                    if(!topPlayers[lvl]) { topPlayers[lvl] = entry; } 
+                    else { if (entry.score > topPlayers[lvl].score || (entry.score === topPlayers[lvl].score && entry.avgWait < topPlayers[lvl].avgWait)) { topPlayers[lvl] = entry; } }
+                    if(normalizePhone(entry.phone) === cleanMyPhone) { myStats[lvl] = entry; }
                 }
             });
         } catch (error) { console.error("ดึงข้อมูลไม่สำเร็จ"); }
@@ -412,14 +445,9 @@
             let myP = myStats[lvlNum];
             
             let topHtml = `<div class="stat-box champion" style="color:#aaa;">ยังไม่มีแชมป์</div>`;
-            if (topP) {
-                topHtml = `<div class="stat-box champion"><span style="color:#ffd54f;">👑 ${topP.name}</span><br>${topP.score}pts | ${topP.avgWait}m</div>`;
-            }
-
+            if (topP) { topHtml = `<div class="stat-box champion"><span style="color:#ffd54f;">👑 ${topP.name}</span><br>${topP.score}pts | ${topP.avgWait}m</div>`; }
             let myHtml = `<div class="stat-box" style="color:#aaa;">สถิติคุณ: ยังไม่เคยเล่น</div>`;
-            if (myP) {
-                myHtml = `<div class="stat-box"><span style="color:#4caf50;">👤 สถิติคุณ</span><br>${myP.score}pts | ${myP.avgWait}m</div>`;
-            }
+            if (myP) { myHtml = `<div class="stat-box"><span style="color:#4caf50;">👤 สถิติคุณ</span><br>${myP.score}pts | ${myP.avgWait}m</div>`; }
 
             let card = document.createElement('div');
             card.className = 'level-card';
@@ -433,44 +461,19 @@
     function backToLevelSelect() { document.getElementById('overlay-level-clear').classList.add('hidden'); showLevelSelection(); }
     function startNextLevel() { document.getElementById('overlay-level-clear').classList.add('hidden'); currentLevel++; startLevel(); }
 
-    // 🟢 ระบบเลือกประจำการลูกน้อง 🟢
-    function assignHelper(station) {
-        if(currentLevel < 4) { showFloatingScore("❌ ลูกน้องปลดล็อกด่าน 5!", `btn-assign-${station}`, true); return; }
-        
-        currentHelperStation = station;
-        
-        // อัปเดตปุ่ม UI
-        ['hot', 'blended', 'dessert'].forEach(st => {
-            let btn = document.getElementById(`btn-assign-${st}`);
-            if(st === station) {
-                btn.classList.add('active'); btn.innerText = '🧑‍🍳 ยืนประจำการที่นี่!';
-            } else {
-                btn.classList.remove('active'); btn.innerText = '🧑‍🍳 เรียกลูกน้องมานี่';
-            }
-        });
-    }
-
     function startLevel() {
         document.getElementById('level-display').innerText = levels[currentLevel].title;
         document.getElementById('no-order-msg').classList.add('hidden');
         
         spawnQueue = JSON.parse(JSON.stringify(levels[currentLevel].orders));
-        activeOrders = []; timeToNextSpawn = 0; blendedStock = 8; singleBrewSlots = 0;
+        activeOrders = []; timeToNextSpawn = 0; blendedStock = 8; 
+        brewSlots = [false, false, false, false]; updateSingleSlotsUI();
         levelScore = 0; levelWaitTimes = [];
         
         isPlayerBusy = false; isRefilling = false;
         hotStock = 0; isHotPrepping = false;
         
-        // รีเซ็ตลูกน้อง
-        currentHelperStation = 'none'; isHelperBusy = false;
-        ['hot', 'blended', 'dessert'].forEach(st => {
-            let btn = document.getElementById(`btn-assign-${st}`);
-            if(btn) { 
-                btn.classList.remove('active'); btn.innerText = '🧑‍🍳 เรียกลูกน้องมานี่'; 
-                btn.style.display = (currentLevel >= 4) ? 'block' : 'none'; // ด่าน 5 ขึ้นไปถึงจะเห็นปุ่ม
-            }
-        });
-        
+        setupHelpersForLevel();
         updateUI(); document.getElementById('tickets-container').innerHTML = ""; 
 
         clearInterval(globalTimer);
@@ -492,45 +495,129 @@
                 }
             }
             activeOrders.forEach(order => { order.timeLeft--; });
-            
             updateTimersUI(); checkLevelCompletion();
         }, 1000);
 
-        // 🟢 วงจรสมองกลของลูกน้อง (AI Helper Loop) 🟢
+        // 🤖 ระบบสมองกลลูกน้อง (AI Loop) 🤖
         clearInterval(helperTimer);
         helperTimer = setInterval(() => {
-            if (currentHelperStation !== 'none' && !isHelperBusy) {
-                // ถ้าแกลลอนหมด ลูกน้องจะยืนงง ไม่ยอมต้ม
-                if (currentHelperStation === 'blended' && blendedStock <= 0) return;
+            if (helpersBusy >= totalHelpers || activeOrders.length === 0) return;
 
-                // ลูกน้องก็ติดกฎ WIP Limit 3 บิลเหมือนกัน
-                let claim = findAndClaimItem(currentHelperStation, false); 
-                
-                if (claim) {
-                    isHelperBusy = true;
-                    let duration = 0;
-                    
-                    if (currentHelperStation === 'hot') duration = 9000; // ลูกน้องทำรวดเดียว 9 วิ
-                    else if (currentHelperStation === 'dessert') duration = 4000; // ลูกน้องช้ากว่าบอส (4 วิ)
-                    else if (currentHelperStation === 'blended') duration = 2000; // ลูกน้องเทชา 2 วิ
+            let pendingWIP = activeOrders.filter(o => o.status !== 'ready').slice(0, 5); // WIP 5 บิล
+            if (pendingWIP.length === 0) return;
 
-                    let progBar = document.getElementById(`helper-prog-${currentHelperStation}`);
-                    let fill = document.getElementById(`helper-fill-${currentHelperStation}`);
-                    if(progBar) {
-                        progBar.style.display = 'block';
-                        fill.style.transition = 'none'; fill.style.width = '0%';
-                        setTimeout(() => { fill.style.transition = `width ${duration}ms linear`; fill.style.width = '100%'; }, 50);
+            let needBlended = false;
+            let needHot = 0;
+            pendingWIP.forEach(o => o.items.forEach(i => {
+                if (i.type === 'blended' && !i.done && !i.inProgress) needBlended = true;
+                if (i.type === 'hot' && !i.done && !i.inProgress) needHot++;
+            }));
+
+            // 1. งานระบบ: ต้มชา (AI ต้ม 12 วิ)
+            if (needBlended && blendedStock <= 2 && !isRefilling) {
+                assignHelperToSystemTask('refill', 12000); return;
+            }
+            
+            // 2. งานระบบ: จัดชุดชาร้อน (AI จัด 4 วิ)
+            if (needHot > hotStock && hotStock < 3 && !isHotPrepping) {
+                assignHelperToSystemTask('hot-prep', 4000); return;
+            }
+
+            // 3. งานออเดอร์: หาของทำจากซ้ายไปขวา (บิลเก่าไปใหม่)
+            for (let order of pendingWIP) {
+                for (let i = 0; i < order.items.length; i++) {
+                    let item = order.items[i];
+                    if (!item.done && !item.inProgress) {
+                        
+                        if (item.type === 'single') {
+                            let slotIdx = getFreeSlot();
+                            if (slotIdx > -1) {
+                                claimItemVisual(order.id, i);
+                                assignHelperToItem(order.id, i, 'single', 12000, slotIdx); // AI ชง 12 วิ
+                                return;
+                            }
+                        } else if (item.type === 'hot' && hotStock > 0) {
+                            claimItemVisual(order.id, i);
+                            assignHelperToItem(order.id, i, 'hot', 7000, -1); // AI สอน 7 วิ
+                            return;
+                        } else if (item.type === 'blended' && blendedStock > 0) {
+                            claimItemVisual(order.id, i);
+                            assignHelperToItem(order.id, i, 'blended', 2000, -1); // AI เท 2 วิ
+                            return;
+                        } else if (item.type === 'dessert') {
+                            claimItemVisual(order.id, i);
+                            assignHelperToItem(order.id, i, 'dessert', 4000, -1); // AI จัด 4 วิ
+                            return;
+                        }
                     }
-
-                    setTimeout(() => {
-                        completeItem(claim.orderId, claim.itemIndex);
-                        isHelperBusy = false;
-                        if(progBar) progBar.style.display = 'none';
-                        if(currentHelperStation === 'blended') { blendedStock--; updateUI(); }
-                    }, duration);
                 }
             }
-        }, 500); // AI ประเมินสถานการณ์ทุกครึ่งวินาที
+        }, 500);
+    }
+
+    function claimItemVisual(orderId, itemIndex) {
+        let order = activeOrders.find(o => o.id === orderId);
+        if(order) order.items[itemIndex].inProgress = true;
+        let itemEl = document.getElementById(`item-${orderId}-${itemIndex}`);
+        if(itemEl) itemEl.classList.add('in-progress-helper');
+    }
+
+    // ฟังก์ชันสั่ง AI ทำงานระบบ (ไม่มีผูกกับออเดอร์เฉพาะเจาะจง)
+    function assignHelperToSystemTask(taskType, duration) {
+        helpersBusy++; updateUI();
+        if (taskType === 'refill') {
+            isRefilling = true;
+            showFloatingScore("🧑‍🍳 ลูกน้องต้มชา!", 'station-blended');
+            let prog = document.getElementById('helper-prog-refill');
+            let fill = document.getElementById('helper-fill-refill');
+            prog.style.display = 'block'; fill.style.transition = 'none'; fill.style.width = '0%';
+            setTimeout(() => { fill.style.transition = `width ${duration}ms linear`; fill.style.width = '100%'; }, 50);
+
+            setTimeout(() => { isRefilling = false; blendedStock = 8; helpersBusy--; prog.style.display = 'none'; updateUI(); }, duration);
+        } else if (taskType === 'hot-prep') {
+            isHotPrepping = true;
+            showFloatingScore("🧑‍🍳 ลูกน้องจัดชุดชา!", 'station-hot');
+            let prog = document.getElementById('helper-prog-hot-prep');
+            let fill = document.getElementById('helper-fill-hot-prep');
+            prog.style.display = 'block'; fill.style.transition = 'none'; fill.style.width = '0%';
+            setTimeout(() => { fill.style.transition = `width ${duration}ms linear`; fill.style.width = '100%'; }, 50);
+
+            setTimeout(() => { isHotPrepping = false; hotStock++; helpersBusy--; prog.style.display = 'none'; updateUI(); }, duration);
+        }
+    }
+
+    // ฟังก์ชันสั่ง AI ทำออเดอร์
+    function assignHelperToItem(orderId, itemIndex, type, duration, slotIdx) {
+        helpersBusy++; updateUI();
+        let stationId = '';
+        let progId = '';
+
+        if (type === 'single') { stationId = 'station-single'; brewSlots[slotIdx] = true; updateSingleSlotsUI(); showFloatingScore("🧑‍🍳 ลูกน้องชง Single!", stationId); } 
+        else if (type === 'hot') { stationId = 'station-hot'; hotStock--; showFloatingScore("🧑‍🍳 ลูกน้องเสิร์ฟร้อน!", stationId); progId = 'helper-prog-hot-serve'; } 
+        else if (type === 'blended') { stationId = 'station-blended'; blendedStock--; showFloatingScore("🧑‍🍳 ลูกน้องเทน้ำ!", stationId); progId = 'helper-prog-pour'; } 
+        else if (type === 'dessert') { stationId = 'station-dessert'; showFloatingScore("🧑‍🍳 ลูกน้องจัดขนม!", stationId); progId = 'helper-prog-dessert'; }
+
+        // แอนิเมชั่นเกจของลูกน้อง
+        if(progId) {
+            let prog = document.getElementById(progId);
+            let fill = prog.querySelector('.helper-prog-fill');
+            prog.style.display = 'block'; fill.style.transition = 'none'; fill.style.width = '0%';
+            setTimeout(() => { fill.style.transition = `width ${duration}ms linear`; fill.style.width = '100%'; }, 50);
+            setTimeout(() => { prog.style.display = 'none'; }, duration);
+        }
+
+        // กรณี Single (ใช้เกจเดิมของ Slot)
+        if(type === 'single') {
+            let fill = document.getElementById(`slot-fill-${slotIdx+1}`);
+            fill.style.transition = 'none'; fill.style.width = '0%';
+            setTimeout(() => { fill.style.transition = `width ${duration}ms linear`; fill.style.width = '100%'; }, 50);
+        }
+
+        setTimeout(() => {
+            completeItem(orderId, itemIndex);
+            if (type === 'single') { brewSlots[slotIdx] = false; updateSingleSlotsUI(); }
+            helpersBusy--; updateUI();
+        }, duration);
     }
 
     function appendTicketToDOM(order) {
@@ -547,19 +634,14 @@
         div.innerHTML = html; container.appendChild(div);
         document.getElementById('order-count-badge').innerText = `รอพ่น: ${spawnQueue.length}`;
         document.getElementById('active-count-badge').innerText = `บนจอ: ${activeOrders.length}`;
-        updateWIPHighlight(); // อัปเดตกรอบแสง
+        updateWIPHighlight();
     }
 
-    // 🟢 ระบบจัดการขอบเขต WIP Limit (ทำได้แค่ 3 บิลแรก) 🟢
+    // 🚧 ระบบจัดกรอบแสง WIP (5 บิลแรก)
     function updateWIPHighlight() {
         let pendingOrders = activeOrders.filter(o => o.status !== 'ready');
-        activeOrders.forEach(o => {
-            let el = document.getElementById(`ticket-${o.id}`);
-            if(el) el.classList.remove('wip-active');
-        });
-        
-        // ไฮไลท์แค่ 3 บิลแรกที่ยังไม่พร้อมเสิร์ฟ
-        for(let i=0; i<Math.min(3, pendingOrders.length); i++) {
+        activeOrders.forEach(o => { let el = document.getElementById(`ticket-${o.id}`); if(el) el.classList.remove('wip-active'); });
+        for(let i=0; i<Math.min(5, pendingOrders.length); i++) {
             let el = document.getElementById(`ticket-${pendingOrders[i].id}`);
             if(el) el.classList.add('wip-active');
         }
@@ -586,38 +668,31 @@
         updateWIPHighlight();
     }
 
-    // 🟢 ฟังก์ชันค้นหาออเดอร์ ที่ล็อคไว้ให้ค้นเฉพาะใน 3 บิลแรกเท่านั้น (WIP Limit) 🟢
-    function findAndClaimItem(type, isPlayer = true) {
+    // 🟢 ผู้เล่นค้นหาออเดอร์ในขอบเขต 5 บิล 🟢
+    function findAndClaimItem(type) {
         let pendingOrders = activeOrders.filter(o => o.status !== 'ready');
-        let wipOrders = pendingOrders.slice(0, 3); // ขอบเขต WIP Limit คือ 3 บิลแรก
+        let wipOrders = pendingOrders.slice(0, 5);
 
-        // ค้นหาในโซน WIP ก่อน
         for (let order of wipOrders) {
             for (let i = 0; i < order.items.length; i++) {
                 let item = order.items[i];
                 if (item.type === type && !item.done && !item.inProgress) {
                     item.inProgress = true;
                     let itemEl = document.getElementById(`item-${order.id}-${i}`);
-                    if(itemEl) itemEl.classList.add(isPlayer ? 'in-progress' : 'in-progress-helper');
+                    if(itemEl) itemEl.classList.add('in-progress');
                     return { orderId: order.id, itemIndex: i, isWIP: true };
                 }
             }
         }
         
-        // ถ้าเป็นผู้เล่นกด แล้วไม่เจอใน WIP ให้ลองแอบดูบิลที่ 4+ ว่ามีไหม (เพื่อเอามาลงโทษ)
-        if (isPlayer) {
-            let outOfBoundsOrders = pendingOrders.slice(3);
-            for (let order of outOfBoundsOrders) {
-                for (let i = 0; i < order.items.length; i++) {
-                    let item = order.items[i];
-                    if (item.type === type && !item.done && !item.inProgress) {
-                        return { isWIP: false }; // เจอในบิลที่อยู่นอกโควต้า!
-                    }
-                }
+        let outOfBoundsOrders = pendingOrders.slice(5);
+        for (let order of outOfBoundsOrders) {
+            for (let i = 0; i < order.items.length; i++) {
+                let item = order.items[i];
+                if (item.type === type && !item.done && !item.inProgress) return { isWIP: false }; 
             }
         }
-
-        return null; // ไม่มีออเดอร์นี้บนจอเลย
+        return null; 
     }
 
     function completeItem(orderId, itemIndex) {
@@ -659,115 +734,96 @@
         updateUI(); updateTimersUI(); checkLevelCompletion();
     }
 
-    // 🟢 ระบบจัดการ Penalty เมื่อผิด WIP Limit 🟢
     function handlePlayerActionClick(type, btnId) {
-        let claim = findAndClaimItem(type, true);
-        
+        let claim = findAndClaimItem(type);
         if (!claim) { 
             showFloatingScore("❌ ไม่มีออเดอร์!", btnId, true); 
             levelScore = Math.max(0, levelScore - 5); totalScore = Math.max(0, totalScore - 5);
             updateUI(); return false; 
         }
-        
         if (!claim.isWIP) {
-            showFloatingScore("❌ ลัดคิว! ทำ 3 บิลแรกก่อน", btnId, true); 
+            showFloatingScore("❌ ลัดคิว! ทำ 5 บิลแรกก่อน", btnId, true); 
             levelScore = Math.max(0, levelScore - 5); totalScore = Math.max(0, totalScore - 5);
             updateUI(); return false; 
         }
-        
-        return claim; // ผ่านเงื่อนไข ทำได้!
+        return claim; 
     }
 
     function prepareHotTea() {
         if (isPlayerBusy || isHotPrepping || hotStock >= 3) return;
-        
         let pendingHot = 0;
-        let wipOrders = activeOrders.filter(o => o.status !== 'ready').slice(0, 3);
-        wipOrders.forEach(order => {
-            order.items.forEach(item => { if(item.type === 'hot' && !item.done) pendingHot++; });
-        });
+        let wipOrders = activeOrders.filter(o => o.status !== 'ready').slice(0, 5);
+        wipOrders.forEach(order => { order.items.forEach(item => { if(item.type === 'hot' && !item.done && !item.inProgress) pendingHot++; }); });
 
         if (hotStock >= pendingHot) {
-            showFloatingScore("❌ จัดเกินโควต้า 3 บิลแรก!", 'btn-hot-prep', true);
+            showFloatingScore("❌ จัดเกินโควต้า 5 บิลแรก!", 'btn-hot-prep', true);
             levelScore = Math.max(0, levelScore - 5); totalScore = Math.max(0, totalScore - 5);
             updateUI(); return;
         }
 
+        showFloatingScore("⭐ เตรียมของดี! +5", 'btn-hot-prep'); levelScore += 5; totalScore += 5; 
         isHotPrepping = true; updateUI();
         const progBar = document.getElementById('prog-hot-prep'), fill = document.getElementById('fill-hot-prep');
         progBar.style.display = 'block'; fill.style.transition = 'none'; fill.style.width = '0%';
-        
         setTimeout(() => { fill.style.transition = `width 2000ms linear`; fill.style.width = '100%'; }, 50);
         setTimeout(() => { isHotPrepping = false; progBar.style.display = 'none'; hotStock++; updateUI(); }, 2000);
     }
 
     function serveHotTea() {
         if (hotStock <= 0 || isPlayerBusy) return;
-        
         let claim = handlePlayerActionClick('hot', 'btn-hot-serve');
         if(!claim) return;
 
-        hotStock--;
-        isPlayerBusy = true; updateUI();
+        showFloatingScore("⭐ เสิร์ฟเอง! +10", 'btn-hot-serve'); levelScore += 10; totalScore += 10; 
+        hotStock--; isPlayerBusy = true; updateUI();
         const progBar = document.getElementById('prog-hot-serve'), fill = document.getElementById('fill-hot-serve');
         progBar.style.display = 'block'; fill.style.transition = 'none'; fill.style.width = '0%';
-        
         setTimeout(() => { fill.style.transition = `width 5000ms linear`; fill.style.width = '100%'; }, 50);
-        setTimeout(() => { 
-            isPlayerBusy = false; progBar.style.display = 'none'; updateUI();
-            completeItem(claim.orderId, claim.itemIndex); 
-        }, 5000);
+        setTimeout(() => { isPlayerBusy = false; progBar.style.display = 'none'; updateUI(); completeItem(claim.orderId, claim.itemIndex); }, 5000);
     }
 
     function brewSingleTea() {
-        if (isPlayerBusy || singleBrewSlots >= 4) return; 
-        
+        if (isPlayerBusy) return; 
+        let slotIdx = getFreeSlot();
+        if(slotIdx === -1) return;
+
         let claim = handlePlayerActionClick('single', 'btn-single');
         if(!claim) return;
 
-        singleBrewSlots++; const currentSlot = singleBrewSlots;
-        const fill = document.getElementById(`slot-fill-${currentSlot}`), text = document.getElementById(`slot-text-${currentSlot}`), btn = document.getElementById('btn-single');
-        text.innerText = "ชง..."; fill.style.transition = 'none'; fill.style.width = '0%'; 
-        if(singleBrewSlots >= 4) btn.disabled = true;
-        
+        showFloatingScore("⭐ ชงเอง! +10", 'btn-single'); levelScore += 10; totalScore += 10;
+        brewSlots[slotIdx] = true; updateSingleSlotsUI();
+        const fill = document.getElementById(`slot-fill-${slotIdx+1}`);
+        fill.style.transition = 'none'; fill.style.width = '0%'; 
         setTimeout(() => { fill.style.transition = `width 10000ms linear`; fill.style.width = '100%'; }, 50);
-        setTimeout(() => { 
-            singleBrewSlots--; text.innerText = "ว่าง"; fill.style.transition = 'none'; fill.style.width = '0%'; 
-            completeItem(claim.orderId, claim.itemIndex); 
-        }, 10000);
+        
+        setTimeout(() => { brewSlots[slotIdx] = false; updateSingleSlotsUI(); completeItem(claim.orderId, claim.itemIndex); }, 10000);
         updateUI();
     }
 
     function doTask(type, duration, btnId) {
         if (isPlayerBusy) return;
-        
         let claim = handlePlayerActionClick(type, btnId);
         if(!claim) return;
 
+        showFloatingScore("⭐ ลุยเอง! +10", btnId); levelScore += 10; totalScore += 10; 
         isPlayerBusy = true; updateUI();
         const progBar = document.getElementById(`prog-${type}`), fill = document.getElementById(`fill-${type}`);
         progBar.style.display = 'block'; fill.style.transition = 'none'; fill.style.width = '0%';
-        
         setTimeout(() => { fill.style.transition = `width ${duration}ms linear`; fill.style.width = '100%'; }, 50);
-        setTimeout(() => { 
-            isPlayerBusy = false; progBar.style.display = 'none'; updateUI();
-            completeItem(claim.orderId, claim.itemIndex); 
-        }, duration);
+        setTimeout(() => { isPlayerBusy = false; progBar.style.display = 'none'; updateUI(); completeItem(claim.orderId, claim.itemIndex); }, duration);
     }
 
     function pourBlended() { 
         if (isPlayerBusy) return;
-        
         let claim = handlePlayerActionClick('blended', 'btn-blend-pour');
         if(!claim) return;
-        
         if (blendedStock <= 0) { 
             showFloatingScore("❌ แกลลอนหมด!", 'btn-blend-pour', true); 
             let order = activeOrders.find(o => o.id === claim.orderId);
             if(order) order.items[claim.itemIndex].inProgress = false;
             return; 
         } 
-
+        showFloatingScore("⭐ เทน้ำ! +5", 'btn-blend-pour'); levelScore += 5; totalScore += 5; 
         blendedStock--; updateUI(); completeItem(claim.orderId, claim.itemIndex); 
     }
 
@@ -775,6 +831,7 @@
         if (isPlayerBusy || isRefilling) return;
         if (blendedStock > 2) { showFloatingScore("❌ รอให้เหลือ <= 2 ก่อน", 'btn-blend-refill', true); return; }
         
+        showFloatingScore("⭐ เตรียมของดี! +10", 'btn-blend-refill'); levelScore += 10; totalScore += 10; 
         isRefilling = true; updateUI();
         const progBar = document.getElementById('prog-refill'), fill = document.getElementById('fill-refill');
         progBar.style.display = 'block'; fill.style.transition = 'none'; fill.style.width = '0%';
@@ -791,6 +848,14 @@
         document.getElementById('hot-stock').innerText = hotStock; 
         document.getElementById('hot-stock').style.color = hotStock === 0 ? 'var(--danger)' : 'var(--hot)';
         
+        if(totalHelpers > 0) {
+            document.getElementById('global-helper-status').style.display = 'flex';
+            document.getElementById('helper-count-text').innerText = `ว่าง ${totalHelpers - helpersBusy} / ${totalHelpers} คน`;
+            document.getElementById('helper-count-text').style.color = (helpersBusy >= totalHelpers) ? 'var(--danger)' : '#1565c0';
+        } else {
+            document.getElementById('global-helper-status').style.display = 'none';
+        }
+
         const overlay = document.getElementById('busy-overlay');
         if (isPlayerBusy) { overlay.style.display = 'flex'; } else { overlay.style.display = 'none'; }
 
@@ -811,7 +876,7 @@
         else { btnDessert.disabled = false; btnDessert.style.opacity = '1'; }
 
         const btnSingle = document.getElementById('btn-single');
-        if (singleBrewSlots >= 4 || isPlayerBusy) { btnSingle.disabled = true; } else { btnSingle.disabled = false; }
+        if (getFreeSlot() === -1 || isPlayerBusy) { btnSingle.disabled = true; } else { btnSingle.disabled = false; }
     }
 
     function checkLevelCompletion() {
@@ -906,11 +971,8 @@
             }
             
             document.getElementById('action-buttons').classList.remove('hidden');
-            if(lvlNum < levels.length) {
-                document.getElementById('btn-continue').classList.remove('hidden');
-            } else {
-                document.getElementById('btn-continue').classList.add('hidden'); 
-            }
+            if(lvlNum < levels.length) { document.getElementById('btn-continue').classList.remove('hidden'); } 
+            else { document.getElementById('btn-continue').classList.add('hidden'); }
         } catch (error) { 
             listDiv.innerHTML = "<div style='text-align:center; padding: 15px; color: var(--danger); font-size:10px;'>❌ เชื่อมต่อไม่ได้ (ออฟไลน์)</div>"; 
             document.getElementById('action-buttons').classList.remove('hidden');
@@ -919,18 +981,10 @@
 
     function showFloatingScore(text, targetId, isPenalty = false) {
         const target = document.getElementById(targetId); if(!target) return;
-        const floatEl = document.createElement('div'); 
-        floatEl.className = 'score-popup'; 
-        floatEl.innerText = text; 
-        
-        if(isPenalty) {
-            floatEl.style.color = 'var(--danger)'; 
-            floatEl.style.borderColor = 'var(--danger)';
-        } else {
-            floatEl.style.color = 'var(--success)'; 
-            floatEl.style.borderColor = 'var(--success)';
-        }
-        
+        const floatEl = document.createElement('div'); floatEl.className = 'score-popup'; floatEl.innerText = text; 
+        if(isPenalty) { floatEl.style.color = 'var(--danger)'; floatEl.style.borderColor = 'var(--danger)'; } 
+        else { floatEl.style.color = 'var(--success)'; floatEl.style.borderColor = 'var(--success)'; }
+        const randX = Math.floor(Math.random() * 40) - 20; floatEl.style.left = `calc(50% + ${randX}px)`; floatEl.style.top = '10%'; 
         target.appendChild(floatEl); setTimeout(() => floatEl.remove(), 1200);
     }
 </script>
