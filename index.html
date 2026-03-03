@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Gimbocha KDS - Hardcore Manager</title>
+    <title>Gimbocha KDS - Realistic Pacing</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root { --brand: #8c5b3e; --bg: #1a1a1a; --hot: #e65100; --single: #c62828; --blended: #2e7d32; --dessert: #fbc02d; --success: #4caf50; --danger: #f44336; --wip: #e3f2fd; }
@@ -14,7 +14,7 @@
         .game-container { display: flex; flex-direction: column; flex-grow: 1; overflow: hidden; }
         .order-panel-wrapper { display: flex; flex: 1; overflow: hidden; border-bottom: 2px solid #ccc; }
         
-        /* 🟢 โซนออเดอร์ขยายใหญ่สุดๆ 🟢 */
+        /* โซนออเดอร์ใหญ่ 75% */
         .order-panel { flex: 1; padding: 4px 6px; background: #eceff1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
         .order-header { font-size: 11px; font-weight: bold; color: #333; margin-bottom: 3px; display: flex; justify-content: space-between; align-items: center;}
         
@@ -25,7 +25,7 @@
 
         .ticket { background: white; border: 2px solid #ddd; padding: 4px; border-radius: 6px; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); min-width: 135px; max-width: 135px; flex-shrink: 0; display: flex; flex-direction: column; max-height: 100%; overflow-y: auto; position: relative; transition: 0.3s; animation: popInOrder 0.3s forwards; }
         
-        /* 🚧 สไตล์ WIP Limit (5 บิลแรก) 🚧 */
+        /* WIP Limit (5 บิลแรก) */
         .ticket.wip-active { border-color: #2196f3; box-shadow: 0 0 8px rgba(33, 150, 243, 0.4); background: #fafcff; }
         .ticket.ready { background: #e8f5e9; border-color: var(--success) !important; box-shadow: none;}
         .ticket.ready h3 { color: var(--success) !important; border-bottom-color: var(--success); }
@@ -47,19 +47,19 @@
         .serve-btn:active { transform: translateY(3px); box-shadow: 0 0 0 #2e7d32; }
         .serve-btn.disabled { background: #9e9e9e; box-shadow: 0 3px 0 #616161; cursor: not-allowed; opacity: 0.7;}
         
-        /* 🟢 บีบแผงควบคุมให้เหลือแค่ 1/4 ของจอ (22-25vh) 🟢 */
+        /* บีบแผงควบคุมให้เหลือแค่ 1/4 ของจอ */
         .station-panel-wrapper { display: flex; flex-direction: column; flex: 0 0 23vh; background: #fff;}
         
         .station-panel { flex: 1; padding: 2px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; position: relative;}
         #busy-overlay { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.7); z-index: 20; justify-content: center; align-items: center; font-weight: bold; color: var(--danger); font-size: 10px; text-shadow: 1px 1px white; border-radius: 4px;}
 
-        /* 🟢 ย่อส่วนประกอบใน Station 🟢 */
+        /* ย่อส่วนประกอบใน Station */
         .station { background: #f9f9f9; border: 1px solid #ddd; padding: 2px; border-radius: 3px; text-align: center; display: flex; flex-direction: column; justify-content: flex-start; position: relative;}
         .station-header { border-bottom: 1px solid #eee; padding-bottom: 1px; margin-bottom: 1px; }
         .station h4 { margin: 0 0 1px 0; font-size: 8px; }
         .station p { font-size: 6px; margin: 0; color: #666; }
 
-        /* 🟢 ย่อกล่องลากลูกน้องให้เล็กที่สุด 🟢 */
+        /* ย่อกล่องลากลูกน้องให้เล็กที่สุด */
         .helper-dropzone { min-height: 16px; background: rgba(0,0,0,0.03); border: 1px dashed #ccc; border-radius: 3px; display: flex; gap: 1px; padding: 1px; justify-content: center; align-items: center; margin: 1px 0; flex-wrap: wrap;}
         .helper-dropzone.drag-over { background: rgba(33, 150, 243, 0.2); border-color: #2196f3; }
         
@@ -67,7 +67,7 @@
         .helper-token:active { cursor: grabbing; transform: scale(1.1); }
         .helper-token.dragging { position: fixed; pointer-events: none; opacity: 0.9; transform: scale(1.3); z-index: 9999; box-shadow: 0 3px 10px rgba(0,0,0,0.5);}
 
-        /* 🟢 ย่อปุ่ม Action 🟢 */
+        /* ย่อปุ่ม Action */
         .btn-action { width: 100%; padding: 2px; border: none; border-radius: 3px; font-family: inherit; font-size: 7.5px; font-weight: bold; cursor: pointer; color: white; transition: 0.1s; margin-top: 1px; position: relative;}
         .btn-action:disabled { background: #ccc !important; cursor: not-allowed; transform: none;}
         .btn-action:active:not(:disabled) { transform: scale(0.92); }
@@ -77,7 +77,7 @@
         .slot-fill { height: 100%; width: 0%; transition: width linear; }
         .slot-text { position: absolute; width: 100%; text-align: center; font-size: 4px; color: white; line-height: 4px; font-weight: bold; top: 0; text-shadow: 0px 0px 1px rgba(0,0,0,0.8); }
         
-        /* 🟢 ย่อเกจความคืบหน้า 🟢 */
+        /* ย่อเกจความคืบหน้า */
         .progress-bar { width: 100%; height: 3px; background: #eee; border-radius: 1px; margin-top: 1px; overflow: hidden; display: none; }
         .progress-fill { width: 0%; height: 100%; transition: width linear; }
         
@@ -241,7 +241,7 @@
 <div id="overlay-start" class="overlay">
     <img src="IMG_4511.jpeg" alt="Gimbocha Logo" class="shop-logo-top" onerror="this.style.display='none'">
     <h1 style="color: #fff;">Gimbocha KDS</h1>
-    <p>ระบบบัญชีผู้จัดการบาร์ (Manager Mode)</p>
+    <p>ระบบบัญชีผู้จัดการบาร์ (Hardcore Mode)</p>
     
     <input type="tel" id="player-phone-input" class="input-name" placeholder="เบอร์โทรศัพท์ (ใช้จำสถิติ)" autocomplete="off" style="margin-bottom: 2px;">
     <input type="text" id="player-name-input" class="input-name" placeholder="ชื่อพนักงาน" autocomplete="off" style="margin-top: 2px;">
@@ -373,9 +373,8 @@
     let levelWaitTimes = [];
     
     let isPlayerBusy = false; let isRefilling = false;
-    let hotStock = 0; let isHotPrepping = false; // ถึงจะไม่ต้องเตรียมแล้ว แต่แอบเก็บไว้เผื่อขยายอนาคต
     
-    // 🟢 ระบบจัดการลูกน้อง 1 คน 🟢
+    // 🟢 ระบบจัดการลูกน้อง 1 คน (Hardcore Mode) 🟢
     let totalHelpers = 0;
     let helperAssignments = []; 
     let activeHelpers = { hot: 0, single: 0, blended: 0, dessert: 0 }; 
@@ -486,10 +485,10 @@
 
     let dragObj = { id: null, el: null };
 
-    // 🟢 ระบบลูกน้อง 1 คน Default ที่สเตชั่นขนม 🟢
+    // 🟢 ให้ลูกน้องแค่ 1 คน เริ่มต้นที่ขนม 🟢
     function setupHelpersForLevel() {
         totalHelpers = 0;
-        if (currentLevel >= 2) totalHelpers = 1; // ตั้งแต่ด่าน 3 ได้ 1 คนตลอดกาล
+        if (currentLevel >= 2) totalHelpers = 1; // ด่าน 3 เป็นต้นไปให้แค่ 1 คน
         
         helperAssignments = Array(totalHelpers).fill('dessert'); // เริ่มต้นที่ Dessert
         activeHelpers = { hot: 0, single: 0, blended: 0, dessert: 0 };
@@ -499,7 +498,7 @@
 
     function renderHelpers() {
         document.querySelectorAll('.helper-dropzone').forEach(dz => dz.innerHTML = '');
-        document.querySelectorAll('body > .helper-token').forEach(el => el.remove()); // แก้บัคลูกน้องค้างขอบจอ
+        document.querySelectorAll('body > .helper-token').forEach(el => el.remove()); 
 
         helperAssignments.forEach((station, idx) => {
             let token = document.createElement('div');
@@ -584,20 +583,20 @@
         brewSlots = [false, false, false, false]; updateSingleSlotsUI();
         levelScore = 0; levelWaitTimes = [];
         
-        isPlayerBusy = false; isRefilling = false; hotStock = 0;
+        isPlayerBusy = false; isRefilling = false;
         
         setupHelpersForLevel();
         updateUI(); document.getElementById('tickets-container').innerHTML = ""; 
         clearInterval(globalTimer); clearInterval(helperTimer);
 
         if (currentLevel === 0) {
-            showTutorial("🚨 กฎการคุมบาร์เบื้องต้น", "<ul><li><b>WIP Limit (5 บิล):</b> ทำออเดอร์ได้เฉพาะ <b>5 บิลแรกสุด</b> เท่านั้น (กรอบสีฟ้า)</li><li><b>ห้ามลัดคิว:</b> ทำบิลนอกโควต้า โดนหักคะแนน ❌-5</li><li><b>Single Iced (ชงไว):</b> บอสชงเองใช้เวลา <b>8 วิ</b></li><li><b>ชาร้อน:</b> ใช้เวลาสอนชง 7 วินาที (ระวังโดนล็อกตัว!)</li><li><b>เวลาแบบ Dynamic:</b> บิลไหนสั่งเยอะ จะได้เวลาทำเยอะขึ้น! ใจเย็นๆ แล้วลุย!</li></ul>");
+            showTutorial("🚨 กฎการคุมบาร์เบื้องต้น", "<ul><li><b>WIP Limit (5 บิล):</b> ทำออเดอร์ได้เฉพาะ <b>5 บิลแรกสุด</b> เท่านั้น (กรอบสีฟ้า)</li><li><b>ห้ามลัดคิว:</b> ทำบิลนอกโควต้า โดนหักคะแนน ❌-5</li><li><b>Single Iced (ชงไว):</b> บอสชงเองใช้เวลา <b>8 วิ</b></li><li><b>ชาร้อน:</b> ใช้เวลาสอนชง 7 วินาที (ระวังโดนล็อกตัว!)</li><li><b>บิลมาทีละคิว:</b> บิลใหม่จะเด้งมาเรื่อยๆ (เหมือนลูกค้าเดินเข้าร้าน)</li></ul>");
         } else if (currentLevel === 2) {
-            showTutorial("🎉 ปลดล็อกผู้ช่วย 1 คน!", "<p>คุณจะได้ผู้ช่วย 1 คน (และมีแค่คนเดียวตลอดเกม!)</p><ul><li><b>ลาก & วาง:</b> ลาก 🧑‍🍳 เพื่อเปลี่ยนสเตชั่น (เริ่มต้นจะอยู่ที่ <b>จัดขนม</b>)</li><li>ลูกน้องทำงานอัตโนมัติ (แต่จะช้ากว่าคุณ 2 วินาที)</li><li>ลูกน้องทำได้ทุกสเตชั่น ใช้งานให้คุ้มค่าล่ะ!</li></ul>");
+            showTutorial("🎉 ปลดล็อกผู้ช่วย 1 คน!", "<p>ร้านเริ่มยุ่ง เรามีลูกน้องมาช่วย 1 คน!</p><ul><li><b>ลูกน้องจะโผล่มาที่สเตชั่น ขนม (Dessert) เป็นหลัก</b></li><li><b>ลาก & วาง:</b> ใช้นิ้วลาก 🧑‍🍳 ไปปล่อยสเตชั่นอื่นเพื่อย้ายงานได้ตลอดเวลา!</li><li>ลูกน้อง <b>ทำได้ทุกสเตชั่น!</b> (ชง Single ก็ได้, ต้มชาก็เป็น แต่ช้ากว่าคุณ 2 วิ)</li></ul>");
         } else if (currentLevel === 4) {
-            showTutorial("🔥 กิจการรุ่งเรือง!", "<p>คิวเริ่มล้นร้านแล้ว!</p><ul><li>บิลจะเริ่มยาวขึ้นเรื่อยๆ</li><li>อย่าลืมโยกลูกน้อง 1 คนของคุณไปอุดรอยรั่วให้ถูกที่ถูกเวลานะครับ!</li></ul>");
+            showTutorial("🔥 กิจการรุ่งเรือง!", "<p>คิวเริ่มล้นร้านแล้ว!</p><ul><li>บิลจะเริ่มยาวขึ้นเรื่อยๆ</li><li>อย่าลืมโยกลูกน้องคนเดียวของคุณไปอุดรอยรั่วให้ถูกที่ถูกเวลานะครับ!</li></ul>");
         } else if (currentLevel === 6) {
-            showTutorial("👑 ระดับพระกาฬ!", "<p>เข้าสู่ช่วงวัดใจ!</p><ul><li>ไม่มีใครมาช่วยเพิ่มแล้ว! มีแค่คุณกับลูกน้อง 1 คน</li><li>คุมสติ และบริหาร 4 หัวชง Single Iced ให้คุ้มค่าที่สุด!</li></ul>");
+            showTutorial("👑 ผู้จัดการระดับพระกาฬ!", "<p>เข้าสู่ช่วงวัดใจ!</p><ul><li><b>จะไม่มีคนมาช่วยเพิ่มแล้ว!</b> คุณต้องลุยกับลูกน้องคนเดิมไปจนจบเกม</li><li>คุมสติ และบริหาร 4 หัวชง Single Iced ให้คุ้มค่าที่สุด!</li></ul>");
         } else {
             beginLevelTimers();
         }
@@ -610,17 +609,14 @@
             if (spawnQueue.length > 0) {
                 timeToNextSpawn--;
                 if (timeToNextSpawn <= 0) {
-                    let maxSpawn = currentLevel >= 8 ? 3 : (currentLevel >= 4 ? 2 : 1);
-                    let numToSpawn = Math.floor(Math.random() * maxSpawn) + 1; 
-                    for(let i=0; i<numToSpawn; i++) {
-                        if(spawnQueue.length > 0) {
-                            let newOrder = spawnQueue.shift(); 
-                            newOrder.spawnTime = Date.now(); 
-                            activeOrders.push(newOrder); 
-                            appendTicketToDOM(newOrder); 
-                        }
-                    }
-                    timeToNextSpawn = levels[currentLevel].spawnBaseRate + Math.floor(Math.random() * 2); 
+                    let newOrder = spawnQueue.shift(); 
+                    newOrder.spawnTime = Date.now(); 
+                    activeOrders.push(newOrder); 
+                    appendTicketToDOM(newOrder); 
+                    
+                    // ปล่อยบิลทีละ 1 ใบ หน่วงเวลา 8-15 วิ (จำลอง 3-5 นาทีในความจริง)
+                    let minWait = Math.max(6, 12 - Math.floor(currentLevel / 2));
+                    timeToNextSpawn = minWait + Math.floor(Math.random() * 5); 
                 }
             }
             activeOrders.forEach(order => { order.timeLeft--; });
