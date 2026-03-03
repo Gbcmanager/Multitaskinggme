@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Gimbocha KDS - Level Score</title>
+    <title>Gimbocha KDS - Pro System</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         :root { --brand: #8c5b3e; --bg: #1a1a1a; --hot: #e65100; --single: #c62828; --blended: #2e7d32; --dessert: #fbc02d; --success: #4caf50; --danger: #f44336; }
@@ -40,7 +40,7 @@
         .serve-btn:active { transform: translateY(4px); box-shadow: 0 0 0 #2e7d32; }
         .serve-btn.disabled { background: #9e9e9e; box-shadow: 0 4px 0 #616161; cursor: not-allowed; opacity: 0.7;}
         
-        .station-panel { flex: 0 0 42%; padding: 6px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; background: #fff; position: relative;}
+        .station-panel { flex: 0 0 28%; padding: 6px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; background: #fff; position: relative;}
         #busy-overlay { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.7); z-index: 20; justify-content: center; align-items: center; font-weight: bold; color: var(--danger); font-size: 12px; text-shadow: 1px 1px white; border-radius: 4px;}
 
         .station { background: #f9f9f9; border: 1px solid #ddd; padding: 4px; border-radius: 4px; text-align: center; display: flex; flex-direction: column; justify-content: space-between; position: relative;}
@@ -62,17 +62,18 @@
         @keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-20px); } }
         .hidden { display: none !important; }
         
-        /* Overlays */
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 100; text-align: center; padding: 5px 10px; box-sizing: border-box;}
-        .overlay h1 { font-size: 16px !important; margin: 0 0 2px 0; text-shadow: 1px 1px var(--brand); }
-        .overlay p { font-size: 10px !important; margin: 2px 0; color: #ddd; }
-        .btn-primary { background: var(--brand); color: white; padding: 6px 10px; border: none; border-radius: 6px; font-size: 11px; font-family: inherit; cursor: pointer; margin: 2px; font-weight: bold; transition: 0.2s; }
+        .overlay h1 { font-size: 18px !important; margin: 0 0 2px 0; text-shadow: 1px 1px var(--brand); }
+        .overlay p { font-size: 11px !important; margin: 2px 0; color: #ddd; }
+        .btn-primary { background: var(--brand); color: white; padding: 8px 14px; border: none; border-radius: 6px; font-size: 12px; font-family: inherit; cursor: pointer; margin: 5px; font-weight: bold; transition: 0.2s; }
         .btn-danger { background: var(--danger); }
+        
         .split-layout { display: flex; flex-direction: row; align-items: stretch; justify-content: center; width: 100%; max-width: 600px; gap: 10px; height: 100%; max-height: 250px; }
         .split-left { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative;}
         .split-right { flex: 1; display: flex; flex-direction: column; justify-content: center; overflow: hidden;}
         
-        .input-name { padding: 8px; width: 80%; max-width: 220px; margin: 15px 0; border-radius: 6px; border: 2px solid var(--brand); text-align: center; font-family: inherit; font-size: 14px; outline: none; }
+        .input-name { padding: 8px; width: 80%; max-width: 220px; margin: 5px 0; border-radius: 6px; border: 2px solid var(--brand); text-align: center; font-family: inherit; font-size: 13px; outline: none; }
+        
         .leaderboard-container { background: #fff; color: #333; width: 100%; border-radius: 8px; padding: 6px; margin: 0; text-align: left; overflow-y: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.5); flex-grow: 1; display: flex; flex-direction: column;}
         .leaderboard-title { font-size: 10px; font-weight: bold; border-bottom: 2px solid var(--brand); margin-bottom: 3px; padding-bottom: 2px; flex-shrink: 0;}
         #leaderboard-list { overflow-y: auto; flex-grow: 1; }
@@ -81,8 +82,7 @@
         .lb-rank { font-weight: bold; width: 15px; text-align: center;}
         
         .player-img-header { width: 22px; height: 22px; border-radius: 50%; border: 1px solid #fff; object-fit: cover; margin-right: 5px;}
-        .player-img-lb { width: 18px; height: 18px; border-radius: 4px; border: 1px solid var(--brand); object-fit: cover; margin-right: 4px;}
-        .shop-logo-top { width: 90px; height: 90px; object-fit: cover; border-radius: 12px; border: 2px solid var(--brand); margin-bottom: 10px; }
+        .shop-logo-top { width: 70px; height: 70px; object-fit: cover; border-radius: 12px; border: 2px solid var(--brand); margin-bottom: 8px; }
         
         #landscape-warning { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #2b2b2b; color: white; z-index: 999; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; box-sizing: border-box; }
         @media screen and (orientation: portrait) { #landscape-warning { display: flex; } #app { display: none; } }
@@ -90,13 +90,14 @@
         .kpi-box { background: rgba(255,255,255,0.1); padding: 5px; border-radius: 8px; margin: 4px 0; width: 100%; border: 1px solid rgba(255,255,255,0.2); }
         .kpi-box p { margin: 1px 0 !important; }
 
-        .level-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; width: 100%; max-width: 700px; padding: 10px; max-height: 75vh; overflow-y: auto;}
-        .level-card { background: rgba(255,255,255,0.1); border: 2px solid var(--brand); border-radius: 8px; padding: 6px; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; justify-content: space-between; text-align: center;}
+        .level-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; width: 100%; max-width: 600px; padding: 10px; max-height: 70vh; overflow-y: auto;}
+        .level-card { background: rgba(255,255,255,0.1); border: 2px solid var(--brand); border-radius: 8px; padding: 8px; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; justify-content: space-between; text-align: center;}
         .level-card:hover { background: rgba(255,255,255,0.2); transform: scale(1.05); }
-        .level-card h3 { margin: 0 0 2px 0; color: #fff; font-size: 13px;}
+        .level-card h3 { margin: 0 0 2px 0; color: #fff; font-size: 14px;}
         .level-card .order-count { font-size: 10px; color: #ffd54f; margin-bottom: 4px; font-weight: bold;}
-        .level-card .top-player { background: rgba(0,0,0,0.5); border-radius: 4px; padding: 4px; font-size: 9px; color: #ddd; display: flex; flex-direction: column; align-items: center; gap: 2px;}
-        .level-card .top-player img { width: 20px; height: 20px; border-radius: 50%; border: 1px solid var(--brand); object-fit: cover;}
+        
+        .stat-box { background: rgba(0,0,0,0.5); border-radius: 4px; padding: 4px; font-size: 9px; margin-top: 4px; border-left: 2px solid var(--success);}
+        .stat-box.champion { border-left: 2px solid #ffd54f; }
     </style>
 </head>
 <body>
@@ -110,7 +111,7 @@
         <span id="level-display" style="color: #ffd54f;">Level 1</span>
         <span style="display: flex; align-items: center;">
             <img id="header-player-img" src="IMG_4511.jpeg" alt="Player" class="hidden player-img-header">
-            พนักงาน: <span id="display-player-name" style="color: #fff; margin-left: 3px;">-</span>
+            <span id="display-player-name" style="color: #fff; margin-left: 3px;">-</span>
         </span>
         <div style="text-align: right; line-height: 1.1;">
             <div style="font-size: 9px; color: #bbb;">ด่านนี้: <span id="current-level-score" style="color: #fff; font-weight: bold;">0</span></div>
@@ -177,18 +178,19 @@
 <div id="overlay-start" class="overlay">
     <img src="IMG_4511.jpeg" alt="Gimbocha Logo" class="shop-logo-top" onerror="this.style.display='none'">
     <h1 style="color: #fff;">Gimbocha KDS</h1>
-    <p>ระบบฝึกตรรกะหน้าบาร์ (Workflow)</p>
+    <p>ระบบบัญชีผู้เล่น (ตอกบัตรเข้างาน)</p>
     
-    <input type="text" id="player-name-input" class="input-name" placeholder="ใส่ชื่อพนักงานที่นี่..." autocomplete="off">
+    <input type="tel" id="player-phone-input" class="input-name" placeholder="เบอร์โทรศัพท์ (ใช้จำสถิติ)" autocomplete="off" style="margin-bottom: 2px;">
+    <input type="text" id="player-name-input" class="input-name" placeholder="ชื่อพนักงาน" autocomplete="off" style="margin-top: 2px;">
     
     <div class="button-group">
-        <button class="btn-primary" id="btn-start" onclick="initGame()">ตอกบัตรเข้างาน</button>
+        <button class="btn-primary" onclick="initGame()">เข้าสู่ระบบ / สมัครใหม่</button>
     </div>
 </div>
 
 <div id="overlay-level-select" class="overlay hidden">
     <h1 style="color: #ffd54f; margin: 0 0 5px 0;">เลือกระดับการฝึกซ้อม</h1>
-    <p id="loading-leaderboard-msg" style="color: #ddd;">⏳ กำลังดึงข้อมูลแชมป์แต่ละด่าน...</p>
+    <p id="loading-leaderboard-msg" style="color: #ddd;">⏳ กำลังดึงข้อมูลสถิติร้าน...</p>
     <div id="level-grid" class="level-grid">
         </div>
 </div>
@@ -212,6 +214,7 @@
                 <button class="btn-primary btn-danger" onclick="backToLevelSelect()">กลับไปเลือกด่าน</button>
                 <button class="btn-primary" onclick="startNextLevel()" id="btn-continue">ลุยด่านต่อไป!</button>
             </div>
+            <div id="save-status-msg" style="font-size: 9px; margin-top: 4px;"></div>
         </div>
 
         <div class="split-right">
@@ -224,7 +227,8 @@
 </div>
 
 <script>
-    const GOOGLE_APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwmjGRY-8-BVfAOZJ1ivA_lEY3e6mPu37ZW_ifvdvVtNShVHhdFAEJ4yoIvgjvmPKR9/exec";
+    // 🔴🔴🔴 URL ของ Google Apps Script ล่าสุด 🔴🔴🔴
+    const GOOGLE_APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzMKnJDroIvrlSVqlqBqNG30yIs4SL2jeS2yac11vx92bghlk0FUE1VC-rAV7PkN11G/exec";
 
     const menuDB = {
         hot: ["อัสสัมวาวี", "ชามะลิหิมะโปรย", "ชาเขียวหวงชาน", "หลงจิ่ง 2025", "เถี่ยกวนอิน", "จางผิงสุ่ยเซียน", "ต้าหงเผา", "สุ่ยเซียนอบถ่าน"],
@@ -270,9 +274,16 @@
     let currentLevel = 0; let totalScore = 0; let levelScore = 0; 
     let spawnQueue = []; let activeOrders = []; 
     let timeToNextSpawn = 0; let blendedStock = 8; let singleBrewSlots = 0; let globalTimer;
-    let playerName = ""; 
+    let playerName = ""; let playerPhone = "";
     let levelWaitTimes = [];
     let isPlayerBusy = false; let isRefilling = false;
+
+    window.onload = () => {
+        let savedPhone = localStorage.getItem('gimbocha_phone');
+        let savedName = localStorage.getItem('gimbocha_name');
+        if(savedPhone) document.getElementById('player-phone-input').value = savedPhone;
+        if(savedName) document.getElementById('player-name-input').value = savedName;
+    };
 
     function initSingleSlots() {
         const container = document.getElementById('single-slots');
@@ -284,9 +295,15 @@
     initSingleSlots();
 
     function initGame() {
+        playerPhone = document.getElementById('player-phone-input').value.trim();
         playerName = document.getElementById('player-name-input').value.trim();
-        if(!playerName) { alert("❌ โปรดใส่ชื่อพนักงานก่อนเข้างานครับ!"); return; }
         
+        if(!playerPhone || !playerName) { alert("❌ โปรดใส่เบอร์โทรและชื่อให้ครบครับ!"); return; }
+        
+        localStorage.setItem('gimbocha_phone', playerPhone);
+        localStorage.setItem('gimbocha_name', playerName);
+        
+        document.getElementById('header-player-img').classList.remove('hidden');
         document.getElementById('display-player-name').innerText = playerName;
         document.getElementById('overlay-start').classList.add('hidden');
         
@@ -304,7 +321,8 @@
         loadingMsg.style.display = 'block';
 
         let topPlayers = {};
-        for(let i=1; i<=10; i++) topPlayers[i] = null;
+        let myStats = {};
+        for(let i=1; i<=10; i++) { topPlayers[i] = null; myStats[i] = null; }
 
         try {
             const response = await fetch(GOOGLE_APP_SCRIPT_URL);
@@ -320,10 +338,14 @@
                             topPlayers[lvl] = entry;
                         }
                     }
+                    // เช็คสถิติตัวเองผ่านเบอร์โทรศัพท์
+                    if(entry.phone === playerPhone) {
+                        myStats[lvl] = entry;
+                    }
                 }
             });
         } catch (error) {
-            console.error("ดึงข้อมูลแชมป์ไม่สำเร็จ");
+            console.error("ดึงข้อมูลไม่สำเร็จ");
         }
 
         loadingMsg.style.display = 'none';
@@ -331,14 +353,25 @@
         levels.forEach((lvlData, idx) => {
             let lvlNum = idx + 1;
             let topP = topPlayers[lvlNum];
+            let myP = myStats[lvlNum];
             
-            let topHtml = `<span style="color:#aaa;">ยังไม่มีแชมป์</span>`;
+            let topHtml = `<div class="stat-box champion" style="color:#aaa;">ยังไม่มีแชมป์</div>`;
             if (topP) {
-                let imgSrc = (topP.selfie && topP.selfie.length > 100) ? topP.selfie : "IMG_4511.jpeg";
                 topHtml = `
-                    <img src="${imgSrc}" onerror="this.src='IMG_4511.jpeg'">
-                    <span><b>${topP.name}</b></span>
-                    <span style="color:#4caf50;">${topP.score}pts | ${topP.avgWait}m</span>
+                    <div class="stat-box champion">
+                        <span style="color:#ffd54f;">👑 ${topP.name}</span><br>
+                        ${topP.score}pts | ${topP.avgWait}m
+                    </div>
+                `;
+            }
+
+            let myHtml = `<div class="stat-box" style="color:#aaa;">สถิติคุณ: ยังไม่เคยเล่น</div>`;
+            if (myP) {
+                myHtml = `
+                    <div class="stat-box">
+                        <span style="color:#4caf50;">👤 สถิติคุณ</span><br>
+                        ${myP.score}pts | ${myP.avgWait}m
+                    </div>
                 `;
             }
 
@@ -347,9 +380,10 @@
             card.onclick = () => selectLevel(idx);
             card.innerHTML = `
                 <h3>ด่าน ${lvlNum}</h3>
-                <div class="order-count">ออเดอร์: ${lvlData.totalOrders} บิล</div>
-                <div class="top-player">
+                <div class="order-count">จำนวน ${lvlData.totalOrders} บิล</div>
+                <div style="text-align: left; width: 100%;">
                     ${topHtml}
+                    ${myHtml}
                 </div>
             `;
             grid.appendChild(card);
@@ -365,6 +399,13 @@
     function backToLevelSelect() {
         document.getElementById('overlay-level-clear').classList.add('hidden');
         showLevelSelection();
+    }
+
+    // 🟢 แก้ไขปุ่มลุยด่านต่อไปให้ทำงานได้สมบูรณ์ 🟢
+    function startNextLevel() {
+        document.getElementById('overlay-level-clear').classList.add('hidden');
+        currentLevel++;
+        startLevel();
     }
 
     function startLevel() {
@@ -589,7 +630,7 @@
 
     function updateUI() {
         document.getElementById('total-score').innerText = totalScore; 
-        document.getElementById('current-level-score').innerText = levelScore; // 🔴 อัปเดตคะแนนด่านนี้ตรงมุมขวาบน
+        document.getElementById('current-level-score').innerText = levelScore;
         document.getElementById('blended-stock').innerText = blendedStock; 
         document.getElementById('blended-stock').style.color = blendedStock <= 2 ? 'var(--hot)' : 'var(--blended)';
         
@@ -626,7 +667,8 @@
                 document.getElementById('action-buttons').classList.add('hidden');
                 clearOverlay.classList.remove('hidden');
                 
-                autoSaveAndFetchLeaderboard(avgWaitRealMin, currentLevel + 1);
+                let completedLevelNum = currentLevel + 1;
+                autoSaveAndFetchLeaderboard(avgWaitRealMin, completedLevelNum);
             }, 1000);
         }
     }
@@ -636,13 +678,20 @@
         document.getElementById('global-avg-time').innerText = "...";
         document.getElementById('leaderboard-list').innerHTML = "<div style='text-align:center; padding: 15px; color:#888; font-size:10px;'>⏳ กำลังเชื่อมต่อเซิร์ฟเวอร์...</div>";
         document.getElementById('lb-title').innerText = `🏆 สถิติคนชงไว (ด่าน ${lvlNum})`;
+        document.getElementById('save-status-msg').innerText = "กำลังเซฟข้อมูลอัตโนมัติ...";
 
-        const payload = { name: playerName, score: levelScore, levelReached: lvlNum, selfie: "", avgWaitTime: myAvgWaitRealMin };
+        const payload = { phone: playerPhone, name: playerName, score: levelScore, levelReached: lvlNum, avgWaitTime: myAvgWaitRealMin };
         const formData = new URLSearchParams(); formData.append('data', JSON.stringify(payload));
 
         fetch(GOOGLE_APP_SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: formData.toString() })
-        .then(() => { fetchAndRenderLevelLeaderboard(lvlNum, myAvgWaitRealMin); })
-        .catch(err => { fetchAndRenderLevelLeaderboard(lvlNum, myAvgWaitRealMin); });
+        .then(() => { 
+            document.getElementById('save-status-msg').innerText = "✅ เซฟข้อมูลแล้ว!";
+            fetchAndRenderLevelLeaderboard(lvlNum, myAvgWaitRealMin); 
+        })
+        .catch(err => { 
+            document.getElementById('save-status-msg').innerText = "⚠️ ออฟไลน์ (ไม่ถูกบันทึก)";
+            fetchAndRenderLevelLeaderboard(lvlNum, myAvgWaitRealMin); 
+        });
     }
 
     async function fetchAndRenderLevelLeaderboard(lvlNum, myAvgWaitMin) {
@@ -674,12 +723,12 @@
                 }
                 levelData.sort((a, b) => { if (b.score !== a.score) return b.score - a.score; return a.avgWait - b.avgWait; });
                 levelData.slice(0, 5).forEach((entry, index) => {
-                    let imgSrc = (entry.selfie && entry.selfie.length > 100) ? entry.selfie : "IMG_4511.jpeg";
+                    let isMe = (entry.phone === playerPhone);
                     let rowHtml = `
-                        <div class="leaderboard-row">
+                        <div class="leaderboard-row" style="${isMe ? 'background:rgba(76,175,80,0.2); border-radius:4px; padding:2px;' : ''}">
                             <span class="lb-rank">${index + 1}.</span>
                             <span style="flex:1; display:flex; align-items:center;">
-                                <img src="${imgSrc}" alt="User" class="player-img-lb" onerror="this.src='IMG_4511.jpeg'">
+                                <img src="IMG_4511.jpeg" class="player-img-lb">
                                 ${entry.name} <span style="font-size:7px; color:#888; margin-left:3px;">| ⏱️ ${entry.avgWait}m</span>
                             </span>
                             <span style="font-weight:bold;">${entry.score} pts</span>
@@ -687,6 +736,8 @@
                     listDiv.innerHTML += rowHtml;
                 });
             }
+            
+            // 🟢 เปิดปุ่มให้กดไปด่านต่อไปได้ 🟢
             document.getElementById('action-buttons').classList.remove('hidden');
             if(lvlNum < levels.length) {
                 document.getElementById('clear-title').innerText = `✅ เคลียร์ด่าน ${lvlNum} สำเร็จ!`;
@@ -700,8 +751,6 @@
             document.getElementById('action-buttons').classList.remove('hidden');
         }
     }
-
-    function startNextLevel() { currentLevel++; startLevel(); }
 
     function showFloatingScore(text, targetId) {
         const target = document.getElementById(targetId); if(!target) return;
