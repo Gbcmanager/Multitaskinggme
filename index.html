@@ -55,12 +55,13 @@
         .station h4 { margin: 0 0 1px 0; font-size: 8px; }
         .station p { font-size: 5px; margin: 0; color: #666; }
 
-        .helper-dropzone { min-height: 16px; background: rgba(0,0,0,0.03); border: 1px dashed #ccc; border-radius: 3px; display: flex; gap: 1px; padding: 1px; justify-content: center; align-items: center; margin: 1px 0; flex-wrap: wrap;}
+        /* 🧑‍🍳 กล่อง Drag & Drop ลูกน้องขนาดใหญ่ กดย้ายง่าย 🧑‍🍳 */
+        .helper-dropzone { min-height: 28px; background: rgba(0,0,0,0.03); border: 1px dashed #ccc; border-radius: 4px; display: flex; gap: 2px; padding: 2px; justify-content: center; align-items: center; margin: 1px 0; flex-wrap: wrap;}
         .helper-dropzone.drag-over { background: rgba(33, 150, 243, 0.2); border-color: #2196f3; }
         
-        .helper-token { width: 14px; height: 14px; background: #fff; border: 1px solid #2196f3; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 8px; cursor: grab; touch-action: none; box-shadow: 0 1px 3px rgba(0,0,0,0.2); transition: transform 0.1s;}
+        .helper-token { width: 24px; height: 24px; background: #fff; border: 1.5px solid #2196f3; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 13px; cursor: grab; touch-action: none; box-shadow: 0 2px 4px rgba(0,0,0,0.3); transition: transform 0.1s;}
         .helper-token:active { cursor: grabbing; transform: scale(1.1); }
-        .helper-token.dragging { position: fixed; pointer-events: none; opacity: 0.9; transform: scale(1.3); z-index: 9999; box-shadow: 0 3px 10px rgba(0,0,0,0.5);}
+        .helper-token.dragging { position: fixed; pointer-events: none; opacity: 0.9; transform: scale(1.3); z-index: 9999; box-shadow: 0 5px 15px rgba(0,0,0,0.5);}
 
         .btn-action { width: 100%; padding: 2px; border: none; border-radius: 3px; font-family: inherit; font-size: 7.5px; font-weight: bold; cursor: pointer; color: white; transition: 0.1s; margin-top: 1px; position: relative;}
         .btn-action:disabled { background: #ccc !important; cursor: not-allowed; transform: none;}
@@ -380,6 +381,7 @@
     let timeToNextSpawn = 0; let blendedStock = 8; let globalTimer;
     let playerName = ""; let playerPhone = "";
     let levelWaitTimes = [];
+    let leaderboardCache = null; // ⚡ ใช้ Cache เพื่อให้สถิติโหลดเร็ว
     
     let isPlayerBusy = false; let isRefilling = false;
     
@@ -443,6 +445,7 @@
         showLevelSelection();
     }
 
+    // ⚡ ระบบโหลดหน้า Level เลือกด่านแบบไว (ใช้ Cache)
     async function showLevelSelection() {
         document.getElementById('overlay-level-clear').classList.add('hidden');
         const overlay = document.getElementById('overlay-level-select');
@@ -459,9 +462,12 @@
         let cleanMyPhone = normalizePhone(playerPhone);
 
         try {
-            const response = await fetch(GOOGLE_APP_SCRIPT_URL);
-            const globalLb = await response.json();
-            globalLb.forEach(entry => {
+            if (!leaderboardCache) {
+                const response = await fetch(GOOGLE_APP_SCRIPT_URL);
+                leaderboardCache = await response.json();
+            }
+            
+            leaderboardCache.forEach(entry => {
                 let lvl = entry.level;
                 if(lvl >= 1 && lvl <= 10) {
                     if(!topPlayers[lvl]) { topPlayers[lvl] = entry; } 
@@ -469,7 +475,7 @@
                     if(normalizePhone(entry.phone) === cleanMyPhone) { myStats[lvl] = entry; }
                 }
             });
-        } catch (error) { console.error("ดึงข้อมูลไม่สำเร็จ"); }
+        } catch (error) { console.error("ดึงข้อมูลไม่สำเร็จ", error); }
 
         loadingMsg.style.display = 'none';
 
@@ -497,11 +503,12 @@
 
     let dragObj = { id: null, el: null };
 
+    // 🟢 ระบบลูกน้อง 1 คน Default ยืนที่ Dessert 🟢
     function setupHelpersForLevel() {
         totalHelpers = 0;
-        if (currentLevel >= 2) totalHelpers = 1; // ด่าน 3 เป็นต้นไปให้ 1 คน
+        if (currentLevel >= 2) totalHelpers = 1; // ด่าน 3 เป็นต้นไปให้แค่ 1 คนตลอดเกม
         
-        helperAssignments = Array(totalHelpers).fill('dessert'); // เริ่มต้นที่ Dessert
+        helperAssignments = Array(totalHelpers).fill('dessert');
         activeHelpers = { hot: 0, single: 0, blended: 0, dessert: 0, wash: 0 };
 
         renderHelpers();
@@ -601,11 +608,11 @@
         clearInterval(globalTimer); clearInterval(helperTimer);
 
         if (currentLevel === 0) {
-            showTutorial("🚨 กฎของ Head Barista", "<ul><li><b>WIP Limit:</b> ทำได้เฉพาะ <b>5 บิลซ้ายสุด</b> เท่านั้น ห้ามลัดคิว! ❌-5</li><li><b>🧼 กฎการล้างจาน:</b> แก้วที่เสิร์ฟจะกลายเป็นจานสกปรก ถ้าครบ <b>40 ใบ</b> 🛑 <b>ปุ่มเสิร์ฟจะถูกล็อก!</b> คุณต้องกดล้างจาน โดยจะเหมาล้างทีละ 10 ใบ (ล็อกตัว 3 วิ)</li><li><b>หน่วงเวลาสมจริง:</b> ชง Single โดนล็อกตัว 1.5วิ, ต้มชาล็อก 4วิ, เทน้ำล็อก 1วิ วางแผนเดินบาร์ให้ดี!</li></ul>");
+            showTutorial("🚨 กฎของ Head Barista", "<ul><li><b>WIP Limit:</b> ทำได้เฉพาะ <b>5 บิลซ้ายสุด</b> (กรอบฟ้า) ห้ามลัดคิว! ❌-5</li><li><b>🧼 การล้างจาน:</b> แก้วที่เสิร์ฟจะสะสมในอ่าง ถ้าครบ <b>40 ใบ</b> 🛑 <b>ปุ่มเสิร์ฟจะล็อก!</b> ต้องกดล้าง (เหมาทีละ 10 ใบ ล็อกตัว 3 วิ)</li><li><b>หน่วงเวลาสมจริง:</b> ชง Single โดนล็อกตัว 1.5วิ, ต้มชาล็อก 4วิ, เทน้ำล็อก 1วิ วางแผนเดินบาร์ให้ดี!</li></ul>");
         } else if (currentLevel === 2) {
-            showTutorial("🎉 ปลดล็อกผู้ช่วย 1 คน!", "<p>คุณได้ลูกน้องช่วย 1 คน (และมีแค่คนเดียวตลอดเกม!)</p><ul><li><b>ลาก & วาง:</b> ลาก 🧑‍🍳 ไปปล่อยสเตชั่นที่ต้องการให้ช่วย</li><li>ลูกน้องทำงานอัตโนมัติ <b>รวมถึงล้างจานให้ทีละ 10 ใบด้วย!</b> (แต่เขาจะใช้เวลาล้าง 5 วินาที)</li><li><b>ทริค:</b> งานไหนกินเวลาคุณนานๆ โยนให้ลูกน้องทำจะคุ้มกว่า!</li></ul>");
+            showTutorial("🎉 ปลดล็อกผู้ช่วย 1 คน!", "<p>คุณได้ลูกน้องช่วย 1 คน <b>(มีแค่คนเดียวตลอดเกม!)</b></p><ul><li><b>ลาก & วาง:</b> ลาก 🧑‍🍳 ไปปล่อยสเตชั่นที่ต้องการให้ช่วย</li><li>ลูกน้องทำงานอัตโนมัติ <b>รวมถึงล้างจานด้วย!</b> (ล้าง 10 ใบ ใช้เวลา 5 วินาที)</li><li><b>ทริค:</b> งานไหนกินเวลาคุณนานๆ (เช่น ต้มชา/ล้างจาน) โยนให้ลูกน้องทำจะคุ้มกว่า!</li></ul>");
         } else if (currentLevel === 4 || currentLevel === 6) {
-            showTutorial("🔥 ความกดดันของจริง!", "<p>คิวเริ่มล้นร้านแล้ว!</p><ul><li>คุณยังคงมีลูกน้องแค่ <b>1 คน</b> เท่าเดิม!</li><li>สลับลูกน้องไปช่วยให้ถูกจุด ระวังจานล้นอ่างจนเสิร์ฟไม่ได้ล่ะ!</li></ul>");
+            showTutorial("🔥 ความกดดันของจริง!", "<p>คิวเริ่มล้นร้านแล้ว!</p><ul><li>บิลจะยาวขึ้น และเสิร์ฟถี่ขึ้น!</li><li>คุณมีลูกน้องแค่ <b>1 คน</b> เท่าเดิม สลับเขาไปช่วยให้ถูกจุด ระวังจานล้นอ่างจนเสิร์ฟไม่ได้ล่ะ!</li></ul>");
         } else {
             beginLevelTimers();
         }
@@ -636,22 +643,21 @@
 
             let pendingWIP = activeOrders.filter(o => o.status !== 'ready').slice(0, 5); 
             
-            // 1. เช็คลูกน้องที่อยู่ Wash Station (ล้างทีละ 10 ใบ ใช้เวลา 5 วินาที)
+            // 1. ลูกน้องล้างจาน (ทีละ 10 ใบ ใช้เวลา 5 วิ)
             let washHelpers = getAssignedCount('wash');
             if (washHelpers > activeHelpers.wash && dirtyDishes > 0) {
                 activeHelpers.wash++; updateUI();
                 let prog = document.getElementById('helper-prog-wash'), fill = document.getElementById('helper-fill-wash');
                 prog.style.display = 'block'; fill.style.transition = 'none'; fill.style.width = '0%';
-                setTimeout(() => { fill.style.transition = `width 5000ms linear`; fill.style.width = '100%'; }, 50); // ลูกน้องล้าง 5 วิ
+                setTimeout(() => { fill.style.transition = `width 5000ms linear`; fill.style.width = '100%'; }, 50); 
                 setTimeout(() => { 
-                    dirtyDishes = Math.max(0, dirtyDishes - 10); // เคลียร์ 10 ใบ
+                    dirtyDishes = Math.max(0, dirtyDishes - 10); 
                     activeHelpers.wash--; prog.style.display = 'none'; updateUI(); 
                 }, 5000);
             }
 
             if (pendingWIP.length === 0) return;
 
-            // 2. เช็คลูกน้องที่อยู่ Single
             let singleHelpers = getAssignedCount('single');
             if (singleHelpers > activeHelpers.single) {
                 let slotIdx = getFreeSlot();
@@ -672,7 +678,6 @@
                 }
             }
 
-            // 3. เช็คลูกน้องที่อยู่ Blended
             let blendedHelpers = getAssignedCount('blended');
             if (blendedHelpers > activeHelpers.blended) {
                 let needBlended = false;
@@ -700,7 +705,6 @@
                 }
             }
 
-            // 4. เช็คลูกน้องที่อยู่ Hot Tea
             let hotHelpers = getAssignedCount('hot');
             if (hotHelpers > activeHelpers.hot) {
                 let claim = findAndClaimItemHelper('hot', pendingWIP);
@@ -714,7 +718,6 @@
                 }
             }
 
-            // 5. เช็คลูกน้องที่อยู่ Dessert
             let dessertHelpers = getAssignedCount('dessert');
             if (dessertHelpers > activeHelpers.dessert) {
                 let claim = findAndClaimItemHelper('dessert', pendingWIP);
@@ -789,7 +792,7 @@
         let readyCount = activeOrders.filter(o => o.status === 'ready').length;
         document.getElementById('ready-count').innerText = readyCount;
         
-        // 🛑 เช็คเงื่อนไขจานล้น 40 ใบ เพื่อล็อกปุ่มเสิร์ฟ
+        // 🛑 เช็คเงื่อนไขจานล้น 40 ใบ
         const serveBtn = document.getElementById('btn-serve-tray');
         if (dirtyDishes >= 40) {
             serveBtn.classList.add('disabled');
@@ -863,7 +866,7 @@
             let waitTimeSec = (Date.now() - order.spawnTime) / 1000;
             levelWaitTimes.push(waitTimeSec);
 
-            // 🟢 เพิ่มจำนวนจานสกปรกตามจำนวนรายการที่เสิร์ฟ 🟢
+            // เพิ่มจานสกปรกตามจำนวนแก้ว/ขนมในบิล
             dirtyDishes += order.items.length;
 
             let speedBonus = order.timeLeft > 0 ? order.timeLeft * 10 : 0; 
@@ -878,7 +881,7 @@
         updateUI(); updateTimersUI(); checkLevelCompletion();
     }
 
-    // 🟢 ฟังก์ชันสำหรับบอสล้างจานเอง (ล้าง 10 ใบ ใช้เวลา 3 วิ) 🟢
+    // 🟢 บอสล้างจานทีละ 10 ใบ ใช้เวลา 3 วิ 🟢
     function washDishes() {
         if (isPlayerBusy || dirtyDishes <= 0) return;
 
@@ -933,7 +936,7 @@
 
         showFloatingScore("⭐ ชงเอง! +10", 'btn-single'); levelScore += 10; totalScore += 10;
         
-        isPlayerBusy = true; updateUI(); // 🟢 ล็อกตัวบอส 1.5 วิ 🟢
+        isPlayerBusy = true; updateUI(); // ล็อกตัวบอส 1.5 วิ
         brewSlots[slotIdx] = true; updateSingleSlotsUI();
         
         const fill = document.getElementById(`slot-fill-${slotIdx+1}`);
@@ -969,7 +972,7 @@
         } 
         showFloatingScore("⭐ เทน้ำ! +5", 'btn-blend-pour'); levelScore += 5; totalScore += 5; 
         
-        isPlayerBusy = true; updateUI(); // 🟢 ล็อกตัวบอส 1 วิ 🟢
+        isPlayerBusy = true; updateUI(); // ล็อกตัวบอส 1 วิ
         const progBar = document.getElementById('prog-blended-pour');
         if(progBar) {
             let fill = progBar.querySelector('.progress-fill');
@@ -989,7 +992,7 @@
         if (blendedStock > 2) { showFloatingScore("❌ รอให้เหลือ <= 2 ก่อน", 'btn-blend-refill', true); return; }
         
         showFloatingScore("⭐ ต้มชา! +10", 'btn-blend-refill'); levelScore += 10; totalScore += 10; 
-        isPlayerBusy = true; isRefilling = true; updateUI(); // 🟢 ล็อกตัวบอส 4 วิ 🟢
+        isPlayerBusy = true; isRefilling = true; updateUI(); // ล็อกตัวบอส 4 วิ
         
         const progBar = document.getElementById('prog-refill'), fill = document.getElementById('fill-refill');
         progBar.style.display = 'block'; fill.style.transition = 'none'; fill.style.width = '0%';
@@ -1006,10 +1009,10 @@
         document.getElementById('blended-stock').innerText = blendedStock; 
         document.getElementById('blended-stock').style.color = blendedStock <= 2 ? 'var(--hot)' : 'var(--blended)';
         
-        // 🟢 อัปเดตสีตัวเลขจาน 🟢
+        // อัปเดตสีตัวเลขจาน (ใกล้เต็ม 40 ให้เป็นสีแดง)
         let dishCount = document.getElementById('dirty-count-display');
         dishCount.innerText = dirtyDishes;
-        dishCount.style.color = dirtyDishes >= 35 ? 'var(--danger)' : 'var(--wash)';
+        dishCount.style.color = dirtyDishes >= 30 ? 'var(--danger)' : 'var(--wash)';
         
         const overlay = document.getElementById('busy-overlay');
         if (isPlayerBusy) { overlay.style.display = 'flex'; } else { overlay.style.display = 'none'; }
@@ -1059,79 +1062,89 @@
         }
     }
 
+    // ⚡ ระบบเซฟและโหลดคะแนนแบบไว (Optimistic UI) ⚡
     function autoSaveAndFetchLeaderboard(myAvgWaitRealMin, lvlNum) {
-        document.getElementById('kpi-compare-status').innerText = "⏳ กำลังบันทึกผลและดึงข้อมูลร้าน...";
-        document.getElementById('global-avg-time').innerText = "...";
-        document.getElementById('leaderboard-list').innerHTML = "<div style='text-align:center; padding: 15px; color:#888; font-size:10px;'>⏳ กำลังเชื่อมต่อเซิร์ฟเวอร์...</div>";
+        document.getElementById('save-status-msg').innerText = "⏳ กำลังซิงค์ข้อมูล...";
         document.getElementById('lb-title').innerText = `🏆 สถิติคนชงไว (ด่าน ${lvlNum})`;
-        document.getElementById('save-status-msg').innerText = "กำลังเซฟข้อมูลอัตโนมัติ...";
+
+        if (!leaderboardCache) leaderboardCache = [];
+        leaderboardCache.push({
+            phone: playerPhone,
+            name: playerName,
+            score: levelScore,
+            level: lvlNum,
+            avgWait: myAvgWaitRealMin
+        });
+
+        renderLocalLeaderboard(lvlNum, myAvgWaitRealMin);
 
         const payload = { phone: playerPhone, name: playerName, score: levelScore, levelReached: lvlNum, avgWaitTime: myAvgWaitRealMin };
         const formData = new URLSearchParams(); formData.append('data', JSON.stringify(payload));
 
         fetch(GOOGLE_APP_SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: formData.toString() })
         .then(() => { 
-            document.getElementById('save-status-msg').innerText = "✅ เซฟข้อมูลแล้ว!";
-            fetchAndRenderLevelLeaderboard(lvlNum, myAvgWaitRealMin); 
+            document.getElementById('save-status-msg').innerText = "✅ ซิงค์ข้อมูลสำเร็จ!";
         })
         .catch(err => { 
-            document.getElementById('save-status-msg').innerText = "⚠️ ออฟไลน์ (ไม่ถูกบันทึก)";
-            fetchAndRenderLevelLeaderboard(lvlNum, myAvgWaitRealMin); 
+            document.getElementById('save-status-msg').innerText = "⚠️ ออฟไลน์ (คะแนนอยู่แค่ในเครื่อง)";
         });
     }
 
-    async function fetchAndRenderLevelLeaderboard(lvlNum, myAvgWaitMin) {
+    function renderLocalLeaderboard(lvlNum, myAvgWaitMin) {
         const listDiv = document.getElementById('leaderboard-list');
-        try {
-            const response = await fetch(GOOGLE_APP_SCRIPT_URL);
-            const globalLb = await response.json();
-            listDiv.innerHTML = "";
-            let levelData = globalLb.filter(entry => entry.level === lvlNum);
-            
-            if(levelData.length === 0) {
-                listDiv.innerHTML = "<div style='text-align:center; padding: 15px; color:#888; font-size:10px;'>คุณคือคนแรกที่จบด่านนี้!</div>"; 
-                document.getElementById('global-avg-time').innerText = "-";
-            } else {
-                let globalValidWaits = levelData.filter(entry => entry.avgWait > 0);
-                if(globalValidWaits.length > 0) {
-                    let totalGlobalWait = globalValidWaits.reduce((sum, entry) => sum + entry.avgWait, 0);
-                    let globalAvgWait = (totalGlobalWait / globalValidWaits.length).toFixed(1);
-                    document.getElementById('global-avg-time').innerText = globalAvgWait;
-                    
-                    let compareStatus = document.getElementById('kpi-compare-status');
-                    if(myAvgWaitMin <= globalAvgWait) {
-                        compareStatus.innerText = `🔥 เร็วกว่าค่าเฉลี่ยด่านนี้ ${(globalAvgWait - myAvgWaitMin).toFixed(1)} นาที!`;
-                        compareStatus.style.color = "var(--success)";
-                    } else {
-                        compareStatus.innerText = `🐢 ช้ากว่าค่าเฉลี่ยด่านนี้ ${(myAvgWaitMin - globalAvgWait).toFixed(1)} นาที`;
-                        compareStatus.style.color = "var(--danger)";
-                    }
+        listDiv.innerHTML = "";
+        
+        let levelData = leaderboardCache.filter(entry => entry.level === lvlNum);
+        
+        if(levelData.length > 0) {
+            let globalValidWaits = levelData.filter(entry => entry.avgWait > 0);
+            if(globalValidWaits.length > 0) {
+                let totalGlobalWait = globalValidWaits.reduce((sum, entry) => sum + entry.avgWait, 0);
+                let globalAvgWait = (totalGlobalWait / globalValidWaits.length).toFixed(1);
+                document.getElementById('global-avg-time').innerText = globalAvgWait;
+                
+                let compareStatus = document.getElementById('kpi-compare-status');
+                if(myAvgWaitMin <= globalAvgWait) {
+                    compareStatus.innerText = `🔥 เร็วกว่าค่าเฉลี่ยร้าน ${(globalAvgWait - myAvgWaitMin).toFixed(1)} นาที!`;
+                    compareStatus.style.color = "var(--success)";
+                } else {
+                    compareStatus.innerText = `🐢 ช้ากว่าค่าเฉลี่ยร้าน ${(myAvgWaitMin - globalAvgWait).toFixed(1)} นาที`;
+                    compareStatus.style.color = "var(--danger)";
                 }
-                levelData.sort((a, b) => { if (b.score !== a.score) return b.score - a.score; return a.avgWait - b.avgWait; });
-                levelData.slice(0, 5).forEach((entry, index) => {
-                    let cleanMyPhone = normalizePhone(playerPhone);
-                    let isMe = (normalizePhone(entry.phone) === cleanMyPhone);
-                    
-                    let rowHtml = `
-                        <div class="leaderboard-row" style="${isMe ? 'background:rgba(76,175,80,0.2); border-radius:4px; padding:2px;' : ''}">
-                            <span class="lb-rank">${index + 1}.</span>
-                            <span style="flex:1; display:flex; align-items:center;">
-                                <img src="IMG_4511.jpeg" style="width:16px; height:16px; min-width:16px; border-radius:4px; object-fit:cover; margin-right:4px;" onerror="this.style.display='none'">
-                                ${entry.name} <span style="font-size:7px; color:#888; margin-left:3px;">| ⏱️ ${entry.avgWait}m</span>
-                            </span>
-                            <span style="font-weight:bold;">${entry.score} pts</span>
-                        </div>`;
-                    listDiv.innerHTML += rowHtml;
-                });
             }
+
+            levelData.sort((a, b) => { if (b.score !== a.score) return b.score - a.score; return a.avgWait - b.avgWait; });
             
-            document.getElementById('action-buttons').classList.remove('hidden');
-            if(lvlNum < levels.length) { document.getElementById('btn-continue').classList.remove('hidden'); } 
-            else { document.getElementById('btn-continue').classList.add('hidden'); }
-        } catch (error) { 
-            listDiv.innerHTML = "<div style='text-align:center; padding: 15px; color: var(--danger); font-size:10px;'>❌ เชื่อมต่อไม่ได้ (ออฟไลน์)</div>"; 
-            document.getElementById('action-buttons').classList.remove('hidden');
+            let uniquePlayers = [];
+            let seenPhones = new Set();
+            levelData.forEach(entry => {
+                let cleanPhone = normalizePhone(entry.phone);
+                if (!seenPhones.has(cleanPhone)) {
+                    seenPhones.add(cleanPhone);
+                    uniquePlayers.push(entry);
+                }
+            });
+
+            uniquePlayers.slice(0, 5).forEach((entry, index) => {
+                let cleanMyPhone = normalizePhone(playerPhone);
+                let isMe = (normalizePhone(entry.phone) === cleanMyPhone);
+                
+                let rowHtml = `
+                    <div class="leaderboard-row" style="${isMe ? 'background:rgba(76,175,80,0.2); border-radius:4px; padding:2px;' : ''}">
+                        <span class="lb-rank">${index + 1}.</span>
+                        <span style="flex:1; display:flex; align-items:center;">
+                            <img src="IMG_4511.jpeg" style="width:16px; height:16px; min-width:16px; border-radius:4px; object-fit:cover; margin-right:4px;" onerror="this.style.display='none'">
+                            ${entry.name} <span style="font-size:7px; color:#888; margin-left:3px;">| ⏱️ ${entry.avgWait}m</span>
+                        </span>
+                        <span style="font-weight:bold;">${entry.score} pts</span>
+                    </div>`;
+                listDiv.innerHTML += rowHtml;
+            });
         }
+        
+        document.getElementById('action-buttons').classList.remove('hidden');
+        if(lvlNum < levels.length) { document.getElementById('btn-continue').classList.remove('hidden'); } 
+        else { document.getElementById('btn-continue').classList.add('hidden'); }
     }
 
     function showFloatingScore(text, targetId, isPenalty = false) {
