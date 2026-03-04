@@ -1,6 +1,11 @@
 <!doctype html>
 <html lang="th">
   <head>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
     <meta charset="UTF-8" />
     <meta
       name="viewport"
@@ -1219,6 +1224,19 @@
     </div>
 
     <script>
+      // 🟢 ฟังก์ชันสั่งขยายเต็มหน้าจอ (รองรับทุกเบราว์เซอร์) 🟢
+      function openFullscreen() {
+        let elem = document.documentElement;
+        if (elem.requestFullscreen) {
+          elem.requestFullscreen().catch((err) => console.log(err));
+        } else if (elem.webkitRequestFullscreen) {
+          /* Safari / iOS */
+          elem.webkitRequestFullscreen();
+        } else if (elem.msRequestFullscreen) {
+          /* IE11 */
+          elem.msRequestFullscreen();
+        }
+      }
       const GOOGLE_APP_SCRIPT_URL =
         "https://script.google.com/macros/s/AKfycbwGijAooQNr14plPD5XqrkVURldGvJ3ylNB8iPOzC0OCxEZTKS6qa8UlqqQ3oluO8Oo/exec";
 
@@ -1440,6 +1458,7 @@
         document.getElementById("overlay-start").classList.add("hidden");
 
         showLevelSelection();
+        openFullscreen();
       }
 
       async function showLevelSelection() {
