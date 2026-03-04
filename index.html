@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Gimbocha KDS - Pastel Edition (Stable)</title>
+    <title>Gimbocha KDS - Pastel Compact (Master V4.1)</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         /* 🎨 โทนสีใหม่: เน้นขาว ตัดชมพูและเขียว Teal 🎨 */
@@ -29,7 +29,7 @@
         body { font-family: 'Kanit', sans-serif; background: var(--bg); margin: 0; padding: 1svh 1vw; display: flex; justify-content: center; align-items: center; height: 100svh; width: 100vw; overflow: hidden; box-sizing: border-box; touch-action: none; }
         #app { background: var(--app-bg); width: 100%; height: 100%; display: flex; flex-direction: column; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 30px rgba(0,0,0,0.1); position: relative; }
         
-        .header { display: flex; justify-content: space-between; align-items: center; padding: 4px 15px; background: var(--header-bg); color: var(--header-text); font-size: 12px; font-weight: bold; flex-shrink: 0; border-bottom: 2px solid #eee; }
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 4px 15px; background: var(--header-bg); color: var(--header-text); font-size: 11px; font-weight: bold; flex-shrink: 0; border-bottom: 2px solid #eee; }
         .game-container { display: flex; flex-direction: column; flex-grow: 1; overflow: hidden; }
         .order-panel-wrapper { display: flex; flex: 1; overflow: hidden; border-bottom: 1px solid #eee; }
         
@@ -37,109 +37,112 @@
         .order-header { font-size: 11px; font-weight: bold; color: var(--brand); margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center;}
         
         @keyframes popInOrder { 0% { transform: scale(0.8) translateY(-20px); opacity: 0; } 100% { transform: scale(1) translateY(0); opacity: 1; } }
-        #tickets-container { display: flex; gap: 8px; overflow-x: auto; overflow-y: hidden; padding-bottom: 8px; flex-grow: 1; align-items: flex-start; scroll-behavior: smooth; }
+        #tickets-container { display: flex; gap: 6px; overflow-x: auto; overflow-y: hidden; padding-bottom: 6px; flex-grow: 1; align-items: flex-start; scroll-behavior: smooth; }
         #tickets-container::-webkit-scrollbar { height: 5px; }
         #tickets-container::-webkit-scrollbar-thumb { background: #ddd; border-radius: 10px; }
 
-        .ticket { background: #ffffff; border: 1.5px solid #eee; padding: 6px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); min-width: 140px; max-width: 140px; flex-shrink: 0; display: flex; flex-direction: column; max-height: 100%; overflow-y: auto; position: relative; transition: 0.3s; animation: popInOrder 0.3s forwards; }
+        /* 🟢 ย่อขนาดบิลให้เล็กลง เพื่อให้เห็นเยอะขึ้นบนมือถือ 🟢 */
+        .ticket { background: #ffffff; border: 1.5px solid #eee; padding: 4px 6px; border-radius: 8px; box-shadow: 0 3px 8px rgba(0,0,0,0.03); min-width: 125px; max-width: 125px; flex-shrink: 0; display: flex; flex-direction: column; max-height: 100%; overflow-y: auto; position: relative; transition: 0.3s; animation: popInOrder 0.3s forwards; }
         
-        .ticket.wip-active { border-color: var(--wip-border); background: var(--wip); box-shadow: 0 4px 15px rgba(236, 109, 129, 0.15); }
+        .ticket.wip-active { border-color: var(--wip-border); background: var(--wip); box-shadow: 0 4px 12px rgba(236, 109, 129, 0.15); }
         .ticket.ready { background: #f0f9f1; border-color: var(--success) !important; }
         .ticket.ready h3 { color: var(--success) !important; border-bottom-color: var(--success); }
-        .ready-stamp { background: var(--success); color: white; text-align: center; font-size: 10px; font-weight: bold; padding: 3px; border-radius: 6px; margin-bottom: 4px; }
+        .ready-stamp { background: var(--success); color: white; text-align: center; font-size: 9px; font-weight: bold; padding: 2px; border-radius: 6px; margin-bottom: 3px; }
 
-        .ticket h3 { margin: 0 0 4px 0; color: var(--brand); display: flex; justify-content: space-between; font-size: 11px; border-bottom: 1px dashed #eee; padding-bottom: 3px;}
-        .ticket-timer-bg { width: 100%; height: 4px; background: #eee; border-radius: 10px; margin-bottom: 5px; overflow: hidden; }
+        .ticket h3 { margin: 0 0 3px 0; color: var(--brand); display: flex; justify-content: space-between; font-size: 10px; border-bottom: 1px dashed #eee; padding-bottom: 2px;}
+        .ticket-timer-bg { width: 100%; height: 3px; background: #eee; border-radius: 10px; margin-bottom: 4px; overflow: hidden; }
         .ticket-timer-fill { height: 100%; background: var(--success); width: 100%; transition: width 1s linear; }
         
-        .order-item { display: flex; align-items: center; margin-bottom: 2px; font-size: 9px; font-weight: 500; line-height: 1.2; color: #555; }
+        .order-item { display: flex; align-items: center; margin-bottom: 2px; font-size: 8.5px; font-weight: 500; line-height: 1.1; color: #555; }
         .order-item.in-progress { color: var(--hot); font-weight: bold; }
         .order-item.in-progress-helper { color: var(--blended); font-weight: bold; } 
         .order-item.done { text-decoration: line-through; color: #bbb; font-weight: normal; }
         
-        .badge { display: inline-block; padding: 1px 4px; border-radius: 4px; font-size: 7px; color: white; margin-right: 5px; font-weight: bold; min-width: 22px; text-align: center; }
-        .bg-single { background: var(--single); } .bg-blended { background: var(--blended); } .bg-hot { background: #eee; color: var(--hot); border: 1px solid var(--hot); padding: 0 3px; font-size: 8px; } .bg-dessert { background: var(--dessert); }
+        .badge { display: inline-block; padding: 1px 3px; border-radius: 3px; font-size: 6.5px; color: white; margin-right: 4px; font-weight: bold; min-width: 20px; text-align: center; }
+        .bg-single { background: var(--single); } .bg-blended { background: var(--blended); } .bg-hot { background: #eee; color: var(--hot); border: 1px solid var(--hot); padding: 0 2px; font-size: 7.5px; } .bg-dessert { background: var(--dessert); }
 
-        .serve-panel { width: 65px; background: #ffffff; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 6px; border-left: 1px solid #eee; z-index: 10; }
-        .serve-btn { width: 100%; height: 85%; background: var(--blended); color: white; border: none; border-radius: 10px; font-weight: bold; font-size: 11px; cursor: pointer; transition: 0.1s; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 4px 0 #2d7d70; }
+        .serve-panel { width: 55px; background: #ffffff; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 4px; border-left: 1px solid #eee; z-index: 10; }
+        .serve-btn { width: 100%; height: 85%; background: var(--blended); color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 10px; cursor: pointer; transition: 0.1s; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 4px 0 #2d7d70; }
         .serve-btn:active { transform: translateY(3px); box-shadow: none; }
-        .serve-btn.disabled { background: #eee !important; color: #bbb !important; box-shadow: 0 4px 0 #ddd !important; cursor: not-allowed; }
+        .serve-btn.disabled { background: #eee !important; color: #bbb !important; box-shadow: 0 3px 0 #ddd !important; cursor: not-allowed; }
         
-        .station-panel-wrapper { display: flex; flex-direction: column; flex: 0 0 24vh; background: #fff; border-top: 1px solid #eee;}
-        .station-panel { flex: 1; padding: 4px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; position: relative;}
-        #busy-overlay { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.7); z-index: 20; justify-content: center; align-items: center; font-weight: bold; color: var(--single); font-size: 12px; }
+        /* 🟢 บีบแผงควบคุมให้แบนลง (เหลือแค่ 20vh) 🟢 */
+        .station-panel-wrapper { display: flex; flex-direction: column; flex: 0 0 20vh; background: #fff; border-top: 1px solid #eee;}
+        .station-panel { flex: 1; padding: 2px 4px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; position: relative;}
+        #busy-overlay { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.7); z-index: 20; justify-content: center; align-items: center; font-weight: bold; color: var(--single); font-size: 11px; }
 
-        .station { background: #ffffff; border: 1.5px solid #eee; padding: 4px; border-radius: 10px; text-align: center; display: flex; flex-direction: column; justify-content: flex-start; position: relative; transition: 0.2s;}
-        .station-header { border-bottom: 1px solid #f8f9fa; padding-bottom: 2px; margin-bottom: 3px; }
-        .station h4 { margin: 0 0 2px 0; font-size: 9px; color: var(--brand); }
-        .station p { font-size: 6px; margin: 0; color: #999; }
+        .station { background: #ffffff; border: 1px solid #eee; padding: 2px; border-radius: 8px; text-align: center; display: flex; flex-direction: column; justify-content: flex-start; position: relative; transition: 0.2s;}
+        .station-header { border-bottom: 1px solid #f8f9fa; padding-bottom: 1px; margin-bottom: 2px; }
+        .station h4 { margin: 0 0 1px 0; font-size: 8px; color: var(--brand); }
+        .station p { font-size: 5px; margin: 0; color: #999; }
 
-        .helper-dropzone { min-height: 28px; background: #f8f9fa; border: 1.5px dashed #ddd; border-radius: 8px; display: flex; gap: 2px; padding: 2px; justify-content: center; align-items: center; margin: 2px 0;}
+        /* 🟢 ย่อกล่องลูกน้องและเหรียญลูกน้องให้สมส่วนขึ้น 🟢 */
+        .helper-dropzone { min-height: 22px; background: #f8f9fa; border: 1px dashed #ddd; border-radius: 6px; display: flex; gap: 2px; padding: 1px; justify-content: center; align-items: center; margin: 1px 0;}
         .helper-dropzone.drag-over { background: #e0f2f1; border-color: var(--blended); }
         
-        .helper-token { width: 26px; height: 26px; background: #fff; border: 2px solid var(--blended); border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 14px; cursor: grab; touch-action: none; box-shadow: 0 3px 6px rgba(0,0,0,0.1); z-index: 5; }
-        .helper-token.dragging { position: fixed; pointer-events: none; opacity: 0.9; transform: scale(1.2); z-index: 9999; }
+        .helper-token { width: 20px; height: 20px; background: #fff; border: 1.5px solid var(--blended); border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 11px; cursor: grab; touch-action: none; box-shadow: 0 2px 4px rgba(0,0,0,0.1); z-index: 5; }
+        .helper-token.dragging { position: fixed; pointer-events: none; opacity: 0.9; transform: scale(1.3); z-index: 9999; }
 
-        .btn-action { width: 100%; padding: 4px; border: none; border-radius: 6px; font-family: inherit; font-size: 8px; font-weight: bold; cursor: pointer; color: white; transition: 0.1s; margin-top: 2px; box-shadow: 0 2px 0 rgba(0,0,0,0.1); }
+        .btn-action { width: 100%; padding: 3px; border: none; border-radius: 4px; font-family: inherit; font-size: 7px; font-weight: bold; cursor: pointer; color: white; transition: 0.1s; margin-top: 1px; box-shadow: 0 2px 0 rgba(0,0,0,0.1); }
         .btn-action:disabled { background: #f0f0f0 !important; color: #ccc !important; box-shadow: none !important; cursor: not-allowed; }
         .btn-action:active:not(:disabled) { transform: translateY(1px); box-shadow: none; }
         
-        .machine-slots { display: flex; flex-direction: column; gap: 2px; margin: 2px 0 auto;}
-        .slot-bar { width: 100%; height: 5px; background: #eee; border-radius: 10px; overflow: hidden; position: relative; }
+        .machine-slots { display: flex; flex-direction: column; gap: 1px; margin: 1px 0 auto;}
+        .slot-bar { width: 100%; height: 4px; background: #eee; border-radius: 5px; overflow: hidden; position: relative; }
         .slot-fill { height: 100%; width: 0%; transition: width linear; background: var(--single); }
-        .slot-text { position: absolute; width: 100%; text-align: center; font-size: 4px; color: white; line-height: 5px; font-weight: bold; top: 0; }
+        .slot-text { position: absolute; width: 100%; text-align: center; font-size: 4px; color: white; line-height: 4px; font-weight: bold; top: 0; }
         
-        .progress-bar { width: 100%; height: 4px; background: #eee; border-radius: 10px; margin-top: 2px; overflow: hidden; display: none; }
+        .progress-bar { width: 100%; height: 3px; background: #eee; border-radius: 5px; margin-top: 1px; overflow: hidden; display: none; }
         .progress-fill { width: 0%; height: 100%; transition: width linear; }
         
-        .helper-prog-bar { width: 100%; height: 4px; background: #e0f2f1; border-radius: 10px; margin-top: 2px; overflow: hidden; display: none; border: 1px solid #b2dfdb;}
+        .helper-prog-bar { width: 100%; height: 3px; background: #e0f2f1; border-radius: 5px; margin-top: 1px; overflow: hidden; display: none; border: 1px solid #b2dfdb;}
         .helper-prog-fill { width: 0%; height: 100%; background: var(--blended); transition: width linear; }
 
-        .stock-indicator { font-size: 8px; font-weight: bold; color: var(--blended); margin-bottom: 2px; }
+        .stock-indicator { font-size: 7px; font-weight: bold; color: var(--blended); margin-bottom: 1px; }
         
-        .score-popup { position: absolute; font-weight: bold; font-size: 13px; padding: 4px 8px; border-radius: 8px; background: #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 2px solid; animation: floatUp 1.2s forwards; pointer-events: none; z-index: 9999; left: 50%; top: -10px; }
-        @keyframes floatUp { 0% { opacity: 0; transform: translate(-50%, 10px); } 20% { opacity: 1; transform: translate(-50%, 0px); } 100% { opacity: 0; transform: translate(-50%, -40px); } }
+        .score-popup { position: absolute; font-weight: bold; font-size: 11px; padding: 2px 6px; border-radius: 6px; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.1); border: 1.5px solid; animation: floatUp 1.2s forwards; pointer-events: none; z-index: 9999; left: 50%; top: -10px; }
+        @keyframes floatUp { 0% { opacity: 0; transform: translate(-50%, 10px); } 20% { opacity: 1; transform: translate(-50%, 0px); } 100% { opacity: 0; transform: translate(-50%, -30px); } }
         .hidden { display: none !important; }
         
-        /* Overlays */
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.96); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 100; text-align: center; padding: 20px; box-sizing: border-box;}
-        .overlay h1 { font-size: 24px !important; margin: 0 0 10px 0; color: var(--brand); }
-        .overlay p { font-size: 12px !important; margin: 5px 0; color: #666; }
+        /* 🟢 ย่อหน้าจอ Login ให้ไม่ล้น 🟢 */
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.96); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 100; text-align: center; padding: 15px; box-sizing: border-box;}
+        .overlay h1 { font-size: 20px !important; margin: 0 0 5px 0; color: var(--brand); }
+        .overlay p { font-size: 10px !important; margin: 2px 0 10px 0; color: #666; }
         
-        .btn-primary { background: var(--single); color: white; padding: 10px 25px; border: none; border-radius: 30px; font-size: 14px; font-family: inherit; cursor: pointer; margin: 10px; font-weight: bold; box-shadow: 0 4px 0 #b04d5d; transition: 0.1s; }
-        .btn-primary:active { transform: translateY(3px); box-shadow: none; }
-        .btn-danger { background: var(--danger); box-shadow: 0 4px 0 #a34141;}
+        .btn-primary { background: var(--single); color: white; padding: 8px 30px; border: none; border-radius: 30px; font-size: 13px; font-family: inherit; cursor: pointer; margin: 5px; font-weight: bold; box-shadow: 0 3px 0 #b04d5d; transition: 0.1s; }
+        .btn-primary:active { transform: translateY(2px); box-shadow: none; }
+        .btn-danger { background: var(--danger); box-shadow: 0 3px 0 #a34141;}
         
-        .split-layout { display: flex; flex-direction: row; align-items: stretch; justify-content: center; width: 100%; max-width: 650px; gap: 10px; height: 100%; max-height: 250px; }
+        .split-layout { display: flex; flex-direction: row; align-items: stretch; justify-content: center; width: 100%; max-width: 650px; gap: 8px; height: 100%; max-height: 250px; }
         .split-left { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative;}
         .split-right { flex: 1; display: flex; flex-direction: column; justify-content: center; overflow: hidden;}
         
-        .input-name { padding: 12px; width: 100%; max-width: 250px; margin: 10px 0; border-radius: 30px; border: 2px solid #eee; text-align: center; font-size: 14px; outline: none; transition: 0.3s; }
+        .input-name { padding: 8px 12px; width: 90%; max-width: 220px; margin: 6px 0; border-radius: 20px; border: 1.5px solid #eee; text-align: center; font-size: 12px; outline: none; transition: 0.3s; }
         .input-name:focus { border-color: var(--single); }
         
-        .leaderboard-container { background: #fff; color: var(--brand); width: 100%; border-radius: 12px; padding: 10px; margin: 0; text-align: left; overflow-y: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); flex-grow: 1; display: flex; flex-direction: column; border: 1px solid #eee;}
-        .leaderboard-title { font-size: 11px; font-weight: bold; border-bottom: 2px solid var(--blended); margin-bottom: 5px; padding-bottom: 3px; flex-shrink: 0;}
-        #leaderboard-list { overflow-y: auto; flex-grow: 1; padding-right: 5px;}
-        .leaderboard-row { display: flex; justify-content: space-between; align-items: center; padding: 4px 0; border-bottom: 1px solid #f8f9fa; font-size: 10px; gap: 5px;}
+        .leaderboard-container { background: #fff; color: var(--brand); width: 100%; border-radius: 10px; padding: 8px; margin: 0; text-align: left; overflow-y: hidden; box-shadow: 0 3px 10px rgba(0,0,0,0.05); flex-grow: 1; display: flex; flex-direction: column; border: 1px solid #eee;}
+        .leaderboard-title { font-size: 10px; font-weight: bold; border-bottom: 1.5px solid var(--blended); margin-bottom: 4px; padding-bottom: 2px; flex-shrink: 0;}
+        #leaderboard-list { overflow-y: auto; flex-grow: 1; padding-right: 4px;}
+        .leaderboard-row { display: flex; justify-content: space-between; align-items: center; padding: 3px 0; border-bottom: 1px solid #f8f9fa; font-size: 9px; gap: 4px;}
         .leaderboard-row:last-child { border-bottom: none; }
-        .lb-rank { font-weight: bold; width: 15px; text-align: center; color: var(--single);}
+        .lb-rank { font-weight: bold; width: 12px; text-align: center; color: var(--single);}
         
-        .kpi-box { background: #f8f9fa; padding: 8px; border-radius: 8px; margin: 6px 0; width: 100%; border: 1px solid #eee; }
-        .kpi-box p { margin: 2px 0 !important; }
+        .kpi-box { background: #f8f9fa; padding: 6px; border-radius: 6px; margin: 4px 0; width: 100%; border: 1px solid #eee; }
+        .kpi-box p { margin: 1px 0 !important; }
 
-        .level-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; width: 100%; max-width: 650px; padding: 15px; max-height: 70vh; overflow-y: auto;}
-        .level-card { background: white; border: 1.5px solid #eee; border-radius: 12px; padding: 10px; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; justify-content: space-between; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.02);}
-        .level-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.08); border-color: var(--blended); }
-        .level-card h3 { margin: 0 0 4px 0; color: var(--brand); font-size: 15px;}
+        .level-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; width: 100%; max-width: 600px; padding: 10px; max-height: 70vh; overflow-y: auto;}
+        .level-card { background: white; border: 1px solid #eee; border-radius: 10px; padding: 8px; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; justify-content: space-between; text-align: center; box-shadow: 0 2px 6px rgba(0,0,0,0.02);}
+        .level-card:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0,0,0,0.08); border-color: var(--blended); }
+        .level-card h3 { margin: 0 0 3px 0; color: var(--brand); font-size: 13px;}
         
-        .stat-box { background: #f8f9fa; border-radius: 6px; padding: 5px; font-size: 10px; margin-top: 5px; border-left: 3px solid var(--blended); text-align: left; color: #555;}
+        .stat-box { background: #f8f9fa; border-radius: 5px; padding: 4px; font-size: 9px; margin-top: 4px; border-left: 2px solid var(--blended); text-align: left; color: #555;}
         .stat-box.champion { border-left-color: var(--dessert); background: #fffdf8; }
 
-        .tutorial-box { background: white; color: #333; padding: 25px; border-radius: 15px; max-width: 480px; text-align: center; box-shadow: 0 15px 40px rgba(0,0,0,0.1); border: 1px solid #eee;}
-        .tutorial-box h2 { color: var(--single); margin: 0 0 15px 0; font-size: 18px;}
-        .tutorial-box p { font-size: 13px !important; color: #555; text-align: left; line-height: 1.6; margin-bottom: 10px; }
-        .tutorial-box ul { font-size: 12px; text-align: left; color: #555; padding-left: 20px; margin-bottom: 15px; line-height: 1.5;}
-        .tutorial-box li { margin-bottom: 6px; }
+        .tutorial-box { background: white; color: #333; padding: 20px; border-radius: 12px; max-width: 420px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 1px solid #eee;}
+        .tutorial-box h2 { color: var(--single); margin: 0 0 10px 0; font-size: 16px;}
+        .tutorial-box p { font-size: 11px !important; color: #555; text-align: left; line-height: 1.5; margin-bottom: 8px; }
+        .tutorial-box ul { font-size: 10.5px; text-align: left; color: #555; padding-left: 15px; margin-bottom: 12px; line-height: 1.4;}
+        .tutorial-box li { margin-bottom: 4px; }
     </style>
 </head>
 <body>
@@ -151,14 +154,14 @@
 
 <div id="app">
     <div class="header">
-        <span id="level-display" style="color: var(--single); font-weight: 800; font-size: 14px;">Level 1</span>
+        <span id="level-display" style="color: var(--single); font-weight: 800; font-size: 13px;">Level 1</span>
         <span style="display: flex; align-items: center;">
-            <img id="header-player-img" src="IMG_4511.jpeg" class="hidden" onerror="this.style.display='none'" style="width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid #eee; object-fit: cover; margin-right: 6px;">
-            <span id="display-player-name" style="color: var(--header-text); font-size: 13px;">-</span>
+            <img id="header-player-img" src="IMG_4511.jpeg" class="hidden" onerror="this.style.display='none'" style="width: 18px; height: 18px; border-radius: 50%; border: 1px solid #eee; object-fit: cover; margin-right: 5px;">
+            <span id="display-player-name" style="color: var(--header-text); font-size: 12px;">-</span>
         </span>
-        <div style="text-align: right; line-height: 1.2;">
-            <div style="font-size: 10px; color: #888;">ด่านนี้: <span id="current-level-score" style="color: var(--brand); font-weight: bold;">0</span></div>
-            <div style="font-size: 13px; font-weight: bold; color: var(--blended)">รวม: <span id="total-score">0</span></div>
+        <div style="text-align: right; line-height: 1.1;">
+            <div style="font-size: 9px; color: #888;">ด่านนี้: <span id="current-level-score" style="color: var(--brand); font-weight: bold;">0</span></div>
+            <div style="font-size: 11px; font-weight: bold; color: var(--blended)">รวม: <span id="total-score">0</span></div>
         </div>
     </div>
 
@@ -167,27 +170,30 @@
             <div class="order-panel">
                 <div class="order-header">
                     <span>🧾 คิวออเดอร์ 
-                        <span id="order-count-badge" style="background: var(--single); color: white; padding: 2px 6px; border-radius: 10px; font-size: 9px; margin-left: 5px;">0</span>
-                        <span style="font-size: 9px; color:var(--blended); margin-left:5px; font-weight:bold;">(WIP โฟกัส 5 บิล)</span>
+                        <span id="order-count-badge" style="background: var(--single); color: white; padding: 1px 5px; border-radius: 8px; font-size: 8px; margin-left: 3px;">0</span>
+                        <span style="font-size: 8px; color:var(--blended); margin-left:4px; font-weight:bold;">(WIP โฟกัส 5 บิล)</span>
                     </span>
                     <span id="active-count-badge" style="display:none;">0</span>
-                    
-                    <span style="font-size: 11px; font-weight:bold; color: var(--wash);">🧼 จานรออ่าง: <span id="dirty-count-display">0</span>/40</span>
+                    <span style="font-size: 10px; font-weight:bold; color: var(--wash);">🧼 จานรออ่าง: <span id="dirty-count-display">0</span>/40</span>
                 </div>
                 <div id="tickets-container"></div>
-                <p id="no-order-msg" class="hidden" style="color: var(--success); font-weight: bold; text-align: center; font-size: 13px; margin-top: 15px;">✅ เคลียร์บาร์เรียบร้อย!</p>
+                <p id="no-order-msg" class="hidden" style="color: var(--success); font-weight: bold; text-align: center; font-size: 12px; margin-top: 10px;">✅ เคลียร์บาร์เรียบร้อย!</p>
             </div>
             
             <div class="serve-panel">
-                <p style="margin: 0 0 4px 0; font-size: 9px; font-weight: bold; color: #999;">จัดเสิร์ฟ</p>
+                <p style="margin: 0 0 2px 0; font-size: 8px; font-weight: bold; color: #999;">จัดเสิร์ฟ</p>
                 <button class="serve-btn disabled" id="btn-serve-tray" onclick="serveOrders()">
-                    <span style="font-size: 20px; margin-bottom: 2px;">🛎️</span>
-                    <span style="background: rgba(255,255,255,0.25); border-radius: 4px; padding: 2px 6px; font-size: 8px;"><span id="ready-count">0</span>/4</span>
+                    <span style="font-size: 16px; margin-bottom: 1px;">🛎️</span>
+                    <span style="background: rgba(255,255,255,0.25); border-radius: 3px; padding: 1px 5px; font-size: 7px;"><span id="ready-count">0</span>/4</span>
                 </button>
             </div>
         </div>
 
         <div class="station-panel-wrapper">
+            <div class="helper-status-bar" id="global-helper-status" style="display:none;">
+                <div class="helper-dropzone" data-station="pool" id="helper-pool"></div>
+            </div>
+
             <div class="station-panel">
                 <div id="busy-overlay">⏳ คุณกำลังยุ่งอยู่...</div>
                 
@@ -224,8 +230,8 @@
                     </div>
                     <div style="margin-top:auto; position:relative;">
                         <div class="stock-indicator">สต็อค: <span id="blended-stock">8</span>/8</div>
-                        <button class="btn-action" style="background: var(--blended); margin-bottom: 2px;" id="btn-blend-pour" onclick="pourBlended()">เทเสิร์ฟ (1วิ)</button>
-                        <div class="progress-bar" id="prog-blended-pour" style="margin-bottom: 2px;"><div class="progress-fill" style="background: var(--blended);"></div></div>
+                        <button class="btn-action" style="background: var(--blended); margin-bottom: 1px;" id="btn-blend-pour" onclick="pourBlended()">เทเสิร์ฟ (1วิ)</button>
+                        <div class="progress-bar" id="prog-blended-pour" style="margin-bottom: 1px;"><div class="progress-fill" style="background: var(--blended);"></div></div>
                         
                         <button class="btn-action" style="background: #cf8a3c; opacity: 0.9;" id="btn-blend-refill" onclick="refillGallon()">ต้มเพิ่ม (ล็อค 4วิ)</button>
                         <div class="progress-bar" id="prog-refill"><div class="progress-fill" style="background: #cf8a3c;" id="fill-refill"></div></div>
@@ -240,7 +246,7 @@
                         <p>(จัดเอง 2วิ / ลูกน้อง 4วิ)</p>
                     </div>
                     <div style="position:relative; margin-top:auto;">
-                        <button class="btn-action" style="background: var(--dessert);" id="btn-dessert" onclick="doTask('dessert', 2000, 'btn-dessert')">จัดจาน (2 วิ)</button>
+                        <button class="btn-action" style="background: var(--dessert);" id="btn-dessert" onclick="doTask('dessert', 2000, 'btn-dessert')">จัดจาน (2วิ)</button>
                         <div class="progress-bar" id="prog-dessert"><div class="progress-fill" style="background: var(--dessert);" id="fill-dessert"></div></div>
                         <div class="helper-prog-bar" id="helper-prog-dessert"><div class="helper-prog-fill" id="helper-fill-dessert"></div></div>
                     </div>
@@ -253,7 +259,7 @@
                         <p>(ล้างทีละ 10: บอส 3วิ / ลูกน้อง 5วิ)</p>
                     </div>
                     <div style="position:relative; margin-top:auto;">
-                        <button class="btn-action" style="background: var(--wash); font-size: 7px;" id="btn-wash" onclick="washDishes()">ล้าง 10 ใบ (3 วิ)</button>
+                        <button class="btn-action" style="background: var(--wash); font-size: 6.5px;" id="btn-wash" onclick="washDishes()">ล้าง 10 ใบ (3วิ)</button>
                         <div class="progress-bar" id="prog-wash"><div class="progress-fill" style="background: var(--wash);" id="fill-wash"></div></div>
                         <div class="helper-prog-bar" id="helper-prog-wash"><div class="helper-prog-fill" id="helper-fill-wash"></div></div>
                     </div>
@@ -264,39 +270,39 @@
 </div>
 
 <div id="overlay-start" class="overlay">
-    <img src="IMG_4511.jpeg" alt="Gimbocha Logo" style="width: 90px; height: 90px; object-fit: cover; border-radius: 20px; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);" onerror="this.style.display='none'">
+    <img src="IMG_4511.jpeg" alt="Gimbocha Logo" style="width: 70px; height: 70px; object-fit: cover; border-radius: 15px; margin-bottom: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);" onerror="this.style.display='none'">
     <h1 style="color: var(--header-text)">Gimbocha KDS</h1>
     <p>ระบบจำลองการบริหารจัดการบาร์ Gimbocha</p>
     <input type="tel" id="player-phone-input" class="input-name" placeholder="เบอร์โทรศัพท์ (ใช้จำสถิติ)" autocomplete="off">
     <input type="text" id="player-name-input" class="input-name" placeholder="ชื่อพนักงาน" autocomplete="off">
-    <button class="btn-primary" style="padding: 12px 40px; font-size: 16px;" onclick="initGame()">เข้าสู่ระบบ</button>
+    <button class="btn-primary" onclick="initGame()">เข้าสู่ระบบ</button>
 </div>
 
 <div id="overlay-level-select" class="overlay hidden">
-    <h1 style="color: var(--single); font-size: 28px !important;">เลือกระดับการฝึกซ้อม</h1>
-    <p id="loading-leaderboard-msg" style="color: #888;">⏳ กำลังซิงค์ข้อมูลสถิติร้าน...</p>
+    <h1 style="color: var(--single); font-size: 24px !important;">เลือกระดับการฝึกซ้อม</h1>
+    <p id="loading-leaderboard-msg" style="color: #888; font-size: 11px;">⏳ กำลังซิงค์ข้อมูลสถิติร้าน...</p>
     <div id="level-grid" class="level-grid"></div>
 </div>
 
 <div id="overlay-level-clear" class="overlay hidden">
-    <div class="split-layout" style="max-width: 700px;">
-        <div class="split-left" style="background: white; border-radius: 12px; padding: 20px; box-shadow: 0 5px 20px rgba(0,0,0,0.05);">
-            <h1 id="clear-title" style="color: var(--success); font-size: 22px !important;">ด่านเคลียร์!</h1>
-            <p style="color: #666;">คะแนนด่านนี้: <span id="level-score-display" style="color: var(--single); font-size: 22px; font-weight: bold;">0</span></p>
+    <div class="split-layout" style="max-width: 650px;">
+        <div class="split-left" style="background: white; border-radius: 10px; padding: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+            <h1 id="clear-title" style="color: var(--success); font-size: 20px !important;">ด่านเคลียร์!</h1>
+            <p style="color: #666; font-size: 11px;">คะแนนด่านนี้: <span id="level-score-display" style="color: var(--single); font-size: 18px; font-weight: bold;">0</span></p>
             
             <div class="kpi-box">
-                <p style="color: #666;">⏱️ เวลาในด่านนี้: <span id="avg-time-game" style="color: var(--brand); font-weight: bold;">0</span> วิ/บิล</p>
-                <p style="color: var(--blended); font-size: 13px !important; font-weight: bold; margin-top: 5px !important;">⏳ เวลาจริงของคุณ: <span id="avg-time-real" style="font-size: 18px;">0</span> นาที/บิล</p>
-                <hr style="border: 0; border-top: 1px dashed #ddd; margin: 8px 0;">
-                <p style="color: #666;">🌍 ค่าเฉลี่ยร้านด่านนี้: <span id="global-avg-time" style="font-weight: bold; color: var(--brand);">...</span> นาที</p>
-                <p id="kpi-compare-status" style="font-size: 11px; font-weight: bold; margin-top: 4px !important;"></p>
+                <p style="color: #666;">⏱️ เวลาเฉลี่ยเกม: <span id="avg-time-game" style="color: var(--brand); font-weight: bold;">0</span> วิ/บิล</p>
+                <p style="color: var(--blended); font-size: 12px !important; font-weight: bold; margin-top: 4px !important;">⏳ เวลาจริงของคุณ: <span id="avg-time-real" style="font-size: 16px;">0</span> นาที/บิล</p>
+                <hr style="border: 0; border-top: 1px dashed #ddd; margin: 6px 0;">
+                <p style="color: #666; font-size: 10px;">🌍 ค่าเฉลี่ยร้านด่านนี้: <span id="global-avg-time" style="font-weight: bold; color: var(--brand);">...</span> นาที</p>
+                <p id="kpi-compare-status" style="font-size: 10px; font-weight: bold; margin-top: 3px !important;"></p>
             </div>
 
             <div class="button-group hidden" id="action-buttons">
-                <button class="btn-primary btn-danger" style="box-shadow: 0 4px 0 #a34141;" onclick="backToLevelSelect()">เลือกด่านใหม่</button>
+                <button class="btn-primary btn-danger" style="box-shadow: 0 3px 0 #a34141;" onclick="backToLevelSelect()">เลือกด่านใหม่</button>
                 <button class="btn-primary" onclick="startNextLevel()" id="btn-continue">ลุยด่านต่อไป!</button>
             </div>
-            <div id="save-status-msg" style="font-size: 10px; color: #888; margin-top: 8px;"></div>
+            <div id="save-status-msg" style="font-size: 9px; color: #888; margin-top: 6px;"></div>
         </div>
 
         <div class="split-right">
@@ -312,203 +318,109 @@
     <div class="tutorial-box">
         <h2 id="tut-title">คำแนะนำ</h2>
         <div id="tut-body"></div>
-        <button class="btn-primary" onclick="closeTutorial()" style="width:100%; font-size: 15px; padding: 12px;">เข้าใจแล้ว ลุยเลย!</button>
+        <button class="btn-primary" onclick="closeTutorial()" style="width:100%; font-size: 13px; padding: 10px;">เข้าใจแล้ว ลุยเลย!</button>
     </div>
 </div>
 
 <script>
     const GOOGLE_APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwGijAooQNr14plPD5XqrkVURldGvJ3ylNB8iPOzC0OCxEZTKS6qa8UlqqQ3oluO8Oo/exec";
-
+    
     const menuDB = {
-        hot: ["อัสสัมวาวี", "ชามะลิหิมะโปรย", "ชาเขียวหวงชาน", "หลงจิ่ง 2025", "เถี่ยกวนอิน"],
-        single: ["ชาขาวเก็บ 8 ปี", "ชามะลิหิมะโปรย", "ชาแดงวาวี", "ตานฉงเกล็ดหิมะ", "มี่หลันเซียง"],
-        blended: ["Cinnamon Mint", "Dark Pomegranate", "8 Flowers", "Kandy!", "Lavender Lemon"],
-        dessert: ["Blueberry Tart", "Burnt Cheese Cake", "Japanese Cheese Cake", "Lemon Custard"]
+        hot: ["อัสสัมวาวี", "ชามะลิหิมะโปรย", "ชาเขียวหวงชาน", "หลงจิ่ง", "เถี่ยกวนอิน"],
+        single: ["ชาขาว 8 ปี", "ชาแดงวาวี", "มี่หลันเซียง", "เจิ้งซาน"],
+        blended: ["8 Flowers", "Dark Pomegranate", "Kandy!", "Lavender Lemon"],
+        dessert: ["Blueberry Tart", "Burnt Cheese", "Japanese Cheese", "Dark Choc"]
     };
 
-    const levelsConfig = [
-        { orders: 5, itemsMin: 1, itemsMax: 2 },   
-        { orders: 7, itemsMin: 1, itemsMax: 3 },   
-        { orders: 9, itemsMin: 2, itemsMax: 3 },   
-        { orders: 11, itemsMin: 2, itemsMax: 4 },  
-        { orders: 13, itemsMin: 2, itemsMax: 4 },  
-        { orders: 15, itemsMin: 3, itemsMax: 4 },  
-        { orders: 17, itemsMin: 3, itemsMax: 5 },  
-        { orders: 20, itemsMin: 3, itemsMax: 5 },  
-        { orders: 22, itemsMin: 4, itemsMax: 6 },  
-        { orders: 25, itemsMin: 4, itemsMax: 6 }   
-    ];
-
-    function seededRandom(seed) {
-        let x = Math.sin(seed) * 10000;
-        return x - Math.floor(x);
-    }
-
-    function getRandomMenuType(seed) {
-        let rand = seededRandom(seed) * 100;
-        if (rand < 6) return 'hot';
-        if (rand < 24) return 'single'; 
-        if (rand < 76) return 'blended'; 
-        return 'dessert';
-    }
-
-    let levels = [];
-    function generateStandardLevels() {
-        levelsConfig.forEach((config, idx) => {
-            let levelOrders = [];
-            for(let i = 0; i < config.orders; i++) {
-                let seed1 = idx * 100 + i + 1234;
-                let numItems = config.itemsMin + Math.floor(seededRandom(seed1) * (config.itemsMax - config.itemsMin + 1));
-                let items = [];
-                
-                let calcTime = 30; 
-                let countSingle = 0, countHot = 0, countBlended = 0, countDessert = 0;
-
-                for(let j=0; j < numItems; j++) {
-                    let seed2 = idx * 1000 + i * 10 + j + 5678;
-                    const type = getRandomMenuType(seed2);
-                    const nameIdx = Math.floor(seededRandom(seed2 + 1) * menuDB[type].length);
-                    items.push({ type: type, name: menuDB[type][nameIdx], done: false, inProgress: false });
-                    
-                    if(type === 'single') countSingle++;
-                    if(type === 'hot') countHot++;
-                    if(type === 'blended') countBlended++;
-                    if(type === 'dessert') countDessert++;
-                }
-
-                calcTime += (countSingle * 12) + (countHot * 10) + (countBlended * 5) + (countDessert * 5);
-                calcTime += (idx * 2);
-
-                levelOrders.push({ id: `${idx+1}0${i+1}`, timeLimit: calcTime, timeLeft: calcTime, items: items, status: 'pending' });
-            }
-            levels.push({ title: `Level ${idx+1}`, orders: levelOrders, totalOrders: config.orders, spawnBaseRate: Math.max(1, 4 - Math.floor(idx/2)) });
-        });
-    }
-    generateStandardLevels();
-
-    let currentLevel = 0; let totalScore = 0; let levelScore = 0; 
-    let spawnQueue = []; let activeOrders = []; 
-    let timeToNextSpawn = 0; let blendedStock = 8; let globalTimer;
-    let playerName = ""; let playerPhone = "";
-    let levelWaitTimes = [];
-    let leaderboardCache = null; 
-    
-    let isPlayerBusy = false; let isRefilling = false;
-    let dirtyDishes = 0; 
-    
-    let totalHelpers = 0;
-    let helperAssignments = []; 
-    let activeHelpers = { hot: 0, single: 0, blended: 0, dessert: 0, wash: 0 }; 
-    let helperTimer;
-    
-    let brewSlots = [false, false, false, false];
-    function getFreeSlot() { return brewSlots.findIndex(s => s === false); }
+    let currentLevel = 0, totalScore = 0, levelScore = 0, dirtyDishes = 0;
+    let spawnQueue = [], activeOrders = [], brewSlots = [false, false, false, false];
+    let timeToNextSpawn = 0, blendedStock = 8, isPlayerBusy = false, isRefilling = false, isGamePaused = false;
+    let playerName = "", playerPhone = "", levelWaitTimes = [], globalTimer, helperTimer;
+    let helperAssignments = [], activeHelpers = { hot:0, single:0, blended:0, dessert:0, wash:0 };
+    let dragObj = { id: null, el: null }, leaderboardCache = null;
 
     const normalizePhone = (p) => String(p).replace(/\D/g, '').replace(/^0+/, '');
 
     window.onload = () => {
-        let savedPhone = localStorage.getItem('gimbocha_phone');
-        let savedName = localStorage.getItem('gimbocha_name');
-        if(savedPhone) document.getElementById('player-phone-input').value = savedPhone;
-        if(savedName) document.getElementById('player-name-input').value = savedName;
-        
+        let p = localStorage.getItem('gimbocha_phone'), n = localStorage.getItem('gimbocha_name');
+        if(p) document.getElementById('player-phone-input').value = p;
+        if(n) document.getElementById('player-name-input').value = n;
+        initSingleSlots();
         checkOrientation();
         window.addEventListener('resize', checkOrientation);
     };
 
     function checkOrientation() {
         const warning = document.getElementById('landscape-warning');
-        if (window.innerHeight > window.innerWidth) { warning.style.display = 'flex'; } 
-        else { warning.style.display = 'none'; }
+        if (window.innerHeight > window.innerWidth) {
+            warning.style.display = 'flex';
+        } else {
+            warning.style.display = 'none';
+        }
     }
 
     function initSingleSlots() {
-        const container = document.getElementById('single-slots');
-        container.innerHTML = "";
-        for(let i=1; i<=4; i++) {
-            container.innerHTML += `<div class="slot-bar"><div class="slot-fill" id="slot-fill-${i}"></div><div class="slot-text" id="slot-text-${i}">ว่าง</div></div>`;
-        }
-    }
-    initSingleSlots();
-
-    function updateSingleSlotsUI() {
-        for(let i=0; i<4; i++) {
-            let text = document.getElementById(`slot-text-${i+1}`);
-            let fill = document.getElementById(`slot-fill-${i+1}`);
-            if (brewSlots[i]) {
-                text.innerText = "ชง...";
-                fill.style.background = "var(--single)"; 
-            } else {
-                text.innerText = "ว่าง";
-                fill.style.width = "0%";
-                fill.style.transition = "none";
-            }
-        }
+        const c = document.getElementById('single-slots'); c.innerHTML = "";
+        for(let i=1; i<=4; i++) c.innerHTML += `<div class="slot-bar"><div class="slot-fill" id="slot-fill-${i}"></div><div class="slot-text" id="slot-text-${i}">ว่าง</div></div>`;
     }
 
     function initGame() {
         playerPhone = document.getElementById('player-phone-input').value.trim();
         playerName = document.getElementById('player-name-input').value.trim();
-        
-        if(!playerPhone || !playerName) { alert("❌ โปรดใส่เบอร์โทรและชื่อให้ครบครับ!"); return; }
-        
+        if(!playerPhone || !playerName) { alert("ระบุชื่อและเบอร์โทรศัพท์ให้ครบถ้วนครับ"); return; }
         localStorage.setItem('gimbocha_phone', playerPhone);
         localStorage.setItem('gimbocha_name', playerName);
-        
         document.getElementById('display-player-name').innerText = playerName;
         document.getElementById('overlay-start').classList.add('hidden');
-        
         showLevelSelection();
     }
 
+    const levelsConfig = [{orders:5, itemsMin:1, itemsMax:2}, {orders:7, itemsMin:1, itemsMax:3}, {orders:9, itemsMin:2, itemsMax:3}, {orders:11, itemsMin:2, itemsMax:4}, {orders:13, itemsMin:2, itemsMax:4}, {orders:15, itemsMin:3, itemsMax:4}, {orders:17, itemsMin:3, itemsMax:5}, {orders:20, itemsMin:3, itemsMax:5}, {orders:22, itemsMin:4, itemsMax:6}, {orders:25, itemsMin:4, itemsMax:6}];
+    let levels = [];
+    
+    levelsConfig.forEach((config, idx) => {
+        let levelOrders = [];
+        for(let i = 0; i < config.orders; i++) {
+            let seed1 = idx * 100 + i + 1234, numItems = config.itemsMin + Math.floor(seededRandom(seed1) * (config.itemsMax - config.itemsMin + 1));
+            let items = [], calcTime = 30;
+            for(let j=0; j < numItems; j++) {
+                let seed2 = idx * 1000 + i * 10 + j + 5678, r = seededRandom(seed2) * 100, type = r < 6 ? 'hot' : r < 24 ? 'single' : r < 76 ? 'blended' : 'dessert';
+                items.push({ type, name: menuDB[type][Math.floor(seededRandom(seed2+1) * menuDB[type].length)], done: false, inProgress: false });
+                calcTime += (type === 'single') ? 12 : (type === 'hot' ? 10 : 5);
+            }
+            levelOrders.push({ id: `${idx+1}0${i+1}`, timeLimit: calcTime + (idx*2), timeLeft: calcTime + (idx*2), items, status: 'pending' });
+        }
+        levels.push({ title: `Level ${idx+1}`, orders: levelOrders, totalOrders: config.orders });
+    });
+
+    function seededRandom(seed) { let x = Math.sin(seed) * 10000; return x - Math.floor(x); }
+
     async function showLevelSelection() {
         document.getElementById('overlay-level-clear').classList.add('hidden');
-        const overlay = document.getElementById('overlay-level-select');
-        const grid = document.getElementById('level-grid');
+        const overlay = document.getElementById('overlay-level-select'), grid = document.getElementById('level-grid');
+        overlay.classList.remove('hidden'); grid.innerHTML = "";
+        let topPlayers = {}, myStats = {}, cleanMyPhone = normalizePhone(playerPhone);
         const loadingMsg = document.getElementById('loading-leaderboard-msg');
-        
-        overlay.classList.remove('hidden');
-        grid.innerHTML = "";
         loadingMsg.style.display = 'block';
 
-        let topPlayers = {};
-        let myStats = {};
-        for(let i=1; i<=10; i++) { topPlayers[i] = null; myStats[i] = null; }
-        let cleanMyPhone = normalizePhone(playerPhone);
-
         try {
-            if (!leaderboardCache) {
-                const response = await fetch(GOOGLE_APP_SCRIPT_URL);
-                leaderboardCache = await response.json();
+            if (!leaderboardCache) { const resp = await fetch(GOOGLE_APP_SCRIPT_URL); leaderboardCache = await resp.json(); }
+            if (Array.isArray(leaderboardCache)) {
+                leaderboardCache.forEach(e => {
+                    if(!topPlayers[e.level] || e.score > topPlayers[e.level].score || (e.score === topPlayers[e.level].score && e.avgWait < topPlayers[e.level].avgWait)) topPlayers[e.level] = e;
+                    if(normalizePhone(e.phone) === cleanMyPhone) myStats[e.level] = e;
+                });
             }
-            if (!Array.isArray(leaderboardCache)) { leaderboardCache = []; } 
-            
-            leaderboardCache.forEach(entry => {
-                let lvl = entry.level;
-                if(lvl >= 1 && lvl <= 10) {
-                    if(!topPlayers[lvl]) { topPlayers[lvl] = entry; } 
-                    else { if (entry.score > topPlayers[lvl].score || (entry.score === topPlayers[lvl].score && entry.avgWait < topPlayers[lvl].avgWait)) { topPlayers[lvl] = entry; } }
-                    if(normalizePhone(entry.phone) === cleanMyPhone) { myStats[lvl] = entry; }
-                }
-            });
-        } catch (error) { console.error("ดึงข้อมูลไม่สำเร็จ", error); }
+        } catch(e) { console.error(e); }
 
         loadingMsg.style.display = 'none';
 
-        levels.forEach((lvlData, idx) => {
-            let lvlNum = idx + 1;
-            let topP = topPlayers[lvlNum];
-            let myP = myStats[lvlNum];
-            
-            let topHtml = `<div class="stat-box champion" style="color:#aaa;">ยังไม่มีแชมป์</div>`;
-            if (topP) { topHtml = `<div class="stat-box champion"><span style="color:var(--dessert); font-weight:bold;">👑 ${topP.name}</span><br>${topP.score}pts | ⏱️${topP.avgWait}m</div>`; }
-            let myHtml = `<div class="stat-box" style="color:#aaa;">สถิติคุณ: ยังไม่เคยเล่น</div>`;
-            if (myP) { myHtml = `<div class="stat-box"><span style="color:var(--success); font-weight:bold;">👤 สถิติคุณ</span><br>${myP.score}pts | ⏱️${myP.avgWait}m</div>`; }
-
-            let card = document.createElement('div');
-            card.className = 'level-card';
-            card.onclick = () => selectLevel(idx);
-            card.innerHTML = `<h3>ด่าน ${lvlNum}</h3><div class="order-count">${lvlData.totalOrders} บิล</div><div style="text-align: left; width: 100%;">${topHtml}${myHtml}</div>`;
+        levels.forEach((lvl, idx) => {
+            let card = document.createElement('div'); card.className = 'level-card'; card.onclick = () => selectLevel(idx);
+            let t = topPlayers[idx+1], m = myStats[idx+1];
+            let tHtml = t ? `<div class="stat-box champion">👑 ${t.name}<br>${t.score}pts | ⏱️${t.avgWait}m</div>` : `<div class="stat-box champion" style="color:#aaa">ยังไม่มีแชมป์</div>`;
+            let mHtml = m ? `<div class="stat-box">👤 คุณ<br>${m.score}pts | ⏱️${m.avgWait}m</div>` : `<div class="stat-box" style="color:#aaa">ยังไม่เล่น</div>`;
+            card.innerHTML = `<h3>ด่าน ${idx+1}</h3><div class="order-count">${lvl.totalOrders} บิล</div><div style="text-align: left; width: 100%;">${tHtml}${mHtml}</div>`;
             grid.appendChild(card);
         });
     }
@@ -517,18 +429,348 @@
     function backToLevelSelect() { document.getElementById('overlay-level-clear').classList.add('hidden'); showLevelSelection(); }
     function startNextLevel() { document.getElementById('overlay-level-clear').classList.add('hidden'); currentLevel++; startLevel(); }
 
-    function setupHelpersForLevel() {
-        totalHelpers = 0;
-        if (currentLevel >= 2) totalHelpers = 1; 
-        
+    function startLevel() {
+        spawnQueue = JSON.parse(JSON.stringify(levels[currentLevel].orders));
+        activeOrders = []; blendedStock = 8; dirtyDishes = 0; brewSlots.fill(false);
+        isPlayerBusy = false; isRefilling = false; levelScore = 0; levelWaitTimes = [];
+        totalHelpers = (currentLevel >= 2) ? 1 : 0;
         helperAssignments = Array(totalHelpers).fill('dessert');
-        activeHelpers = { hot: 0, single: 0, blended: 0, dessert: 0, wash: 0 };
-
-        renderHelpers();
+        activeHelpers = { hot:0, single:0, blended:0, dessert:0, wash:0 };
+        document.getElementById('tickets-container').innerHTML = "";
+        document.getElementById('level-display').innerText = `Level ${currentLevel + 1}`;
+        renderHelpers(); updateUI(); updateSingleSlotsUI();
+        
+        if (currentLevel === 0) {
+            showTutorial("🚨 กฎฉบับ Head Barista", "<ul><li><b>WIP Limit:</b> ทำบิลได้เฉพาะ <b>5 บิลซ้ายสุด</b> (กรอบสีชมพู) ห้ามลัดคิว! ❌-5</li><li><b>🧼 การล้างจาน:</b> เสิร์ฟแก้วจะสะสมจานสกปรก ถ้าครบ <b>40 ใบ</b> 🛑 <b>ปุ่มเสิร์ฟจะล็อก!</b> ต้องกดล้างจาน (เหมา 10 ใบ ล็อกตัว 3 วิ)</li><li><b>หน่วงเวลางาน:</b> ชง Single ล็อก 1.5วิ, ต้มชาล็อก 4วิ, เทน้ำล็อก 1วิ</li></ul>");
+        } else if (currentLevel === 2) {
+            showTutorial("🎉 ปลดล็อกผู้ช่วย!", "<p>ลาก 🧑‍🍳 ไปปล่อยสเตชั่นที่ต้องการ (เริ่มต้นอยู่ที่ขนม)</p><ul><li>ลูกน้องช่วย <b>ล้างจาน</b> และ <b>ต้มชา</b> ได้ด้วยนะ!</li><li>เขาทำงานอัตโนมัติใน 5 บิลแรก (ช้ากว่าคุณ 2 วิ)</li><li>คุณจะมีลูกน้อง <b>แค่ 1 คน</b> ตลอดเกมนี้!</li></ul>");
+        } else { beginTimers(); }
     }
 
-    let dragObj = { id: null, el: null };
+    function showTutorial(t, b) { isGamePaused = true; document.getElementById('tut-title').innerText = t; document.getElementById('tut-body').innerHTML = b; document.getElementById('tutorial-modal').classList.remove('hidden'); }
+    function closeTutorial() { document.getElementById('tutorial-modal').classList.add('hidden'); isGamePaused = false; beginTimers(); }
 
+    function beginTimers() {
+        clearInterval(globalTimer); clearInterval(helperTimer);
+        globalTimer = setInterval(() => {
+            if(isGamePaused) return;
+            if (spawnQueue.length > 0) {
+                timeToNextSpawn--;
+                if (timeToNextSpawn <= 0) {
+                    let order = spawnQueue.shift(); order.spawnTime = Date.now(); activeOrders.push(order);
+                    appendTicket(order); timeToNextSpawn = Math.max(5, 12 - currentLevel) + Math.floor(Math.random() * 3);
+                }
+            }
+            activeOrders.forEach(o => o.timeLeft--); updateTimersUI(); checkLevelCompletion();
+        }, 1000);
+
+        helperTimer = setInterval(() => {
+            if(isGamePaused) return;
+            let wip = activeOrders.filter(o => o.status !== 'ready').slice(0, 5);
+            ['single', 'blended', 'hot', 'dessert', 'wash'].forEach(st => {
+                let count = helperAssignments.filter(s => s === st).length;
+                if (count > activeHelpers[st]) {
+                    if (st === 'wash' && dirtyDishes > 0) {
+                        activeHelpers.wash++; runHelperProg('wash', 5000, () => { dirtyDishes = Math.max(0, dirtyDishes-10); activeHelpers.wash--; updateUI(); });
+                    } else if (st === 'blended' && blendedStock <= 2 && !isRefilling) {
+                        if(wip.some(o => o.items.some(i => i.type === 'blended' && !i.done))) {
+                            isRefilling = true; activeHelpers.blended++; runHelperProg('blended', 12000, () => { blendedStock = 8; isRefilling = false; activeHelpers.blended--; updateUI(); });
+                        }
+                    } else {
+                        let claim = findClaimHelper(st, wip);
+                        if (claim) {
+                            activeHelpers[st]++;
+                            let dur = (st==='single'?10000 : st==='hot'?9000 : st==='dessert'?4000 : 2000);
+                            if(st==='single') { let slot = getFreeSlot(); if(slot>-1) { brewSlots[slot]=true; claim.slot=slot; updateSingleSlotsUI(); } else { activeHelpers[st]--; claim.item.inProgress=false; return; } }
+                            runHelperProg(st, dur, () => {
+                                completeItem(claim.orderId, claim.itemIndex);
+                                if(st==='single') { brewSlots[claim.slot] = false; updateSingleSlotsUI(); }
+                                if(st==='blended') blendedStock--;
+                                activeHelpers[st]--; updateUI();
+                            });
+                        }
+                    }
+                }
+            });
+        }, 500);
+    }
+
+    function runHelperProg(st, dur, cb) {
+        let p = document.getElementById(`helper-prog-${st}`), f = document.getElementById(`helper-fill-${st}`);
+        if(p && f) { p.style.display = 'block'; f.style.transition = 'none'; f.style.width = '0%'; setTimeout(() => { f.style.transition = `width ${dur}ms linear`; f.style.width = '100%'; }, 50); }
+        setTimeout(() => { if(p) p.style.display = 'none'; cb(); }, dur);
+    }
+
+    function washDishes() {
+        if (isPlayerBusy || dirtyDishes <= 0) return;
+        isPlayerBusy = true; updateUI();
+        let p = document.getElementById('prog-wash'), f = document.getElementById('fill-wash');
+        if (p && f) { p.style.display = 'block'; f.style.transition = 'none'; f.style.width = '0%'; }
+        setTimeout(() => { if(f) {f.style.transition = 'width 3000ms linear'; f.style.width = '100%';} }, 50);
+        setTimeout(() => { isPlayerBusy = false; dirtyDishes = Math.max(0, dirtyDishes-10); if(p) p.style.display = 'none'; updateUI(); updateTimersUI(); }, 3000);
+    }
+
+    function serveOrders() {
+        if (dirtyDishes >= 40) { showFloatingScore("🛑 จานเต็ม!", 'btn-serve-tray', true); return; }
+        let ready = activeOrders.filter(o => o.status === 'ready');
+        if (ready.length === 0) return;
+        ready.slice(0, 4).forEach(o => {
+            levelWaitTimes.push((Date.now() - o.spawnTime)/1000);
+            dirtyDishes += o.items.length;
+            let speedBonus = o.timeLeft > 0 ? o.timeLeft * 10 : 0;
+            levelScore += (50 + speedBonus);
+            showFloatingScore(`+${50 + speedBonus}`, `ticket-${o.id}`);
+            let el = document.getElementById(`ticket-${o.id}`);
+            if(el) { el.style.transform = "scale(0)"; el.style.opacity = "0"; setTimeout(() => el.remove(), 200); }
+            activeOrders.splice(activeOrders.indexOf(o), 1);
+        });
+        
+        let bdg = document.getElementById('active-count-badge');
+        if(bdg) bdg.innerText = activeOrders.length;
+        updateUI(); updateTimersUI(); checkLevelCompletion();
+    }
+
+    function brewSingleTea() {
+        let slot = getFreeSlot(), claim = findClaimPlayer('single');
+        if (slot === -1 || isPlayerBusy || !claim) return;
+        if (!claim.isWIP) { penalty('btn-single'); return; }
+        showFloatingScore("⭐ ชงเอง! +10", 'btn-single'); levelScore += 10;
+        isPlayerBusy = true; brewSlots[slot] = true; updateSingleSlotsUI(); updateUI();
+        setTimeout(() => { isPlayerBusy = false; updateUI(); }, 1500);
+        let f = document.getElementById(`slot-fill-${slot+1}`); 
+        if(f) { f.style.transition = 'none'; f.style.width = '0%'; }
+        setTimeout(() => { if(f) {f.style.transition = 'width 8000ms linear'; f.style.width = '100%';} }, 50);
+        setTimeout(() => { brewSlots[slot] = false; updateSingleSlotsUI(); completeItem(claim.orderId, claim.itemIndex); }, 8000);
+    }
+
+    function pourBlended() {
+        let claim = findClaimPlayer('blended');
+        if (isPlayerBusy || !claim) return;
+        if (!claim.isWIP) { penalty('btn-blend-pour'); return; }
+        if (blendedStock <= 0) { showFloatingScore("❌ แกลลอนหมด!", 'btn-blend-pour', true); claim.item.inProgress=false; return; }
+        showFloatingScore("⭐ เทน้ำ! +5", 'btn-blend-pour'); levelScore += 5;
+        isPlayerBusy = true; updateUI();
+        let p = document.getElementById('prog-blended-pour'), f = p ? p.querySelector('.progress-fill') : null;
+        if(p && f) { p.style.display = 'block'; f.style.transition = 'none'; f.style.width = '0%'; }
+        setTimeout(() => { if(f) {f.style.transition = 'width 1000ms linear'; f.style.width = '100%';} }, 50);
+        setTimeout(() => { isPlayerBusy = false; blendedStock--; if(p) p.style.display = 'none'; completeItem(claim.orderId, claim.itemIndex); updateUI(); }, 1000);
+    }
+
+    function refillGallon() {
+        if (isPlayerBusy || isRefilling) return;
+        if (blendedStock > 2) { showFloatingScore("❌ ชายังไม่หมด", 'btn-blend-refill', true); return; }
+        showFloatingScore("⭐ ต้มชา! +10", 'btn-blend-refill'); levelScore += 10;
+        isPlayerBusy = isRefilling = true; updateUI();
+        let p = document.getElementById('prog-refill'), f = document.getElementById('fill-refill');
+        if(p && f) { p.style.display = 'block'; f.style.transition = 'none'; f.style.width = '0%'; }
+        setTimeout(() => { if(f) {f.style.transition = 'width 10000ms linear'; f.style.width = '100%';} }, 50);
+        setTimeout(() => { isPlayerBusy = false; updateUI(); }, 4000);
+        setTimeout(() => { isRefilling = false; blendedStock = 8; if(p) p.style.display = 'none'; updateUI(); }, 10000);
+    }
+
+    function serveHotTea() {
+        let claim = findClaimPlayer('hot');
+        if (isPlayerBusy || !claim) return;
+        if (!claim.isWIP) { penalty('btn-hot-serve'); return; }
+        showFloatingScore("⭐ สอนชง! +10", 'btn-hot-serve'); levelScore += 10;
+        isPlayerBusy = true; updateUI();
+        let p = document.getElementById('prog-hot-serve'), f = document.getElementById('fill-hot-serve');
+        if(p && f) { p.style.display = 'block'; f.style.transition = 'none'; f.style.width = '0%'; }
+        setTimeout(() => { if(f) {f.style.transition = 'width 7000ms linear'; f.style.width = '100%';} }, 50);
+        setTimeout(() => { isPlayerBusy = false; if(p) p.style.display = 'none'; completeItem(claim.orderId, claim.itemIndex); }, 7000);
+    }
+
+    function doTask(type, dur, btn) {
+        let claim = findClaimPlayer(type);
+        if (isPlayerBusy || !claim) return;
+        if (!claim.isWIP) { penalty(btn); return; }
+        showFloatingScore("⭐ จัดจาน! +10", btn); levelScore += 10;
+        isPlayerBusy = true; updateUI();
+        let p = document.getElementById(`prog-${type}`), f = document.getElementById(`fill-${type}`);
+        if(p && f) { p.style.display = 'block'; f.style.transition = 'none'; f.style.width = '0%'; }
+        setTimeout(() => { if(f) {f.style.transition = `width ${dur}ms linear`; f.style.width = '100%';} }, 50);
+        setTimeout(() => { isPlayerBusy = false; if(p) p.style.display = 'none'; completeItem(claim.orderId, claim.itemIndex); }, dur);
+    }
+
+    function findClaimPlayer(type) {
+        let wip = activeOrders.filter(o => o.status !== 'ready').slice(0, 5);
+        for(let o of wip) for(let i=0; i<o.items.length; i++) if(o.items[i].type === type && !o.items[i].done && !o.items[i].inProgress) { o.items[i].inProgress = true; return {orderId: o.id, itemIndex: i, isWIP: true, item: o.items[i]}; }
+        let other = activeOrders.filter(o => o.status !== 'ready').slice(5);
+        for(let o of other) for(let i=0; i<o.items.length; i++) if(o.items[i].type === type && !o.items[i].done && !o.items[i].inProgress) return {isWIP: false, item: o.items[i]};
+        return null;
+    }
+
+    function findClaimHelper(type, wip) {
+        for(let o of wip) for(let i=0; i<o.items.length; i++) if(o.items[i].type === type && !o.items[i].done && !o.items[i].inProgress) { o.items[i].inProgress = true; return {orderId: o.id, itemIndex: i, item: o.items[i]}; }
+        return null;
+    }
+
+    function completeItem(oid, idx) {
+        let o = activeOrders.find(o => o.id === oid); if(!o) return;
+        o.items[idx].done = true; o.items[idx].inProgress = false;
+        let el = document.getElementById(`item-${oid}-${idx}`); if(el) el.className = 'order-item done';
+        if (o.items.every(it => it.done)) { 
+            o.status = 'ready'; 
+            let tel = document.getElementById(`ticket-${oid}`); if(tel) tel.className = 'ticket ready'; 
+            let stp = document.getElementById(`stamp-${oid}`); if(stp) stp.innerHTML = `<div class="ready-stamp">✅ รอเสิร์ฟ!</div>`; 
+        }
+        updateTimersUI();
+    }
+
+    function penalty(id) { showFloatingScore("❌ ลัดคิว! -5", id, true); levelScore = Math.max(0, levelScore-5); updateUI(); }
+
+    function updateUI() {
+        let tScore = document.getElementById('total-score'); if(tScore) tScore.innerText = totalScore + levelScore;
+        let cScore = document.getElementById('current-level-score'); if(cScore) cScore.innerText = levelScore;
+        
+        let blStock = document.getElementById('blended-stock'); 
+        if(blStock) { blStock.innerText = blendedStock; blStock.style.color = blendedStock <= 2 ? 'var(--danger)' : 'var(--blended)'; }
+        
+        let dCount = document.getElementById('dirty-count-display');
+        if(dCount) { dCount.innerText = dirtyDishes; dCount.style.color = dirtyDishes >= 35 ? 'var(--danger)' : 'var(--wash)'; }
+        
+        let bOverlay = document.getElementById('busy-overlay');
+        if(bOverlay) bOverlay.style.display = isPlayerBusy ? 'flex' : 'none';
+        
+        const btnS = document.getElementById('btn-single'), btnB = document.getElementById('btn-blend-pour'), btnR = document.getElementById('btn-blend-refill'), btnH = document.getElementById('btn-hot-serve'), btnD = document.getElementById('btn-dessert'), btnW = document.getElementById('btn-wash');
+        
+        if (isPlayerBusy) { 
+            if(btnS) btnS.disabled = true; if(btnB) btnB.disabled = true; if(btnR) btnR.disabled = true; if(btnH) btnH.disabled = true; if(btnD) btnD.disabled = true; if(btnW) btnW.disabled = true; 
+        } else {
+            if(btnS) btnS.disabled = getFreeSlot() === -1;
+            if(btnB) btnB.disabled = blendedStock <= 0;
+            if(btnR) btnR.disabled = blendedStock > 2 || isRefilling;
+            if(btnH) btnH.disabled = false; if(btnD) btnD.disabled = false;
+            if(btnW) btnW.disabled = dirtyDishes <= 0;
+        }
+    }
+
+    function appendTicket(o) {
+        const c = document.getElementById('tickets-container');
+        if(!c) return;
+        const div = document.createElement('div');
+        div.className = 'ticket'; div.id = `ticket-${o.id}`;
+        let h = `<h3>#${o.id} <span class="t-text">⏱ ${o.timeLeft}s</span></h3><div class="ticket-timer-bg"><div class="ticket-timer-fill" style="width:100%"></div></div><div id="stamp-${o.id}"></div>`;
+        o.items.forEach((it, i) => h += `<div class="order-item" id="item-${o.id}-${i}"><span class="badge bg-${it.type}">${it.type.slice(0,3).toUpperCase()}</span>${it.name}</div>`);
+        div.innerHTML = h; c.appendChild(div); updateTimersUI();
+    }
+
+    function updateTimersUI() {
+        activeOrders.forEach(o => {
+            let el = document.getElementById(`ticket-${o.id}`); if(!el) return;
+            let timeSpan = el.querySelector('.t-text'), fillBar = el.querySelector('.ticket-timer-fill');
+            if (timeSpan && fillBar) {
+                let p = (o.timeLeft/o.timeLimit)*100;
+                timeSpan.innerText = `⏱ ${o.timeLeft}s`;
+                fillBar.style.width = Math.max(0, p) + '%'; 
+                if (o.timeLeft <= 0) { fillBar.style.backgroundColor = 'var(--danger)'; timeSpan.style.color = 'var(--danger)'; if(o.status !== 'ready') el.style.borderColor = 'var(--danger)'; } 
+                else if (p <= 30) { fillBar.style.backgroundColor = 'var(--dessert)'; timeSpan.style.color = '#666'; }
+                else { fillBar.style.backgroundColor = 'var(--success)'; timeSpan.style.color = '#666'; }
+            }
+        });
+        
+        let countBadge = document.getElementById('order-count-badge');
+        if(countBadge) countBadge.innerText = spawnQueue.length;
+        
+        let readyCount = activeOrders.filter(o => o.status === 'ready').length;
+        let rCountEl = document.getElementById('ready-count');
+        if(rCountEl) rCountEl.innerText = readyCount;
+        
+        let sBtn = document.getElementById('btn-serve-tray');
+        if(sBtn) {
+            if (dirtyDishes >= 40) { sBtn.classList.add('disabled'); } 
+            else if (readyCount > 0) { sBtn.classList.remove('disabled'); } 
+            else { sBtn.classList.add('disabled'); }
+        }
+        
+        let wip = activeOrders.filter(o => o.status !== 'ready').slice(0, 5);
+        activeOrders.forEach(o => { let el = document.getElementById(`ticket-${o.id}`); if(el && o.status !== 'ready') el.classList.toggle('wip-active', wip.includes(o)); });
+        updateUI();
+    }
+
+    function checkLevelCompletion() {
+        if (spawnQueue.length === 0 && activeOrders.length === 0) {
+            let msg = document.getElementById('no-order-msg');
+            if(msg) msg.classList.remove('hidden');
+            clearInterval(globalTimer); clearInterval(helperTimer);
+            
+            setTimeout(() => {
+                let waitAvg = levelWaitTimes.length ? (levelWaitTimes.reduce((a,b)=>a+b,0)/levelWaitTimes.length*0.25).toFixed(1) : 0;
+                
+                let clrOverlay = document.getElementById('overlay-level-clear');
+                if(clrOverlay) clrOverlay.classList.remove('hidden');
+                
+                let lScoreDisp = document.getElementById('level-score-display');
+                if(lScoreDisp) lScoreDisp.innerText = levelScore;
+                
+                let aGame = document.getElementById('avg-time-game');
+                if(aGame) aGame.innerText = waitAvg;
+                
+                let aReal = document.getElementById('avg-time-real');
+                if(aReal) aReal.innerText = waitAvg;
+                
+                autoSave(waitAvg);
+            }, 1000);
+        }
+    }
+
+    function autoSave(avg) {
+        let stMsg = document.getElementById('save-status-msg');
+        if(stMsg) stMsg.innerText = "⏳ กำลังซิงค์...";
+        
+        let lbTitle = document.getElementById('lb-title');
+        if (lbTitle) { lbTitle.innerText = `🏆 สถิติคนชงไว (ด่าน ${currentLevel+1})`; }
+
+        if (!Array.isArray(leaderboardCache)) leaderboardCache = [];
+        leaderboardCache.push({ phone: playerPhone, name: playerName, score: levelScore, level: currentLevel+1, avgWait: avg });
+        
+        renderLocalLeaderboard(currentLevel+1, avg);
+        
+        fetch(GOOGLE_APP_SCRIPT_URL, { method:'POST', body: new URLSearchParams({data: JSON.stringify({phone:playerPhone, name:playerName, score:levelScore, levelReached:currentLevel+1, avgWaitTime:avg})})})
+        .then(() => { if(stMsg) stMsg.innerText = "✅ ซิงค์สำเร็จ!"; })
+        .catch(() => { if(stMsg) stMsg.innerText = "⚠️ เล่นแบบออฟไลน์"; });
+    }
+
+    function renderLocalLeaderboard(lvl, myAvg) {
+        try {
+            const listDiv = document.getElementById('leaderboard-list'); 
+            if(listDiv) listDiv.innerHTML = "";
+            
+            if(!Array.isArray(leaderboardCache)) return;
+
+            let data = leaderboardCache.filter(e => e.level === lvl).sort((a,b) => b.score - a.score || a.avgWait - b.avgWait);
+            
+            let avgValid = data.filter(e => e.avgWait > 0);
+            if(avgValid.length) {
+                let globAvg = (avgValid.reduce((s,e) => s + Number(e.avgWait), 0)/avgValid.length).toFixed(1);
+                let gAvgEl = document.getElementById('global-avg-time');
+                if(gAvgEl) gAvgEl.innerText = globAvg;
+                
+                let comp = document.getElementById('kpi-compare-status');
+                if(comp) {
+                    if(myAvg <= globAvg) { comp.innerText = `🔥 เร็วกว่าค่าเฉลี่ยร้าน!`; comp.style.color = "var(--success)"; }
+                    else { comp.innerText = `🐢 ช้ากว่าค่าเฉลี่ยร้าน`; comp.style.color = "var(--danger)"; }
+                }
+            }
+
+            let seen = new Set();
+            data.filter(e => { let c = normalizePhone(e.phone); if(seen.has(c)) return false; seen.add(c); return true; })
+            .slice(0, 5).forEach((e, i) => {
+                let isMe = normalizePhone(e.phone) === normalizePhone(playerPhone);
+                let row = `<div class="leaderboard-row" style="${isMe?'background:var(--wip); border-radius:4px; padding:2px;':''}">
+                    <span class="lb-rank">${i+1}.</span><span style="flex:1">${e.name} <span style="font-size:7px; color:#888;">| ⏱️${e.avgWait}m</span></span>
+                    <span style="font-weight:bold; color:var(--brand);">${e.score} pts</span></div>`;
+                if(listDiv) listDiv.innerHTML += row;
+            });
+        } catch(e) {
+            console.error(e);
+        } finally {
+            let actBtn = document.getElementById('action-buttons');
+            if(actBtn) actBtn.classList.remove('hidden');
+        }
+    }
+
+    // 🟢 ลากลูกน้องด้วย Touch Event (ชัวร์ๆ บนมือถือ) 🟢
     function renderHelpers() {
         document.querySelectorAll('.helper-dropzone').forEach(dz => { dz.innerHTML = ''; dz.onpointerover = () => dz.classList.add('drag-over'); dz.onpointerout = () => dz.classList.remove('drag-over'); });
         document.querySelectorAll('body > .helper-token').forEach(el => el.remove());
@@ -547,8 +789,8 @@
                     let pageX = ev.pageX || (ev.touches && ev.touches[0].pageX);
                     let pageY = ev.pageY || (ev.touches && ev.touches[0].pageY);
                     if(pageX && pageY) {
-                        t.style.left = pageX - 13 + 'px'; 
-                        t.style.top = pageY - 13 + 'px'; 
+                        t.style.left = pageX - 10 + 'px'; 
+                        t.style.top = pageY - 10 + 'px'; 
                     }
                 };
                 
@@ -585,616 +827,14 @@
         });
     }
 
-    function getAssignedCount(station) {
-        return helperAssignments.filter(s => s === station).length;
+    function showFloatingScore(txt, id, p) {
+        let tgt = typeof id === 'string' ? document.getElementById(id) : id; if(!tgt) return;
+        let el = document.createElement('div'); el.className = 'score-popup'; el.innerText = txt;
+        el.style.color = p ? 'var(--danger)' : 'var(--success)'; el.style.borderColor = p ? 'var(--danger)' : 'var(--success)';
+        tgt.appendChild(el); setTimeout(() => el.remove(), 1200);
     }
-
-    let isGamePaused = false;
-
-    function showTutorial(title, bodyHtml) {
-        isGamePaused = true;
-        document.getElementById('tut-title').innerHTML = title;
-        document.getElementById('tut-body').innerHTML = bodyHtml;
-        document.getElementById('tutorial-modal').classList.remove('hidden');
-    }
-
-    function closeTutorial() {
-        document.getElementById('tutorial-modal').classList.add('hidden');
-        isGamePaused = false;
-        beginLevelTimers();
-    }
-
-    function startLevel() {
-        document.getElementById('level-display').innerText = `Level ${currentLevel + 1}`;
-        document.getElementById('no-order-msg').classList.add('hidden');
-        
-        spawnQueue = JSON.parse(JSON.stringify(levels[currentLevel].orders));
-        activeOrders = []; timeToNextSpawn = 0; blendedStock = 8; 
-        brewSlots = [false, false, false, false]; updateSingleSlotsUI();
-        levelScore = 0; levelWaitTimes = []; dirtyDishes = 0;
-        
-        isPlayerBusy = false; isRefilling = false; isGamePaused = false; // ป้องกันบักติด Pause
-        
-        setupHelpersForLevel();
-        updateUI(); document.getElementById('tickets-container').innerHTML = ""; 
-        clearInterval(globalTimer); clearInterval(helperTimer);
-
-        if (currentLevel === 0) {
-            showTutorial("🚨 กฎของ Head Barista", "<ul><li><b>WIP Limit:</b> ทำได้เฉพาะ <b>5 บิลซ้ายสุด</b> (กรอบชมพู) ห้ามลัดคิว! ❌-5</li><li><b>🧼 การล้างจาน:</b> แก้วที่เสิร์ฟจะสะสมในอ่าง ถ้าครบ <b>40 ใบ</b> 🛑 <b>ปุ่มเสิร์ฟจะล็อก!</b> ต้องกดล้าง (เหมาทีละ 10 ใบ ล็อกตัว 3 วิ)</li><li><b>หน่วงเวลาสมจริง:</b> ชง Single โดนล็อกตัว 1.5วิ, ต้มชาล็อก 4วิ, เทน้ำล็อก 1วิ วางแผนเดินบาร์ให้ดี!</li></ul>");
-        } else if (currentLevel === 2) {
-            showTutorial("🎉 ปลดล็อกผู้ช่วย 1 คน!", "<p>คุณได้ลูกน้องช่วย 1 คน <b>(มีแค่คนเดียวตลอดเกม!)</b></p><ul><li><b>ลาก & วาง:</b> ลาก 🧑‍🍳 ไปปล่อยสเตชั่นที่ต้องการให้ช่วย</li><li>ลูกน้องทำงานอัตโนมัติ <b>รวมถึงล้างจานด้วย!</b> (ล้าง 10 ใบ ใช้เวลา 5 วินาที)</li><li><b>ทริค:</b> งานไหนกินเวลาคุณนานๆ (เช่น ต้มชา/ล้างจาน) โยนให้ลูกน้องทำจะคุ้มกว่า!</li></ul>");
-        } else if (currentLevel === 4 || currentLevel === 6) {
-            showTutorial("🔥 ความกดดันของจริง!", "<p>คิวเริ่มล้นร้านแล้ว!</p><ul><li>บิลจะยาวขึ้น และเสิร์ฟถี่ขึ้น!</li><li>คุณมีลูกน้องแค่ <b>1 คน</b> เท่าเดิม สลับเขาไปช่วยให้ถูกจุด ระวังจานล้นอ่างจนเสิร์ฟไม่ได้ล่ะ!</li></ul>");
-        } else {
-            beginLevelTimers();
-        }
-    }
-
-    function beginLevelTimers() {
-        globalTimer = setInterval(() => {
-            if(isGamePaused) return;
-
-            if (spawnQueue.length > 0) {
-                timeToNextSpawn--;
-                if (timeToNextSpawn <= 0) {
-                    let newOrder = spawnQueue.shift(); 
-                    newOrder.spawnTime = Date.now(); 
-                    activeOrders.push(newOrder); 
-                    appendTicketToDOM(newOrder); 
-                    
-                    let minWait = Math.max(5, 12 - currentLevel);
-                    timeToNextSpawn = minWait + Math.floor(Math.random() * 3); 
-                }
-            }
-            activeOrders.forEach(order => { order.timeLeft--; });
-            updateTimersUI(); checkLevelCompletion();
-        }, 1000);
-
-        helperTimer = setInterval(() => {
-            if(isGamePaused) return;
-
-            let pendingWIP = activeOrders.filter(o => o.status !== 'ready').slice(0, 5); 
-            
-            // 1. ลูกน้องล้างจาน
-            let washHelpers = getAssignedCount('wash');
-            if (washHelpers > activeHelpers.wash && dirtyDishes > 0) {
-                activeHelpers.wash++; updateUI();
-                let prog = document.getElementById('helper-prog-wash'), fill = document.getElementById('helper-fill-wash');
-                if (prog && fill) { prog.style.display = 'block'; fill.style.transition = 'none'; fill.style.width = '0%'; }
-                setTimeout(() => { if(fill) fill.style.transition = `width 5000ms linear`; if(fill) fill.style.width = '100%'; }, 50); 
-                setTimeout(() => { 
-                    dirtyDishes = Math.max(0, dirtyDishes - 10); 
-                    activeHelpers.wash--; if(prog) prog.style.display = 'none'; updateUI(); 
-                }, 5000);
-            }
-
-            if (pendingWIP.length === 0) return;
-
-            let singleHelpers = getAssignedCount('single');
-            if (singleHelpers > activeHelpers.single) {
-                let slotIdx = getFreeSlot();
-                if (slotIdx > -1) {
-                    let claim = findAndClaimItemHelper('single', pendingWIP);
-                    if (claim) {
-                        activeHelpers.single++; brewSlots[slotIdx] = true; updateSingleSlotsUI();
-                        showFloatingScore("🧑‍🍳 ลูกน้องชง!", 'station-single');
-                        let fill = document.getElementById(`slot-fill-${slotIdx+1}`);
-                        if(fill) { fill.style.transition = 'none'; fill.style.width = '0%'; }
-                        setTimeout(() => { if(fill) fill.style.transition = `width 10000ms linear`; if(fill) fill.style.width = '100%'; }, 50); 
-                        setTimeout(() => { 
-                            completeItem(claim.orderId, claim.itemIndex); 
-                            brewSlots[slotIdx] = false; updateSingleSlotsUI();
-                            activeHelpers.single--; 
-                        }, 10000);
-                    }
-                }
-            }
-
-            let blendedHelpers = getAssignedCount('blended');
-            if (blendedHelpers > activeHelpers.blended) {
-                let needBlended = false;
-                pendingWIP.forEach(o => o.items.forEach(i => { if (i.type === 'blended' && !i.done && !i.inProgress) needBlended = true; }));
-                
-                if (needBlended && blendedStock <= 2 && !isRefilling) {
-                    isRefilling = true; activeHelpers.blended++; updateUI();
-                    showFloatingScore("🧑‍🍳 ลูกน้องต้มชา!", 'station-blended');
-                    let prog = document.getElementById('helper-prog-blended'), fill = document.getElementById('helper-fill-blended');
-                    if(prog && fill) { prog.style.display = 'block'; fill.style.transition = 'none'; fill.style.width = '0%'; }
-                    setTimeout(() => { if(fill) fill.style.transition = `width 12000ms linear`; if(fill) fill.style.width = '100%'; }, 50);
-                    setTimeout(() => { isRefilling = false; blendedStock = 8; activeHelpers.blended--; if(prog) prog.style.display = 'none'; updateUI(); }, 12000);
-                } 
-                else if (blendedStock > 0) {
-                    let claim = findAndClaimItemHelper('blended', pendingWIP);
-                    if (claim) {
-                        activeHelpers.blended++; blendedStock--; updateUI();
-                        let prog = document.getElementById('helper-prog-blended'), fill = document.getElementById('helper-fill-blended');
-                        if(prog && fill) { prog.style.display = 'block'; fill.style.transition = 'none'; fill.style.width = '0%'; }
-                        setTimeout(() => { if(fill) fill.style.transition = `width 2000ms linear`; if(fill) fill.style.width = '100%'; }, 50); 
-                        setTimeout(() => { completeItem(claim.orderId, claim.itemIndex); activeHelpers.blended--; if(prog) prog.style.display = 'none'; updateUI(); }, 2000);
-                    }
-                }
-            }
-
-            let hotHelpers = getAssignedCount('hot');
-            if (hotHelpers > activeHelpers.hot) {
-                let claim = findAndClaimItemHelper('hot', pendingWIP);
-                if (claim) {
-                    activeHelpers.hot++; updateUI();
-                    let prog = document.getElementById('helper-prog-hot'), fill = document.getElementById('helper-fill-hot');
-                    if(prog && fill) { prog.style.display = 'block'; fill.style.transition = 'none'; fill.style.width = '0%'; }
-                    setTimeout(() => { if(fill) fill.style.transition = `width 9000ms linear`; if(fill) fill.style.width = '100%'; }, 50); 
-                    setTimeout(() => { completeItem(claim.orderId, claim.itemIndex); activeHelpers.hot--; if(prog) prog.style.display = 'none'; updateUI(); }, 9000);
-                }
-            }
-
-            let dessertHelpers = getAssignedCount('dessert');
-            if (dessertHelpers > activeHelpers.dessert) {
-                let claim = findAndClaimItemHelper('dessert', pendingWIP);
-                if (claim) {
-                    activeHelpers.dessert++; updateUI();
-                    let prog = document.getElementById('helper-prog-dessert'), fill = document.getElementById('helper-fill-dessert');
-                    if(prog && fill) { prog.style.display = 'block'; fill.style.transition = 'none'; fill.style.width = '0%'; }
-                    setTimeout(() => { if(fill) fill.style.transition = `width 4000ms linear`; if(fill) fill.style.width = '100%'; }, 50); 
-                    setTimeout(() => { completeItem(claim.orderId, claim.itemIndex); activeHelpers.dessert--; if(prog) prog.style.display = 'none'; updateUI(); }, 4000);
-                }
-            }
-
-        }, 500); 
-    }
-
-    function findAndClaimItemHelper(type, wipOrders) {
-        for (let order of wipOrders) {
-            for (let i = 0; i < order.items.length; i++) {
-                let item = order.items[i];
-                if (item.type === type && !item.done && !item.inProgress) {
-                    item.inProgress = true;
-                    let itemEl = document.getElementById(`item-${order.id}-${i}`);
-                    if(itemEl) itemEl.classList.add('in-progress-helper');
-                    return { orderId: order.id, itemIndex: i };
-                }
-            }
-        }
-        return null;
-    }
-
-    function appendTicketToDOM(order) {
-        const container = document.getElementById('tickets-container');
-        const div = document.createElement('div'); div.className = 'ticket'; div.id = `ticket-${order.id}`;
-        let html = `<h3>คิว #${order.id} <span class="timer-text" style="color:#666">⏱ ${order.timeLeft}s</span></h3>
-            <div class="ticket-timer-bg"><div class="ticket-timer-fill" style="width: 100%; background-color: var(--success);"></div></div><div id="stamp-${order.id}"></div>`;
-        order.items.forEach((item, index) => {
-            let badgeText = ""; let badgeClass = `bg-${item.type}`;
-            if (item.type === 'hot') { badgeText = "🫖"; } else if (item.type === 'single') { badgeText = "SIN"; }
-            else if (item.type === 'blended') { badgeText = "BLE"; } else if (item.type === 'dessert') { badgeText = "DES"; }
-            html += `<div class="order-item" id="item-${order.id}-${index}"><span class="badge ${badgeClass}">${badgeText}</span>${item.name}</div>`;
-        });
-        div.innerHTML = html; container.appendChild(div);
-        
-        let badge = document.getElementById('order-count-badge');
-        if(badge) badge.innerText = spawnQueue.length;
-        
-        updateWIPHighlight();
-    }
-
-    function updateWIPHighlight() {
-        let pendingOrders = activeOrders.filter(o => o.status !== 'ready');
-        activeOrders.forEach(o => { let el = document.getElementById(`ticket-${o.id}`); if(el) el.classList.remove('wip-active'); });
-        for(let i=0; i<Math.min(5, pendingOrders.length); i++) {
-            let el = document.getElementById(`ticket-${pendingOrders[i].id}`);
-            if(el) el.classList.add('wip-active');
-        }
-    }
-
-    function updateTimersUI() {
-        activeOrders.forEach(order => {
-            const ticketEl = document.getElementById(`ticket-${order.id}`);
-            if (!ticketEl) return;
-            const timeSpan = ticketEl.querySelector('.timer-text'); const fillBar = ticketEl.querySelector('.ticket-timer-fill');
-            if (timeSpan && fillBar) {
-                const percent = (order.timeLeft / order.timeLimit) * 100;
-                timeSpan.innerText = `⏱ ${order.timeLeft}s`; 
-                let barColor = "var(--success)";
-                if (order.timeLeft <= 0) { barColor = "var(--danger)"; timeSpan.style.color = "var(--danger)"; if (order.status !== 'ready') ticketEl.style.borderColor = "var(--danger)"; } 
-                else if (percent <= 30) { barColor = "var(--dessert)"; timeSpan.style.color = "#666"; }
-                fillBar.style.width = `${Math.max(0, percent)}%`; fillBar.style.backgroundColor = barColor;
-            }
-        });
-        
-        let readyCount = activeOrders.filter(o => o.status === 'ready').length;
-        let rCountEl = document.getElementById('ready-count');
-        if(rCountEl) rCountEl.innerText = readyCount;
-        
-        const serveBtn = document.getElementById('btn-serve-tray');
-        if(serveBtn) {
-            if (dirtyDishes >= 40) {
-                serveBtn.classList.add('disabled');
-            } else if (readyCount > 0) { 
-                serveBtn.classList.remove('disabled'); 
-            } else { 
-                serveBtn.classList.add('disabled'); 
-            }
-        }
-        updateWIPHighlight();
-    }
-
-    function findAndClaimItemPlayer(type) {
-        let pendingOrders = activeOrders.filter(o => o.status !== 'ready');
-        let wipOrders = pendingOrders.slice(0, 5);
-
-        for (let order of wipOrders) {
-            for (let i = 0; i < order.items.length; i++) {
-                let item = order.items[i];
-                if (item.type === type && !item.done && !item.inProgress) {
-                    item.inProgress = true;
-                    let itemEl = document.getElementById(`item-${order.id}-${i}`);
-                    if(itemEl) itemEl.classList.add('in-progress');
-                    return { orderId: order.id, itemIndex: i, isWIP: true };
-                }
-            }
-        }
-        
-        let outOfBoundsOrders = pendingOrders.slice(5);
-        for (let order of outOfBoundsOrders) {
-            for (let i = 0; i < order.items.length; i++) {
-                let item = order.items[i];
-                if (item.type === type && !item.done && !item.inProgress) return { isWIP: false }; 
-            }
-        }
-        return null; 
-    }
-
-    function completeItem(orderId, itemIndex) {
-        let order = activeOrders.find(o => o.id === orderId);
-        if (!order) return;
-        let item = order.items[itemIndex];
-        if (item) {
-            item.done = true; item.inProgress = false;
-            levelScore += 20; totalScore += 20;
-            let itemEl = document.getElementById(`item-${order.id}-${itemIndex}`); 
-            if(itemEl) { itemEl.classList.remove('in-progress'); itemEl.classList.remove('in-progress-helper'); itemEl.classList.add('done'); }
-        }
-        
-        if (order.status !== 'ready' && order.items.every(itm => itm.done)) {
-            order.status = 'ready'; 
-            let ticketEl = document.getElementById(`ticket-${order.id}`); if(ticketEl) { ticketEl.classList.add('ready'); ticketEl.classList.remove('wip-active'); }
-            let stampEl = document.getElementById(`stamp-${order.id}`); if(stampEl) stampEl.innerHTML = `<div class="ready-stamp">✅ รอเสิร์ฟ!</div>`;
-        }
-        updateUI(); updateTimersUI();
-    }
-
-    function serveOrders() {
-        if (dirtyDishes >= 40) {
-            showFloatingScore("🛑 จานเต็ม! ไปล้างก่อน", 'btn-serve-tray', true);
-            return;
-        }
-
-        let readyOrders = activeOrders.filter(o => o.status === 'ready');
-        if (readyOrders.length === 0) return; 
-        
-        let toServe = readyOrders.slice(0, 4); 
-        toServe.forEach(order => {
-            let waitTimeSec = (Date.now() - order.spawnTime) / 1000;
-            levelWaitTimes.push(waitTimeSec);
-
-            dirtyDishes += order.items.length;
-
-            let speedBonus = order.timeLeft > 0 ? order.timeLeft * 10 : 0; 
-            levelScore += (50 + speedBonus); totalScore += (50 + speedBonus);
-            
-            showFloatingScore(`+${50 + speedBonus}`, `ticket-${order.id}`);
-            let ticketEl = document.getElementById(`ticket-${order.id}`);
-            if(ticketEl) { ticketEl.style.transform = "scale(0)"; ticketEl.style.opacity = "0"; setTimeout(() => ticketEl.remove(), 200); }
-            let idx = activeOrders.findIndex(o => o.id === order.id); if (idx > -1) activeOrders.splice(idx, 1);
-        });
-        
-        updateUI(); updateTimersUI(); checkLevelCompletion();
-    }
-
-    function washDishes() {
-        if (isPlayerBusy || dirtyDishes <= 0) return;
-
-        isPlayerBusy = true; updateUI();
-        let p = document.getElementById('prog-wash'), f = document.getElementById('fill-wash');
-        if(p && f) { p.style.display = 'block'; f.style.transition = 'none'; f.style.width = '0%'; }
-        setTimeout(() => { if(f) f.style.transition = 'width 3000ms linear'; if(f) f.style.width = '100%'; }, 50);
-        setTimeout(() => { 
-            isPlayerBusy = false; 
-            dirtyDishes = Math.max(0, dirtyDishes - 10); 
-            if(p) p.style.display = 'none'; 
-            updateUI(); 
-            updateTimersUI(); 
-        }, 3000);
-    }
-
-    function handlePlayerActionClick(type, btnId) {
-        let claim = findAndClaimItemPlayer(type);
-        if (!claim) { 
-            showFloatingScore("❌ ไม่มีออเดอร์!", btnId, true); 
-            levelScore = Math.max(0, levelScore - 5); totalScore = Math.max(0, totalScore - 5);
-            updateUI(); return false; 
-        }
-        if (!claim.isWIP) {
-            showFloatingScore("❌ ลัดคิว! ทำ 5 บิลแรกก่อน", btnId, true); 
-            levelScore = Math.max(0, levelScore - 5); totalScore = Math.max(0, totalScore - 5);
-            updateUI(); return false; 
-        }
-        return claim; 
-    }
-
-    function serveHotTea() {
-        if (isPlayerBusy) return;
-        let claim = handlePlayerActionClick('hot', 'btn-hot-serve');
-        if(!claim) return;
-
-        showFloatingScore("⭐ สอนชง! +10", 'btn-hot-serve'); levelScore += 10; totalScore += 10; 
-        isPlayerBusy = true; updateUI();
-        const progBar = document.getElementById('prog-hot-serve'), fill = document.getElementById('fill-hot-serve');
-        if(progBar && fill) { progBar.style.display = 'block'; fill.style.transition = 'none'; fill.style.width = '0%'; }
-        setTimeout(() => { if(fill) fill.style.transition = `width 7000ms linear`; if(fill) fill.style.width = '100%'; }, 50);
-        setTimeout(() => { isPlayerBusy = false; if(progBar) progBar.style.display = 'none'; updateUI(); completeItem(claim.orderId, claim.itemIndex); }, 7000);
-    }
-
-    function brewSingleTea() {
-        if (isPlayerBusy) return; 
-        let slotIdx = getFreeSlot();
-        if(slotIdx === -1) return;
-
-        let claim = handlePlayerActionClick('single', 'btn-single');
-        if(!claim) return;
-
-        showFloatingScore("⭐ ชงเอง! +10", 'btn-single'); levelScore += 10; totalScore += 10;
-        
-        isPlayerBusy = true; updateUI(); 
-        brewSlots[slotIdx] = true; updateSingleSlotsUI();
-        
-        const fill = document.getElementById(`slot-fill-${slotIdx+1}`);
-        if(fill) { fill.style.transition = 'none'; fill.style.width = '0%'; }
-        setTimeout(() => { if(fill) fill.style.transition = `width 8000ms linear`; if(fill) fill.style.width = '100%'; }, 50); 
-        
-        setTimeout(() => { isPlayerBusy = false; updateUI(); }, 1500); 
-        setTimeout(() => { brewSlots[slotIdx] = false; updateSingleSlotsUI(); completeItem(claim.orderId, claim.itemIndex); }, 8000); 
-    }
-
-    function doTask(type, duration, btnId) {
-        if (isPlayerBusy) return;
-        let claim = handlePlayerActionClick(type, btnId);
-        if(!claim) return;
-
-        showFloatingScore("⭐ จัดจาน! +10", btnId); levelScore += 10; totalScore += 10; 
-        isPlayerBusy = true; updateUI();
-        const progBar = document.getElementById(`prog-${type}`), fill = document.getElementById(`fill-${type}`);
-        if(progBar && fill) { progBar.style.display = 'block'; fill.style.transition = 'none'; fill.style.width = '0%'; }
-        setTimeout(() => { if(fill) fill.style.transition = `width ${duration}ms linear`; if(fill) fill.style.width = '100%'; }, 50);
-        setTimeout(() => { isPlayerBusy = false; if(progBar) progBar.style.display = 'none'; updateUI(); completeItem(claim.orderId, claim.itemIndex); }, duration);
-    }
-
-    function pourBlended() { 
-        if (isPlayerBusy) return;
-        let claim = handlePlayerActionClick('blended', 'btn-blend-pour');
-        if(!claim) return;
-        if (blendedStock <= 0) { 
-            showFloatingScore("❌ แกลลอนหมด!", 'btn-blend-pour', true); 
-            let order = activeOrders.find(o => o.id === claim.orderId);
-            if(order) order.items[claim.itemIndex].inProgress = false;
-            return; 
-        } 
-        showFloatingScore("⭐ เทน้ำ! +5", 'btn-blend-pour'); levelScore += 5; totalScore += 5; 
-        
-        isPlayerBusy = true; updateUI(); 
-        const progBar = document.getElementById('prog-blended-pour');
-        if(progBar) {
-            let fill = progBar.querySelector('.progress-fill');
-            if(fill) {
-                progBar.style.display = 'block'; fill.style.transition = 'none'; fill.style.width = '0%';
-                setTimeout(() => { fill.style.transition = `width 1000ms linear`; fill.style.width = '100%'; }, 50);
-            }
-            setTimeout(() => { progBar.style.display = 'none'; }, 1000);
-        }
-
-        setTimeout(() => { 
-            isPlayerBusy = false; blendedStock--; 
-            completeItem(claim.orderId, claim.itemIndex); updateUI(); 
-        }, 1000);
-    }
-
-    function refillGallon() {
-        if (isPlayerBusy || isRefilling) return;
-        if (blendedStock > 2) { showFloatingScore("❌ รอให้เหลือ <= 2 ก่อน", 'btn-blend-refill', true); return; }
-        
-        showFloatingScore("⭐ ต้มชา! +10", 'btn-blend-refill'); levelScore += 10; totalScore += 10; 
-        isPlayerBusy = true; isRefilling = true; updateUI(); 
-        
-        const progBar = document.getElementById('prog-refill'), fill = document.getElementById('fill-refill');
-        if(progBar && fill) { progBar.style.display = 'block'; fill.style.transition = 'none'; fill.style.width = '0%'; }
-        setTimeout(() => { if(fill) fill.style.transition = `width 10000ms linear`; if(fill) fill.style.width = '100%'; }, 50); 
-        
-        setTimeout(() => { isPlayerBusy = false; updateUI(); }, 4000); 
-        setTimeout(() => { isRefilling = false; if(progBar) progBar.style.display = 'none'; blendedStock = 8; updateUI(); }, 10000);
-    }
-
-    function updateUI() {
-        let tScore = document.getElementById('total-score');
-        if(tScore) tScore.innerText = totalScore; 
-        let cScore = document.getElementById('current-level-score');
-        if(cScore) cScore.innerText = levelScore;
-        
-        let bStock = document.getElementById('blended-stock');
-        if(bStock) {
-            bStock.innerText = blendedStock; 
-            bStock.style.color = blendedStock <= 2 ? 'var(--danger)' : 'var(--blended)';
-        }
-        
-        let dishCount = document.getElementById('dirty-count-display');
-        if(dishCount) {
-            dishCount.innerText = dirtyDishes;
-            dishCount.style.color = dirtyDishes >= 35 ? 'var(--danger)' : 'var(--wash)';
-        }
-        
-        const overlay = document.getElementById('busy-overlay');
-        if(overlay) {
-            if (isPlayerBusy) { overlay.style.display = 'flex'; } else { overlay.style.display = 'none'; }
-        }
-
-        const btnHotServe = document.getElementById('btn-hot-serve');
-        if(btnHotServe) { if (isPlayerBusy) { btnHotServe.disabled = true; } else { btnHotServe.disabled = false; } }
-
-        const btnRefill = document.getElementById('btn-blend-refill'); 
-        if(btnRefill) { if (blendedStock > 2 || isRefilling || isPlayerBusy) { btnRefill.disabled = true; } else { btnRefill.disabled = false; } }
-        
-        const btnDessert = document.getElementById('btn-dessert');
-        if(btnDessert) { if (isPlayerBusy) { btnDessert.disabled = true; } else { btnDessert.disabled = false; } }
-
-        const btnSingle = document.getElementById('btn-single');
-        if(btnSingle) { if (getFreeSlot() === -1 || isPlayerBusy) { btnSingle.disabled = true; } else { btnSingle.disabled = false; } }
-        
-        const btnWash = document.getElementById('btn-wash');
-        if(btnWash) { if (dirtyDishes <= 0 || isPlayerBusy) { btnWash.disabled = true; } else { btnWash.disabled = false; } }
-    }
-
-    function checkLevelCompletion() {
-        const serveBtn = document.getElementById('btn-serve-tray');
-        if (activeOrders.length === 0 && spawnQueue.length === 0) {
-            let noOrder = document.getElementById('no-order-msg');
-            if(noOrder) noOrder.classList.remove('hidden');
-            if(serveBtn) serveBtn.classList.add('disabled'); 
-            clearInterval(globalTimer); clearInterval(helperTimer);
-            
-            setTimeout(() => {
-                let sumWait = levelWaitTimes.reduce((a, b) => a + b, 0);
-                let avgWaitGameSec = levelWaitTimes.length > 0 ? (sumWait / levelWaitTimes.length) : 0;
-                let avgWaitRealMin = parseFloat((avgWaitGameSec * 0.25).toFixed(1)); 
-                
-                let avgGame = document.getElementById('avg-time-game');
-                if(avgGame) avgGame.innerText = avgWaitGameSec.toFixed(1);
-                
-                let avgReal = document.getElementById('avg-time-real');
-                if(avgReal) avgReal.innerText = avgWaitRealMin;
-                
-                let lvlDisplay = document.getElementById('level-score-display');
-                if(lvlDisplay) lvlDisplay.innerText = levelScore;
-                
-                const clearOverlay = document.getElementById('overlay-level-clear');
-                if(clearOverlay) clearOverlay.classList.remove('hidden');
-                
-                let completedLevelNum = currentLevel + 1;
-                autoSaveAndFetchLeaderboard(avgWaitRealMin, completedLevelNum);
-            }, 1000);
-        }
-    }
-
-    // 🟢 ระบบเซฟที่ถูกหุ้มด้วย try-catch กันพัง 100% 🟢
-    function autoSaveAndFetchLeaderboard(myAvgWaitRealMin, lvlNum) {
-        let msgEl = document.getElementById('save-status-msg');
-        if(msgEl) msgEl.innerText = "⏳ กำลังซิงค์ข้อมูล...";
-        
-        let titleEl = document.getElementById('lb-title');
-        if(titleEl) titleEl.innerText = `🏆 สถิติคนชงไว (ด่าน ${lvlNum})`;
-
-        if (!Array.isArray(leaderboardCache)) leaderboardCache = [];
-        leaderboardCache.push({
-            phone: playerPhone,
-            name: playerName,
-            score: levelScore,
-            level: lvlNum,
-            avgWait: myAvgWaitRealMin
-        });
-
-        renderLocalLeaderboard(lvlNum, myAvgWaitRealMin);
-
-        const payload = { phone: playerPhone, name: playerName, score: levelScore, levelReached: lvlNum, avgWaitTime: myAvgWaitRealMin };
-        const formData = new URLSearchParams(); formData.append('data', JSON.stringify(payload));
-
-        fetch(GOOGLE_APP_SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: formData.toString() })
-        .then(() => { 
-            if(msgEl) msgEl.innerText = "✅ ซิงค์ข้อมูลสำเร็จ!";
-        })
-        .catch(err => { 
-            if(msgEl) msgEl.innerText = "⚠️ เล่นแบบออฟไลน์ (คะแนนไม่ถูกส่ง)";
-        });
-    }
-
-    function renderLocalLeaderboard(lvlNum, myAvgWaitMin) {
-        try {
-            const listDiv = document.getElementById('leaderboard-list');
-            if(listDiv) listDiv.innerHTML = "";
-            
-            if(Array.isArray(leaderboardCache)) {
-                let levelData = leaderboardCache.filter(entry => entry.level === lvlNum);
-                
-                if(levelData.length > 0) {
-                    let globalValidWaits = levelData.filter(entry => entry.avgWait > 0);
-                    if(globalValidWaits.length > 0) {
-                        let totalGlobalWait = globalValidWaits.reduce((sum, entry) => sum + Number(entry.avgWait), 0);
-                        let globalAvgWait = (totalGlobalWait / globalValidWaits.length).toFixed(1);
-                        
-                        let gAvgEl = document.getElementById('global-avg-time');
-                        if(gAvgEl) gAvgEl.innerText = globalAvgWait;
-                        
-                        let compareStatus = document.getElementById('kpi-compare-status');
-                        if(compareStatus) {
-                            if(myAvgWaitMin <= globalAvgWait) {
-                                compareStatus.innerText = `🔥 เร็วกว่าค่าเฉลี่ยร้าน ${(globalAvgWait - myAvgWaitMin).toFixed(1)} นาที!`;
-                                compareStatus.style.color = "var(--success)";
-                            } else {
-                                compareStatus.innerText = `🐢 ช้ากว่าค่าเฉลี่ยร้าน ${(myAvgWaitMin - globalAvgWait).toFixed(1)} นาที`;
-                                compareStatus.style.color = "var(--danger)";
-                            }
-                        }
-                    }
-
-                    levelData.sort((a, b) => { if (b.score !== a.score) return b.score - a.score; return a.avgWait - b.avgWait; });
-                    
-                    let uniquePlayers = [];
-                    let seenPhones = new Set();
-                    levelData.forEach(entry => {
-                        let cleanPhone = normalizePhone(entry.phone);
-                        if (!seenPhones.has(cleanPhone)) {
-                            seenPhones.add(cleanPhone);
-                            uniquePlayers.push(entry);
-                        }
-                    });
-
-                    uniquePlayers.slice(0, 5).forEach((entry, index) => {
-                        let cleanMyPhone = normalizePhone(playerPhone);
-                        let isMe = (normalizePhone(entry.phone) === cleanMyPhone);
-                        
-                        let rowHtml = `
-                            <div class="leaderboard-row" style="${isMe ? 'background:var(--wip); border-radius:4px; padding:2px;' : ''}">
-                                <span class="lb-rank">${index + 1}.</span>
-                                <span style="flex:1; display:flex; align-items:center;">
-                                    <img src="IMG_4511.jpeg" style="width:16px; height:16px; min-width:16px; border-radius:4px; object-fit:cover; margin-right:4px;" onerror="this.style.display='none'">
-                                    ${entry.name} <span style="font-size:7px; color:#888; margin-left:3px;">| ⏱️ ${entry.avgWait}m</span>
-                                </span>
-                                <span style="font-weight:bold; color: var(--header-text);">${entry.score} pts</span>
-                            </div>`;
-                        if(listDiv) listDiv.innerHTML += rowHtml;
-                    });
-                }
-            }
-        } catch (e) {
-            console.error("Board Render Error:", e);
-        } finally {
-            // ไม่ว่าจะเกิดอะไรขึ้น ปุ่มไปต่อ ต้องทำงาน!
-            let actionBtns = document.getElementById('action-buttons');
-            if(actionBtns) actionBtns.classList.remove('hidden');
-            
-            let btnCont = document.getElementById('btn-continue');
-            if(btnCont) {
-                if(lvlNum < levels.length) { btnCont.classList.remove('hidden'); } 
-                else { btnCont.classList.add('hidden'); }
-            }
-        }
-    }
-
-    function showFloatingScore(text, targetId, isPenalty = false) {
-        const target = document.getElementById(targetId); if(!target) return;
-        const floatEl = document.createElement('div'); floatEl.className = 'score-popup'; floatEl.innerText = text; 
-        if(isPenalty) { floatEl.style.color = 'var(--danger)'; floatEl.style.borderColor = 'var(--danger)'; } 
-        else { floatEl.style.color = 'var(--success)'; floatEl.style.borderColor = 'var(--success)'; }
-        const randX = Math.floor(Math.random() * 40) - 20; floatEl.style.left = `calc(50% + ${randX}px)`; floatEl.style.top = '10%'; 
-        target.appendChild(floatEl); setTimeout(() => floatEl.remove(), 1200);
-    }
+    
+    const getFreeSlot = () => brewSlots.indexOf(false);
 </script>
-
 </body>
 </html>
